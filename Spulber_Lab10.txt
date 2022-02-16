@@ -1,0 +1,1127 @@
+LABORATOR 10
+
+Activitate
+
+//1.	Clasele Pozitie, Cerc
+//– Clasa Pozitie(pozitia in plan) :
+//	• Date membre(abscisa si ordonata)
+//	• Constructori expliciti
+//	• Metode get(), set()
+//	• Metoda Afisare()
+//	• Metoda Mutare()
+//
+//	– Clasa Cerc : public Pozitie
+//	• Data membra(raza)
+//	• Constructori expliciti(validare)
+//	• Metoda get() / set()
+//	• Metoda Afisare()– redefinire in clasa derivata
+//	• Metoda Arie(), ...
+//	• Metoda Dilata()
+//
+//	– In main() :
+//	• Un obiect Cerc
+//	• Configurare obiect
+//	• Afisare date(pozitie centru, raza, arie, etc.)
+//	• Mutare cerc urmata de afisare date
+//	• Dilatare cerc urmata de afisare date
+//	• Etc.
+
+
+#include <math.h>
+#include <iostream>
+using namespace std;
+
+#define PI 3.14
+
+class Pozitie {
+	int x, y;
+public:
+	Pozitie() {
+		x = 0;
+		y = 0;
+	}
+	Pozitie(int a,int b):x(a),y(b){}
+
+	void setX(int n) { x = n; }
+	void setY(int n) { y = n; }
+
+	int getX() { return x;}
+	int getY() { return y; }
+
+	void afisare() {
+		cout << "(" << x << ";" << y << ")";
+	}
+
+	void mutare(const Pozitie&ob) {
+		x = ob.x;
+		y =ob.y;
+	}
+};
+
+
+class Cerc :public Pozitie {
+	float raza;
+public:
+	Cerc() {
+		if (raza == 0)raza = 1;
+	}
+
+	void setRaza(float n) { raza = n; }
+
+	float getRaza() { return raza; }
+
+
+	void afisare() {
+		cout << raza;
+	}
+
+	float Arie() {
+		return PI * raza * raza;
+	}
+
+	void dilatare(float n) {
+		raza += n;
+	}
+
+};
+
+
+
+
+int main() {
+	Cerc ob1;
+	ob1.setX(1);
+	ob1.setY(2);
+	ob1.setRaza(4);
+
+
+	cout << "Date: \n";
+	cout << "Pozitie centru: ";
+	ob1.Pozitie::afisare();
+	cout << "\nRaza: ";
+	ob1.afisare();
+	cout << "\nAria: " << ob1.Arie();
+
+	Pozitie pt(3,3);
+	ob1.mutare(pt);
+	cout << "\n\nPozitie centru mutata: ";
+	ob1.Pozitie::afisare();
+	ob1.dilatare(5);
+	cout << "\nRaza: ";
+	ob1.afisare();
+	cout << "\nAria: " << ob1.Arie();
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P1
+//Implementati programul prezentat in exemplul 3 si examinati eventualele erori date la compilare daca exista prin 
+//eliminarea comentariilor.Modificati programul astfel incat sa se poata accesa din functia main(), prin 
+//intermediul obiectului obiect_derivat, si metodele aduna() si scade() din clasa de baza pastrand mostenirea de tip private.
+
+#include <iostream>
+using namespace std;
+
+class Baza {
+protected: int a, b;
+public:
+	Baza() { a = 1, b = 1; }
+	void setA(int a) {
+		this->a = a;
+	}
+	void setB(int b) {
+		this->b = b;
+	}
+	int getA() {
+		return a;
+	}
+	int getB() {
+		return b;
+	}
+	int aduna() {
+		return a + b;
+	}
+	int scade() {
+		return a - b;
+	}
+};
+class Derivata : private Baza
+{
+public:
+	//MODIFICARI                         Metodele au fost exceptate individual de la modul de acces prin declaratiile urmatoare
+	Baza::aduna;                    
+	Baza::scade;
+	int inmulteste() {
+		return a * b;
+	}
+};
+
+
+int main()
+{
+	Baza obiect_baza;
+	cout << "\nAfis din baza (val. initiale): " << obiect_baza.getA() << " " << obiect_baza.getB() << '\n';
+	cout << "\nSuma este (cu val. initiale, baza) = " << obiect_baza.aduna(); // corect aduna( ) e public
+	cout << "\nDiferenta este (cu val. initiale, baza) = " << obiect_baza.scade();
+	//corect scade( ) e public
+	obiect_baza.setA(2);
+	obiect_baza.setB(3);
+	cout << "\nAfis din baza (modificat): " << obiect_baza.getA() << " " << obiect_baza.getB() << '\n';
+	cout << "\nSuma/Diferenta dupa setare= " << obiect_baza.aduna() << "/" <<
+		obiect_baza.scade() << '\n';
+	Derivata obiect_derivat;
+	cout << "\nProdusul este (din derivat cu val. initiale) = " << obiect_derivat.inmulteste() << '\n';
+	// corect val. implicite
+	cout << "\nSuma este (din derivat cu val. initiale, baza) = " << obiect_derivat.aduna( ); // incorect aduna( ) devine private
+	cout<<"\nDiferenta este (din derivat cu val. initiale, baza) ="<<obiect_derivat.scade( ); // eroare, scade( ) devine private
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A  P2
+//Folosind modelul claselor de la mostenirea publica, implementati doua clase, astfel:
+//-clasa de baza contine metode pentru :
+//-codarea unui sir de caractere(printr - un algoritm oarecare)
+//= > public;
+//-afisarea sirului original si a celui rezultat din transformare
+//= > public;
+//-clasa derivata contine o metoda pentru :
+//-scrirea rezultatului codarii intr - un fisier, la sfarsitul acestuia.
+//Fiecare inregistrare are forma : nr_inregistrare: sir_codat;
+//Accesul la metodele ambelor clase se face prin intermediul unui obiect rezultat prin instantierea clasei derivate.
+//Programul care foloseste clasele citeste un sir de caractere de la tastatura si apoi, in functie de optiunea utilizatorului,
+//afiseaza rezultatul codarii sau il scrie in fisier.
+
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <conio.h>
+#include <iostream>
+using namespace std;
+
+
+class Baza {
+	char* string;
+public:
+	//constructor
+	Baza() {
+		string = new char[30];
+	}
+
+	//setter
+	void setString(const char* s) {
+		string = new char[strlen(s)];
+		strcpy(string, s);
+	}
+
+	char* codare_string();
+	void afisare_strings();
+};
+
+char* Baza::codare_string() {
+	int j = 0;
+	char* sir = new char[strlen(string)];
+	strcpy(sir, string);
+	for (int i = 0; i < strlen(sir); i++) {
+		sir[i] += 'a' + j;
+		j++;
+	}
+	return sir;
+
+}
+
+void Baza::afisare_strings() {
+
+	cout << "Sirul original: " << string;
+	cout << "\nSirul codat: " << codare_string();
+}
+
+class Derivare :public Baza {
+public:
+	void scriere_in_fisier(FILE* fp,int i) {
+		fprintf(fp, "%d: %s",i,codare_string());
+		fprintf(fp, "\n");
+	}
+
+
+};
+
+void menu(FILE*,int nr,char *s,Derivare ob);
+
+int main() {
+	FILE* fp;
+	int nr = 1;
+
+	fp = fopen("Codare.in", "w");
+	if (!fp) {
+		cout << "Eroare fisier!";
+		return 0;
+	}
+	fclose(fp);
+
+	fp = fopen("Codare.in", "a+");
+
+	char s[30];
+	cout << "Introduceti sirul dorit: ";
+	cin >> s;
+	Derivare ob;
+	ob.setString(s);
+
+	menu(fp, nr,s,ob);
+
+	fclose(fp);
+
+}
+
+void menu(FILE* fp, int nr,char *s,Derivare ob) {
+
+
+	system("CLS");
+	cout << "Introduceti optiunea dorita (introduceti cifra):        *Pentru a vedea in fisier trebuie sa inchideti programu!*";
+	cout << "\n1) Afisare sir original si codat ";
+	cout << "\n2) Scrierea in fisier a sirului codat: ";
+	cout << "\n3) Introducere alt sir: ";
+	cout << "\n";
+
+	char c = _getch();
+
+	system("CLS");
+
+	if (c == '1') {
+		ob.afisare_strings();
+		cout << endl;
+		cout << "\nPress any button to return to menu";
+		_getch();
+		system("CLS");
+		menu(fp, nr, s, ob);
+	}
+	else if (c == '2') {
+		ob.scriere_in_fisier(fp, nr);
+		nr++;
+		cout << "Scriere cu succes!";
+		cout << "\n\tPress any button to return to menu: ";
+		_getch();
+		system("CLS");
+		menu(fp, nr, s, ob);
+	}
+	else if (c == '3') {
+		cout << "Introduceti noul sir: ";
+		cin >> s;
+		ob.setString(s);
+		system("CLS");
+		menu(fp, nr, s, ob);
+	}
+	else {
+		menu(fp, nr, s, ob);
+	}
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P3
+//Sa se implementeze o clasa de baza cu doua atribute protected de tip intreg care contine o metoda mutator pentru fiecare 
+//atribut al clasei, parametri metodelor fiind preluati in main() de la tastatura si metode accesor pentru fiecare atribut
+//care returneaza atributul specific.Sa se scrie o a doua clasa, derivata din aceasta, care implementeaza operatiile matematice 
+//elementare : +, -, *, / asupra atributelor din clasa de baza, rezultatele fiind memorate in doua atribute protected int(plus, minus)
+//si in alte doua atribute protected double(mul, div) declarate in clasa.Sa se scrie o a III - a clasa, derivata din cea de - a doua,
+//care implementeaza in plus o metoda pentru extragerea radacinii patrate dintr - un numar
+//(mul,rezultat al operatiei * din prima clasa derivata)
+//si de ridicare la putere(atat baza(plus, rezultat al operatiei + din prima clasa derivata)
+//cat si puterea(minus, rezultat al operatiei - din prima clasa derivata) sunt trimisi ca parametri).
+//Verificati apelul metodelor considerand obiecte la diferite ierarhii.
+
+#include <math.h>
+#include <iostream>
+using namespace std;
+
+class Baza {
+protected: int x, y;
+public:
+	void setX(int n) { x = n; }
+	void setY(int n) { y = n; }
+
+	int getX() { return x; }
+	int getY() { return y; }
+
+};
+
+class Derivata_Operatii :private Baza {
+protected:
+	int plus, minus;
+	double mul, div;
+public:
+
+
+Baza::setX;
+Baza::setY;
+Baza::getX;
+Baza::getY;
+
+int Adun() { 
+	plus = x + y;
+	return plus;
+	}
+int Scad() {
+	minus = x - y;
+	return minus;
+	}
+
+
+double Inm() { 
+	mul = x * y; 
+	return mul;
+}
+
+double Imp() {
+	div = x / (float)y;
+	return div;
+}
+
+
+};
+
+class Deriv_operatii2 :public Derivata_Operatii {
+public:
+	double radacina(double mul) {
+		return sqrt(mul);
+	}
+	double putere(int plus, int minus) {
+		return pow(plus, minus);
+	}
+
+};
+
+
+int main() {
+	Baza obiect;
+	Derivata_Operatii ob_derivat1;
+	Deriv_operatii2  ob_derivat2;
+
+	int n, m;
+	cout << "Introduceti numerele ";
+	cin >> n;
+	cin >> m;
+	obiect.setX(n);
+	obiect.setY(m);
+	ob_derivat1.setX(n);
+	ob_derivat1.setY(m);
+	ob_derivat2.setX(n);
+	ob_derivat2.setY(m);
+
+	cout << "Numerele introduse sunt: " << obiect.getX() << " " << obiect.getY();
+	cout << "\nAdunare: " << ob_derivat2.Adun();
+	cout << "\nScadere: " << ob_derivat2.Scad();
+	cout << "\nInmultire: " << ob_derivat2.Inm();
+	cout << "\nImpartire: " << ob_derivat2.Imp();
+	cout << "\nRadical din " << ob_derivat1.Inm() << " : " << ob_derivat2.radacina(ob_derivat1.Inm());
+	cout << "\nRidicarea la Putere din baza " << ob_derivat1.Adun() << " si puterea " << ob_derivat1.Scad() << " : " << ob_derivat2.putere(ob_derivat1.Adun(), ob_derivat1.Scad());
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P4
+//Definiti o clasa numita Triangle care are 3 atribute protected pentru laturi si o metoda care calculeaza perimetrul 
+//unui triunghi ale carui laturi sunt citite de la tastatura(folosite de un constructor adecvat) si apoi o clasa derivata 
+//in mod public din Triangle, Triangle_extended, care in plus, calculeaza si aria triunghiului.Folosind obiecte 
+//din cele doua clase apelati metodele specifice.Verificati inainte de instantiere posibilitatea definirii unui triunghi.
+
+#include <math.h>
+#include <iostream>
+using namespace std;
+
+class Triangle {
+protected: int a, b, c;
+public:
+	Triangle() { a = 1, b = 1, c = 2; }
+	Triangle(int x, int y, int z) :a(x),b(y),c(z){}
+
+	void setA(int x) { a = x; }
+	void setB(int y) { b = y; }
+	void setC(int z) { c = z; }
+
+	int Perimetru() {
+		return a + b + c;
+	}
+
+};
+
+class Triangle_extended :public Triangle {
+public:
+
+	float Arie() {
+		float p = Perimetru() / 2.0;
+		return sqrt(p * (p - a) * (p - b) * (p - c));           //formula lu' Heron
+	}
+};
+
+
+
+int main() {
+	int a, b, c;
+	cout << "Introduceti laturile: ";
+	cout << "\na= ";
+	cin >> a;
+	cout << "b= ";
+	cin >> b;
+	cout << "c= ";
+	cin >> c;
+	if (a < 0 || b < 0 || c < 0 || a + b < c || a + c < b || c + b < a) {
+		cout << "\nAti introdus date incorecte!";
+		return 0;
+	}
+
+	Triangle ob_baza(a, b, c);
+	cout << "\nPerimetrul este: " << ob_baza.Perimetru();
+	
+	Triangle_extended ob;
+	ob.setA(a);
+	ob.setB(b);
+	ob.setC(c);
+	cout << "\nAria este: " << ob.Arie();
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P5
+//Adaugati in clasa derivata din exemplul anterior o metoda care calculeaza inaltimea triunghiului.
+//Apelati metoda folosind un obiect adecvat.
+
+#include <math.h>
+#include <iostream>
+using namespace std;
+
+class Triangle {
+protected: int a, b, c;
+public:
+	Triangle() { a = 1, b = 1, c = 2; }
+	Triangle(int x, int y, int z) :a(x), b(y), c(z) {}
+
+	void setA(int x) { a = x; }
+	void setB(int y) { b = y; }
+	void setC(int z) { c = z; }
+
+	int Perimetru() {
+		return a + b + c;
+	}
+
+};
+
+class Triangle_extended :public Triangle {
+public:
+
+	float Arie() {
+		float p = Perimetru() / 2.0;
+		return sqrt(p * (p - a) * (p - b) * (p - c));           //formula lu' Heron
+	}
+
+	float Inaltime() {
+		float A = Arie();
+		return 2 * A / (float)c;
+
+	}
+
+};
+
+
+
+int main() {
+	int a, b, c;
+	cout << "Introduceti laturile: ";
+	cout << "\na= ";
+	cin >> a;
+	cout << "b= ";
+	cin >> b;
+	cout << "c= ";
+	cin >> c;
+	if (a < 0 || b < 0 || c < 0 || a + b < c || a + c < b || c + b < a) {
+		cout << "\nAti introdus date incorecte!";
+		return 0;
+	}
+
+	Triangle ob_baza(a, b, c);
+	cout << "\nPerimetrul este: " << ob_baza.Perimetru();
+
+	Triangle_extended ob;
+	ob.setA(a);
+	ob.setB(b);
+	ob.setC(c);
+	cout << "\nAria este: " << ob.Arie();
+	cout << "\nInaltimea este: " << ob.Inaltime();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P6
+//Definiti o clasa numita Forme care defineste o figura geometrica cu un nume ca si atribut de tip pointer la un sir de caractere.
+//Derivati in mod public o clasa Cerc cu un constructor adecvat(nume, raza) si metode care calculeaza aria si perimetrul cercului
+//de raza r, valoare introdusa in main() de la tastatura.Similar definiti o clasa Patrat si Dreptunghi care permit determinarea 
+//ariei si perimetrului obiectelor specifice.Instantiati obiecte din clasele derivate si afisati aria si perimetrul obiectelor.
+//Datele specifice vor fi introduse de la tastatura.
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <cstring>
+#include <iostream>
+using namespace std;
+
+#define PI 3.14
+
+class Forme {
+protected:char* nume;
+};
+
+class Cerc:public Forme {
+	int raza;
+public:
+	
+	Cerc(const char* s, int r) {
+		nume = new char[strlen(s)];
+		strcpy(nume, s);
+		raza = r;
+	}
+
+	float Perimetru_CERC() {
+		return 2 * PI * raza;
+	}
+
+	float Arie_CERC() {
+		return PI* raza* raza;
+	}
+
+
+};
+
+class Patrat :public Forme {
+	int latura;
+public:
+	Patrat(const char* s, int n) {
+		nume = new char[strlen(s)];
+		strcpy(nume, s);
+		latura = n;
+	}
+
+	float Perimetru_PATRAT() {
+		return 4 * latura;
+	}
+
+	float Arie_PATRAT() {
+		return latura * latura;
+	}
+};
+
+
+class Dreptunghi : public Forme {
+	int lungime, latime;
+public:
+	Dreptunghi(const char* s, int n,int m) {
+		nume = new char[strlen(s)];
+		strcpy(nume, s);
+		lungime = n;
+		latime = m;
+	}
+
+	float Perimetru_DREPTUNGHI() {
+		return  2 * latime + 2 * lungime;
+	}
+	float Arie_DREPTUNGHI() {
+		return lungime * latime;
+	}
+
+};
+
+
+int main() {
+	int r, latime, lungime, latura;
+
+	cout << "Introduceti datele: ";
+	cout << "\nRaza cercului: ";
+	cin >> r;
+	cout << "Latura patratului: ";
+	cin >> latura;
+	cout << "Lungimea si latimea dreptunghiului: ";
+	cin >> lungime;
+	cin >> latime;
+
+	Cerc cerc("CERC", r);
+	Patrat patrat("PATRAT", latura);
+	Dreptunghi dreptunghi("DREPTUNGHI", lungime, latime);
+
+	cout << "\n\nCerc: ";
+	cout << "\n\tArie: " << cerc.Arie_CERC();
+	cout << "\tPerimetru: " << cerc.Perimetru_CERC();
+	cout << "\n\nPatrat: ";
+	cout << "\n\tArie: " << patrat.Arie_PATRAT();
+	cout << "\tPerimetru: " << patrat.Perimetru_PATRAT();
+	cout << "\n\nDreptunghi: ";
+	cout << "\n\tArie: " << dreptunghi.Arie_DREPTUNGHI();
+	cout << "\tPerimetru: " << dreptunghi.Perimetru_DREPTUNGHI();
+
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3  Seria A P7
+//Considerati o clasa de baza Cerc definita printr - un atribut protected raza, care are un constructor cu parametrii 
+//si o metoda care determina aria cercului.Considerati o alta clasa de baza Patrat cu un atribut protected latura similar clasei Cerc.
+//Derivati un mod public clasa CercPatrat care are un constructor ce apeleaza constructorii claselor de baza si o metoda 
+//care verifica daca patratul de latura l poate fi inclus in cercul de raza r.De asemenea clasa derivata determina si perimetrul 
+//celor doua figuri geometrice.Instantiati un obiect din clasa derivata(datele introduse de la tastatura), determinati aria si 
+//perimetrul cercului si al patratului.Afisati daca patratul cu latura introdusa poate fi inclus in cercul de raza specificat.
+
+#include <math.h>
+#include <iostream>
+using namespace std;
+
+#define PI 3.14
+
+class Cerc {
+protected: float raza;
+public:
+	Cerc(float r):raza(r){}
+
+	double Arie_CERC() {
+		return PI * raza * raza;
+ }
+
+};
+
+class Patrat {
+protected: float latura;
+public:
+	Patrat(float l) :latura(l){}
+
+	double Arie_PATRAT() {
+		return  latura * latura;
+}
+
+};
+
+class CercPatrat :public Cerc, public Patrat {
+public:
+	CercPatrat(float r, float l) :Cerc(r), Patrat(l) {}  //constructor care apeleaza ceilalti constructori din clasele de baza
+
+	bool Verif() {
+
+		if (latura==raza*1.41) return true;    //este inclus daca sunt egale      
+		else return false;
+	}
+
+	double Perimetru_Patrat() {
+		return 4 * latura;
+
+	}
+
+	double Perimetru_Cerc() {
+		return 2 * PI * raza;
+	}
+
+
+};
+
+
+
+int main() {
+	float raza, latura;
+	cout << "Introduceti raza: ";
+	cin >> raza;
+	cout << "Introduceti latura patratului: ";
+	cin >> latura;
+
+	CercPatrat obiect(raza, latura);
+	cout << "\nCerc: ";
+	cout << "\n\tPerimetru: " << obiect.Perimetru_Cerc() << "\tArie: " << obiect.Arie_CERC();
+	cout << "\n\nPatrat: ";
+	cout << "\n\tPerimetru: " << obiect.Perimetru_Patrat() << "\tArie: " << obiect.Arie_PATRAT();
+	if (obiect.Verif()) {
+		cout << "\nPatratul poate fi inclus in cerc";
+	}
+	else cout << "\nNu poate fi inclus!";
+
+
+}
+
+
+//Introduceti raza : 100
+//Introduceti latura patratului : 141
+//
+//Cerc :
+//	Perimetru : 628  Arie : 31400
+//
+//	Patrat :
+//	Perimetru : 564  Arie : 19881
+//	Patratul poate fi inclus in cerc
+//	C : \Users\Body_\Desktop\UTCN - ETII - Sem II\PCL\Programe\Lab10\(7) Cerc\Debug\(7) Cerc.exe(process 19868) exited with code 0.
+//	Press any key to close this window . . .
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P8
+//Considerati clasa Fractie care are doua atribute intregi protected a si b pentru numarator si numitor,
+//doua metode de tip set() respectiv get() pentru fiecare din atributele clasei.Declarati o metoda publica 
+//simplifica() care simplifica un obiect Fractie.Definiti un constructor explicit fara parametri care initializeaza 
+//a cu 0 si b cu 1, si un constructor explicit cu doi parametri care va putea fi apelat daca se verifica posibilitatea
+//definirii unei fractii(b != 0).
+//Supraincarcati operatorii de adunare, scadere, inmultire si impartire(+, -, *, / ) a fractiilor folosind metode membre
+//care si simplifica daca e cazul rezultatele obtinute, apeland metoda simplifica() din clasa.Definiti o clasa Fractie_ext 
+//derivata public din Fractie, care va avea un constructor cu parametrii(ce apeleaza constructorul din clasa de baza).
+//Supraincarcati operatorii de incrementare si decrementare prefixati care aduna / scade valoarea 1 la un obiect de tip 
+//Fractie_ext cu metode membre.
+//Instantiati doua obiecte de tip Fractie fara parametrii.Setati atributele obiectelor cu date citite de la tastatura.
+//Afisati atributele initiale ale obiectelor si noile atribute definite.Efectuati operatiile implementate prin metodele 
+//membre, initializand alte 4 obiecte cu rezultatele obtinute.Simplificati si afisati rezultatele.Instantiati doua obiecte 
+//de tip Fractie_ext cu date citite de la tastatura.Efectuati operatiile disponibile clasei, asignand rezultatele obtinute 
+//la alte obiecte Fracti_ext.Simplificati si afisati rezultatele.
+
+#include <iostream>
+using namespace std;
+
+class Fractie {
+protected:
+	int a, b;
+	static int icount;
+	float cmmdc();
+
+public:
+	//constructori
+	Fractie() :a(0), b(1) { icount++; }
+	Fractie(int a, int b) {
+		this->a = a;
+		if (b != 0) {
+			this->b = b;
+		}
+		icount++;
+	}
+
+	//setteri
+	void set_a(int x);
+	void set_b(int x);
+	//getteri
+	int get_a();
+	int get_b();
+	static int getICOUNT() { return icount; }
+	//metode
+	friend Fractie simplifica(Fractie);
+
+	void operator+=(Fractie pt) {
+		int num = cmmc_numitor(pt);
+		int aplif1 = num / b, aplif2 = num / pt.b;
+
+		Fractie plus(a * aplif1 + aplif2 * pt.a, num);
+		plus = simplifica(plus);
+		a = plus.a;
+		b = plus.b;
+	}
+
+	void operator-=(Fractie pt) {
+		int num = cmmc_numitor(pt);
+		int aplif1 = num / b, aplif2 = num / pt.b;
+
+		Fractie minus(a * aplif1 - aplif2 * pt.a, num);
+		minus = simplifica(minus);
+		a = minus.a;
+		b = minus.b;
+	}
+
+	void operator *=(Fractie pt) {
+
+		Fractie steluta(a * pt.a, b * pt.b);
+		steluta = simplifica(steluta);
+		a = steluta.a;
+		b = steluta.b;
+
+	}
+
+	void operator /=(Fractie pt) {
+
+		Fractie slash(a * pt.b, b * pt.a);
+		slash = simplifica(slash);
+		a = slash.a;
+		b = slash.b;
+	}
+
+	
+
+
+	friend Fractie operator +(Fractie, Fractie);
+	friend Fractie operator -(Fractie, Fractie);
+	friend Fractie operator *(Fractie, Fractie);
+	friend Fractie operator /(Fractie, Fractie);
+
+	int cmdc_numitor(Fractie);
+	int cmmc_numitor(Fractie);
+
+	~Fractie() {
+		//cout <<"\n"<<Fractie::icount;
+		icount--;
+	}
+};
+
+int Fractie::icount; //=0
+
+//setteri
+void Fractie::set_a(int x) {
+	a = x;
+}
+void Fractie::set_b(int x) {
+	b = x;
+}
+//getteri
+int Fractie::get_a() {
+	return a;
+}
+int Fractie::get_b() {
+	return b;
+}
+
+
+//metode
+Fractie simplifica(Fractie ob1) {
+	int n = ob1.cmmdc();
+
+	ob1.a = ob1.a / n;
+
+	ob1.b = ob1.b / n;
+
+	return ob1;
+}
+
+
+
+float Fractie::cmmdc() {
+	int r;
+	int x, y;
+	x = a;
+	y = b;
+	while (y != 0) {
+		r = x % y;
+		x = y;
+		y = r;
+
+	}
+	if (x < 0)x = -x;
+	return x;
+
+}
+
+Fractie operator +(Fractie ob, Fractie ob1) {
+	int num = ob.cmmc_numitor(ob1);
+	int aplif1 = num / ob.b, aplif2 = num / ob1.b;
+
+	Fractie plus(ob.a * aplif1 + aplif2 * ob1.a, num);
+	plus = simplifica(plus);
+	return plus;
+}
+
+Fractie operator -(Fractie ob, Fractie ob1) {
+	int num = ob.cmmc_numitor(ob1);
+	int aplif1 = num / ob.b, aplif2 = num / ob1.b;
+
+	Fractie minus(ob.a * aplif1 - aplif2 * ob1.a, num);
+	minus = simplifica(minus);
+	return minus;
+}
+
+Fractie operator *(Fractie ob, Fractie ob1) {
+
+	Fractie steluta(ob.a * ob1.a, ob.b * ob1.b);
+	steluta = simplifica(steluta);
+	return steluta;
+}
+
+Fractie operator /(Fractie ob, Fractie ob1) {
+
+	Fractie slash(ob.a * ob1.b, ob.b * ob1.a);
+	slash = simplifica(slash);
+	return slash;
+}
+
+int Fractie::cmdc_numitor(Fractie ob) {
+	int x = b, y = ob.b;
+	int r;
+	while (y != 0) {
+		r = x % y;
+		x = y;
+		y = r;
+
+	}
+	if (x < 0)x = -x;
+	return x;
+}
+int Fractie::cmmc_numitor(Fractie ob) {
+	int cmmc;
+	cmmc = (b * ob.b) / cmdc_numitor(ob);
+	return cmmc;
+}
+
+class Fractie_ext :public Fractie {
+public:
+	Fractie_ext(int x,int y):Fractie(x,y){}
+	// supraincarcare operator de incrementare prefixata
+	Fractie_ext& operator++() {
+		a = b + a;
+		return *this;
+	}
+
+	// supraincarcare operator de incrementare postfixata
+	Fractie_ext operator++(int) {
+		a = a + b;
+		return *this;
+	}
+
+	// supraincarcare operator de decrementare prefixata
+	Fractie_ext& operator--() {
+		a = a - b;
+		return *this;
+	}
+
+	// supraincarcare operator de incrementare postfixata
+	Fractie_ext operator--(int) {
+		a = a - b;
+		return *this;
+	}
+
+
+};
+
+
+
+int main() {
+	Fractie f1, f2;
+	int n;
+
+	cout << "I:\n";
+	cout << "Introduceti numaratorul: ";
+	cin >> n;
+	f1.set_a(n);
+	cout << "Introduceti numitorul: ";
+	cin >> n;
+	f1.set_b(n);
+
+	cout << "\n\II:\n";
+	cout << "Introduceti numaratorul: ";
+	cin >> n;
+	f2.set_a(n);
+	cout << "Introduceti numitorul: ";
+	cin >> n;
+	f2.set_b(n);
+
+
+	cout << "\nDateIntroduse: ";
+	cout << "\nFractia I: " << f1.get_a() << "/" << f1.get_b();
+	cout << "\nFractia II: " << f2.get_a() << "/" << f2.get_b();
+
+	cout << "\nIcount: " << Fractie::getICOUNT();
+
+
+
+	f1 = simplifica(f1);
+	f2 = simplifica(f2);
+
+	cout << "\n\nSimplficari: ";
+	cout << "\nFractia I: " << f1.get_a() << "/" << f1.get_b();
+	cout << "\nFractia II: " << f2.get_a() << "/" << f2.get_b();
+
+	cout << "\nIcount: " << Fractie::getICOUNT();
+
+
+
+	Fractie suma, diferenta, inmultire, impartire;
+	suma = f1 + f2;
+	diferenta = f1 - f2;
+	inmultire = f1 * f2;
+	impartire = f1 / f2;
+
+	cout << "\n\nOperatii: ";
+	cout << endl << f1.get_a() << "/" << f1.get_b() << "+" << f2.get_a() << "/" << f2.get_b() << "= " << suma.get_a() << "/" << suma.get_b();
+	cout << endl << f1.get_a() << "/" << f1.get_b() << "-" << f2.get_a() << "/" << f2.get_b() << "= " << diferenta.get_a() << "/" << diferenta.get_b();
+	cout << endl << f1.get_a() << "/" << f1.get_b() << "*" << f2.get_a() << "/" << f2.get_b() << "= " << inmultire.get_a() << "/" << inmultire.get_b();
+	cout << endl << f1.get_a() << "/" << f1.get_b() << " : " << f2.get_a() << "/" << f2.get_b() << "= " << impartire.get_a() << "/" << impartire.get_b();
+	cout << "\nIcount: " << Fractie::getICOUNT();
+
+	int x, y;
+	cout << "\n\nIntroduceti doua numere: ";
+	cin >> x;
+	cin >> y;
+	Fractie_ext fr1(x, y);
+	Fractie_ext fr2(y, x);
+
+
+
+	cout << "\nIncrementare  " << fr1.get_a() << "/" << fr1.get_b()<<": ";
+	fr1 = fr1++;
+	cout << fr1.get_a() << "/" << fr1.get_b();
+
+	cout << "\n\nDecrementare  " << fr2.get_a() << "/" << fr2.get_b() << ": ";
+	fr2 = fr2--;
+	cout << fr2.get_a() << "/" << fr2.get_b();
+
+}
+
+//
+//I:
+//Introduceti numaratorul : 3
+//Introduceti numitorul : 9
+//
+//II :
+//	Introduceti numaratorul : 1
+//	Introduceti numitorul : 2
+//
+//	DateIntroduse :
+//	Fractia I : 3 / 9
+//	Fractia II : 1 / 2
+//	Icount : 2
+//
+//	Simplficari :
+//	Fractia I : 1 / 3
+//	Fractia II : 1 / 2
+//	Icount : -2
+//
+//	Operatii :
+//	1 / 3 + 1 / 2 = 5 / 6
+//	1 / 3 - 1 / 2 = -1 / 6
+//	1 / 3 * 1 / 2 = 1 / 6
+//	1 / 3 : 1 / 2 = 2 / 3
+//	Icount : -22
+//
+//	Introduceti doua numere : 1
+//	2
+//
+//	Incrementare  1 / 2 : 3 / 2
+//
+//	Decrementare  2 / 1 : 1 / 1
+//	C : \Users\Body_\Desktop\UTCN - ETII - Sem II\PCL\Programe\Lab10\(8) Fractie\Debug\(8) Fractie.exe(process 19388) exited with code 0.
+//	Press any key to close this window . . .
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////

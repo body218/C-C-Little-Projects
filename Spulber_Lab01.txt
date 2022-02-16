@@ -1,0 +1,394 @@
+LABORATOR 1
+
+//Spulber Bogdan-Andrei Grupa 3  Seria A P1
+//Program ce afiseaza maximul dintre trei numere
+
+
+#include <iostream>
+using namespace std;
+
+#define Max3(a,b,c) { bool tp=true;\
+						int v[3],aux;\
+					v[0] = a;\
+					v[1] = b;\
+					v[2] = c;\
+					while(tp){\
+					tp = false;\
+					for(int i=0;i<2;i++){\
+					if(v[i]>v[i+1]){\
+					aux = v[i + 1];\
+					v[i + 1] = v[i];\
+					v[i] = aux;\
+					tp = true;\
+					}}}\
+					a=v[2];\
+}
+
+int main() {
+	int a, b, c;
+
+	cout << "Introduceti numerele : "<<endl;
+	cout << "a=";
+	cin >> a;
+	cout << "b=";
+	cin >> b;
+	cout << "c=";
+	cin >> c;
+
+	//apel macrofunctie
+	Max3(a, b, c);
+	cout << "\nMaximul dintre cele trei numere este: "<<a<<endl;
+}
+
+
+
+
+
+//Spulber Bogdan-Andrei Grupa 3  Seria A
+//Program ce afiseaza maximul dintre trei numere
+
+
+#include <iostream>
+using namespace std;
+
+//macrofunctii
+#define Max2(a,b){if(a<b)\
+					a=b;\
+						}
+
+#define Max3(a,b,c){Max2(a,b);\
+					if(a<c)\
+					a = c;\
+					}
+
+int main() {
+	int a, b, c;
+
+	cout << "Introduceti numerele: ";
+	cin >> a;
+	cin >> b;
+	cin >> c;
+
+	Max3(a, b, c);
+	cout <<"Maximul dintre cele trei numere este: "<<a;
+
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P2
+//Program ce are implementata functia inline min() si calculeaza minimul dintre 2 si 3 numere 
+
+#include <iostream>
+using namespace std;
+
+//prototipuri
+inline int min2(int a, int b);
+inline int min3(int b, int c, int d);
+
+int main() {
+	int a, b, c, d,e;
+	cout << "Introduceti numerele pt calculul minimului dintre doua: ";
+	cout <<endl<< "a= ";
+	cin >> a;
+	cout << "b= ";
+	cin >> b;
+	cout << endl << "Introduceti numerele pt calculul minimului dintre trei: " << endl;
+	cout << "c= ";
+	cin >> c;
+	cout << "d= ";
+	cin >> d;
+	cout << "e= ";
+	cin >> e;
+
+	cout << endl << "Minimul dintre primele doua numere este: " << min2(a, b);
+	cout << endl << "Minimul dintre ultimele trei numere introduse este: " << min3(c, d, e);
+}
+
+//definirea f.inline
+inline int min2(int a, int b) {
+	if (a < b)return a;
+	else return b;
+}
+
+inline int min3(int c, int d, int e) {
+	int min;
+	min = min2(c, d);
+	if (min < e) return min;
+	else return e;
+
+
+}
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P3
+//Program ce citeste datele unei structuri de tip student si valideaza ca numele si prenumele sa aiba cel putin 5
+//caractere si ca nota sa fiee >=5 si <=10
+//se afiseaza campurile in caz de introducere corecta a datelor
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <iostream>
+#include <assert.h>
+#include <stdlib.h>
+using namespace std;
+
+struct Student {
+	char nume_prenume[30];
+	int nota;
+};
+
+//prototip functii
+void cit(struct Student &p);
+void afis(struct Student);
+
+int main() {
+	Student p{};
+	//apel f. de citire
+	cit(p);
+
+	//apel f de afisare
+	afis(p);
+
+
+}
+
+//definirea functiei de citire a campurilor
+void cit(struct Student &p) {
+	cout << "Introduceti numele si prenumele: ";
+	scanf("%s", p.nume_prenume);
+	//validari
+	assert(strlen(p.nume_prenume) > 5);
+	cout << "Introduceti nota studentului: ";
+	scanf("%d", &p.nota);
+	//validari
+	assert(p.nota >= 5 && p.nota <= 10);
+}
+
+void afis(struct Student p) {
+	printf("\nNume Prenume: %s", p.nume_prenume);
+	printf("\nNota: %d", p.nota);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P4
+//Programul considera o functie cu 3 parametrii impliciti si returneaza produsul acestora
+//Se apeleaza functia in mai multe variante de apel
+
+#include <iostream>
+using namespace std;
+
+//prototip functii
+double produs(int a = 2, float b = 2.5, double c = 9999);
+
+int main() {
+	
+	//apeluri functie
+	cout << "Fara parametrii: " <<produs()<<endl ;
+	cout << "Un parametru: " << produs(1)<<endl;
+	cout << "Doi parametrii: " << produs(1, 2)<<endl;
+	cout << "Trei parametrii: " << produs(1, 2, 3);
+
+}
+
+double produs(int a , float b, double c ) {
+	return ((a * b) * c);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P5
+//Program ce foloseste supraincarcarea functiilor
+
+#include <math.h>
+#include <iostream>
+using namespace std;
+
+//prototipuri
+double rad(int);
+double rad(int*,int l=1);
+double rad(int&,float,float c=2.5);
+
+int main() {
+	int a = 9,b=0;
+	
+	//apel functii
+	cout << "Apel prin valoare: " << rad(a)<<endl;
+	cout << "Apel prin pointer: " << rad(&a, 1)<<endl;
+	cout << "Apel prin referinta: " << rad(a, b, 2.5);
+}
+
+//definirea functii
+double rad(int k) {
+	return pow(k, 1 / 2.0);
+
+}
+
+double rad(int* k, int l) {
+	return sqrt(*k);
+}
+
+double rad(int& k, float b, float c) {
+	return sqrt(k);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P6
+//Program ce calculeaza minimul pentru primele 7 numere introduse apoi pentru ultimele 3 si apoi dintre primele 7 
+//si ultimele 3
+#include <stdarg.h>
+#include <iostream>
+using namespace std;
+
+//prototip
+double minim(double,int, ...);
+
+int main() {
+	double tab[10],aux,min7,min3,min2;
+	int n;
+
+	//citirea numerelor
+	cout << "Introduceti numerele: " << endl;
+	for (int i = 0; i < 10; i++) {
+		cout << "tab["<<i<<"]= ";
+		cin >> tab[i];
+	}
+
+	//apel functii
+	aux = tab[0];
+	min7 = minim(aux, 6, tab[1], tab[2], tab[3], tab[4], tab[5], tab[6]);
+	aux=tab[7];
+	min3 = minim(aux, 2, tab[8], tab[9]);
+	aux = min3;
+	min2 = minim(aux, 1, min7, min3);
+
+	//afisare
+	cout << "Minimul dintre primele 7: " << min7 << endl;
+	cout << "Minimul dintre ultimele 3: " << min3 << endl;
+	cout << "Minimul dintre cele 7 si 3: " << min2;
+}
+
+//definirea functiei de minim
+double minim(double aux, int n, ...) {
+	double min = aux,x;
+	 
+
+	va_list ap;
+	va_start(ap, n);
+
+	for (int i = 0; i < n; i++) {
+		x = va_arg(ap, double);
+		if (min > x)min = x;
+	}
+
+	return min;
+
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P7
+//Program ce realizeaza o codare simpla prin adaugarea valorii 3 la codul ascii al caracterului
+
+#include <iostream>
+using namespace std;
+
+//macrofunctii
+#define Cod(z) z+=3;
+
+
+int main() {
+	char z;
+	cout << "Introduceti caracterul dorit pentru codare: ";
+	cin >> z;
+	z = Cod(z);
+	cout <<"Rezultatul codarii este: "<< z<<endl;
+
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P8
+//Program ce afiseaza numele programului data si ora compilarii si numarul de linii pe care il are programul
+
+#include <iostream>
+using namespace std;
+#define __LINE__
+#define __DATE__
+#define __TIME__
+#define __NUME__ "Timp data si nume"
+
+int main() {
+
+	cout << "Datele sunt: " << endl;
+	cout <<"Numele programului: "<< __NUME__ << endl <<"Numarul de linii: "<< __LINE__ << endl <<"Data: "<< __DATE__ << endl <<"Timpul: "<< __TIME__;
+
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P9
+//Program ce aplica un cod binar(masca) fiecarui element al unui sir printr-o functie de codare si invers il decodeaza
+//folosind functii macro
+#define _CRT_SECURE_NO_WARNINGS
+
+
+#include <string.h>
+#include <iostream>
+using namespace std;
+
+//macrofunctii
+#define CODE(a,b) (a)^(b)
+#define UNCODE(a,b) (a)^(b)
+
+
+int main() {
+	char s[30],scode[30],suncode[30];
+	int n,tab[30];
+
+	cout << "Introduceti sirul pe care doriti sa il codati: ";
+	cin >> s;
+	
+	
+	cout << "Introduceti numarul de \"mascat\":  ";
+	cin >> n;
+
+	cout << endl;
+	for (int i = 0; i < strlen(s); i++) {
+		tab[i] = s[i];
+
+		//apel macrofunctie de codare 
+		scode[i] = CODE(tab[i], n);
+
+	}
+
+	cout << "\nSirul codat este: ";
+	for (int i = 0; i < strlen(s); i++) {
+		printf("%c",scode[i]);
+	}
+
+	for (int i = 0; i < strlen(s); i++) {
+		//apel macrofunctie de decodare
+		suncode[i] = UNCODE(scode[i], n);
+	}
+
+	cout << "\nSirul decodat este: ";
+	for (int i = 0; i < strlen(s); i++) {
+		printf("%c", suncode[i]);
+	}
+
+
+
+
+}
+

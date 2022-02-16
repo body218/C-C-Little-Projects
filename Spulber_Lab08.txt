@@ -1,0 +1,1181 @@
+LABORATOR 8
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A  Activitate
+/*- clasa Punct (coordonate in plan)
+    ->metode uzuale (constructor(i), metode accesor, afisare)
+    ->functie prietena ce calc. distanta dintre 2 puncte
+    ->metoda statica ce calculeaza lung. liniei poligonale formate din puncte aflate intr-un tablou de puncte
+    ->main():
+        ->2 obiecte individuale
+        ->teste functie prietena
+        ->tablou de obiecte, populare cu date (fara citire de la consola)
+        ->teste metoda statica (verificare convergenta functie prietena/metoda pentru 2 puncte)
+*/
+
+#include <time.h>
+#include <stdlib.h>
+#include <math.h>
+#include <iostream>
+using namespace std;
+
+class Punct {
+    int x, y;
+public:
+    //constructor
+    Punct() {};
+    Punct(int a, int b) :x(a), y(b) {}
+    
+    //setteri
+    void setX(int a) { x = a; }
+    void setY(int b) { y = b; }
+
+    //getteri
+    int getX() { return x;};
+    int getY() { return y;}
+
+    friend float dist(Punct, Punct);
+
+    static float linie_poligonala(Punct* tab, int n) {
+        float lungime = 0.0f;
+        for (int i = 0; i < n-1; i++) {
+            lungime += dist(tab[i], tab[i + 1]);
+        }
+        return lungime;
+    }
+};
+
+float dist(Punct ob1, Punct ob2) {
+    return sqrt((ob1.x - ob2.x) * (ob1.x - ob2.x) + (ob1.y - ob2.y) * (ob1.y - ob2.y));
+}
+
+
+
+int main() {
+    Punct pt1(2, 3), pt2(4, 9);
+    int n;
+    cout << "Punct(1): " << "(" << pt1.getX() << ";" << pt1.getY() << ")";
+    cout<<"\nPunct(2): "<< "(" << pt2.getX() << ";" << pt2.getY() << ")";
+    cout << "\nDistanta dintre cele doua: " << dist(pt1, pt2);
+
+    cout << "\nIntroduceti numarul de puncte: ";
+    cin >> n;
+    Punct* tab = new Punct[n];
+    for (int i = 0; i < n; i++) {
+        (tab + i)->setX(rand() % 20 );
+    }
+    srand(time(0));
+
+    for (int i = 0; i < n; i++) {
+        (tab + i)->setY(rand() % 20);
+    }
+
+    cout << "\nPunctele generate: ";
+    for (int i = 0; i < n; i++) {
+        cout <<"(" << (tab+i)->getX() << ";" << (tab+i)->getY() << ")"<<" ";
+    }
+
+    cout << "\nDistanta poligonala: " << Punct::linie_poligonala(tab, n);
+
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P1
+//Program cu clasa OraCurenta cu atribute private(ora,minute,secunde), getteri,setteri
+//o functie friend continutul unui obiect dat ca si parametru intr-un alt obiect instanta a aceleasi clase
+//ora fiind modificata la Greenwich Mean Time.
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <ctime>
+#include <iostream>
+using namespace std;
+#define __TIME__
+class OraCurenta {
+	int ora, minute, secunde;
+public:
+	//setteri
+	void setOra(int x) { ora = x; }
+	void setMin(int x) { minute = x; }
+	void setSec(int x) { secunde = x; }
+
+	//getteri
+	int getOra() { return ora; }
+	int getMin() { return minute; }
+	int getSec() { return secunde; }
+
+	friend OraCurenta f_friend(OraCurenta);
+
+};
+
+//prototip functie friend
+OraCurenta f_friend(OraCurenta);
+
+
+
+int main() {
+
+	OraCurenta ob1, ob2;
+	time_t t = time(0);   // get time now
+	tm* now = localtime(&t);
+	ob1.setOra(now->tm_hour);
+	ob1.setMin(now->tm_min);
+	ob1.setSec(now->tm_sec);
+
+	
+	cout << "Ora PC: " << ob1.getOra() << ":" << ob1.getMin() << ":" << ob1.getSec();
+	ob2 = f_friend(ob1);
+	cout << "\nOra Greenwich Mean Time: "<< ob2.getOra() << ":" << ob2.getMin() << ":" << ob2.getSec();
+
+
+
+}
+
+//definirea functiei prietene
+OraCurenta f_friend(OraCurenta ob) {
+	OraCurenta pt;
+	if (ob.ora == 1) pt.ora=23;
+	else if (ob.ora== 2)pt.ora=0;
+	else if (ob.ora== 0)pt.ora=22;
+	else pt.setOra(ob.ora - 2);
+	pt.setMin(ob.minute);
+	pt.setSec(ob.secunde);
+
+	return pt;
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P2
+//Clasa Calculator: 
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <cstring>
+#include <iostream>
+#include "Calculator.h"
+using namespace std;
+
+int main() {
+	Calculator ob;
+	Placa_de_baza pt;
+
+	pt.tehnician_service(ob, "Lalea", 100);
+
+	cout << "Denumire procesor: " << pt.getNume()<<"\nRAM: "<<ob.getRAM();
+
+	pt.tehnician_service(ob, "RADEON", 8);
+	cout << "\n";
+	cout << "Denumire procesor: " << pt.getNume() << "\nRAM: " << ob.getRAM();
+
+}
+
+
+#pragma 
+#define _CRT_SECURE_NO_WARNINGS
+#include <cstring>
+#include <iostream>
+using namespace std;
+
+class Calculator;
+
+class Placa_de_baza {
+	char denumire_procesor[30];
+public:
+	void tehnician_service(Calculator& ob, const char* s, int n);
+
+	char* getNume() { return denumire_procesor;}
+
+};
+
+class Calculator {
+	int memorie_RAM;
+public:
+	friend void Placa_de_baza :: tehnician_service(Calculator& ob,const char* s, int n);
+
+	int getRAM() { return memorie_RAM; }
+
+};
+
+
+void Placa_de_baza:: tehnician_service(Calculator& ob, const char* s, int n) {
+	ob.memorie_RAM = n;
+	strcpy(denumire_procesor, s);
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P3
+//Clasa Repository:
+
+#include "Repository.h"
+#include <iostream>
+using namespace std;
+
+
+
+int main() {
+	Repository ob(12, 2),ob1(1,2);
+	Mathemathics calc;
+	
+
+	cout << "Perechile: \n";
+	cout << ob.getX() << " " << ob.getY();
+	cout << "\n" << ob1.getX() << " " << ob1.getY();
+
+
+	cout << "\n\nPrima pereche: \n";
+	cout<<"Suma: "<< calc.Suma(ob);
+	cout << "\nDiferenta: " << calc.Dif(ob);
+	cout << "\nProdusul: " << calc.Prod(ob);
+	cout << "\nImpartirea: " << calc.Divid(ob);
+
+
+	cout << "\n\nA doua pereche: \n";
+	cout << "Suma: " << calc.Suma(ob1);
+	cout << "\nDiferenta: " << calc.Dif(ob1);
+	cout << "\nProdusul: " << calc.Prod(ob1);
+	cout << "\nImpartirea: " << calc.Divid(ob1);
+
+}
+
+#pragma once
+
+class Repository;
+
+class Mathemathics {
+public:
+	int Suma(Repository);
+	int Dif(Repository);
+	int Prod(Repository);
+	float Divid(Repository);
+
+};
+
+class Repository {
+	int x, y;
+public:
+	Repository(){}
+	Repository(int a,int b):x(a),y(b){}
+	int getX() { return x; }
+	int getY() { return y; }
+
+	friend class Mathemathics;
+};
+
+int  Mathemathics::Suma(Repository ob) {
+	return ob.x + ob.y;
+}
+
+int  Mathemathics::Dif(Repository ob) {
+	return ob.x - ob.y;
+}
+int  Mathemathics::Prod(Repository ob) {
+	return ob.x * ob.y;
+}
+float Mathemathics::Divid(Repository ob) {
+	return ob.x/(float)ob.y;
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria  A P4
+//Atributa var_static publica
+
+#include <iostream>
+using namespace std;
+
+class Contor {
+public:
+	static int var_static;
+	Contor() {
+		var_static++;
+	}
+	
+
+};
+
+int Contor::var_static;  //=0
+
+
+int main() {
+	Contor ob, ob1, ob2;
+	
+	cout <<"Numarul de obiecte create: "<< Contor::var_static;
+
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria  A P5
+//Atributa var_static private
+
+#include <iostream>
+using namespace std;
+
+class Contor {
+	static int var_static;
+
+public:
+	Contor() {
+		var_static++;
+	}
+	
+	static int getVar() { return var_static; }
+	static void setVar(int a) { var_static = a; }
+
+};
+
+int Contor::var_static; //=0
+
+int main() {
+	Contor ob, ob1, ob2;
+
+	cout << "Numarul de obiecte create: " << ob.getVar();
+	cout << "\nNumarul de obiecte create: " << Contor::getVar();
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P6
+//Clasa Punct: 
+
+/*Scrieti o aplicatie C/C++ in care sa implementati clasa Punct cu atributele private x si y. 
+Implementati o functie friend care sa calculeze aria si perimetrul a doua forme geometrice definite de doua puncte, 
+considerand ca aceasta are doua puncte ca si parametrii P0(x0,y0) si P1 (x1, y1). 
+Adaugati functiei un parametru intreg figura prin care sa indicati cele doua figuri geometrice ce sunt definite de punctele (x0, y0) si (x1, y1). 
+Astfel, pentru un cerc, figura=1, coordonatele (x0, y0) si (x1, y1) vor reprezenta doua puncte complementare pe cerc (diametrul). 
+Daca este triunghi dreptunghic, punctele definesc ipotenuza iar figura va fi =2; 
+Celelalte laturi ale triunghiului se vor determina pornind de la cele doua puncte. 
+Coordonatele punctelor si apoi selectia figurii geometrice se va realiza introducand de la tastatura parametrii.*/
+
+#include "Punct.h"
+#include <conio.h>
+#include <iostream>
+using namespace std;
+
+void menu(Punct, Punct,int a);
+
+int main() {
+	Punct p1, p2;
+	int a;
+	cout << "Introduceti coordonatele pentru P1:\n";
+	cout << "x1= ";
+	cin >> a;
+	p1.setX(a);
+	cout << "y1= ";
+	cin >> a;
+	p1.setY(a);
+	
+	cout << "\nIntroduceti coordonatele pentru P2:\n";
+	cout << "x2= ";
+	cin >> a;
+	p2.setX(a);
+	cout << "y2= ";
+	cin >> a;
+	p2.setY(a);
+
+	system("CLS");
+
+	menu(p1, p2, a);
+}
+
+void menu(Punct p1, Punct p2, int a) {
+	cout << "Introduceti:\n";
+	cout << "1)Pentru cerc;";
+	cout << "\n2)Pentru triunghi dreptunghic;";
+	cout << "\n3)Pentru a iesi\n";
+	char c = _getch();
+
+	system("CLS");
+	if (c == '1') {
+		a = 1;
+		Calcul(p1, p2, a);
+		cout << "\n\nPress any key to menu: ";
+		c = _getch();
+		system("CLS");
+		menu(p1, p2, a);
+	}
+	else if (c == '2') {
+		a = 2;
+		Calcul(p1, p2, a);
+		cout << "\n\nPress any key to menu: ";
+		c = _getch();
+		system("CLS");
+		menu(p1, p2, a);
+	}
+	else return;
+
+
+}
+
+#pragma once
+
+#include <math.h>
+#include <iostream>
+using namespace std;
+
+
+#define PI 3.14
+
+class Punct {
+	int x, y;
+public:
+	friend void Calcul(Punct p1, Punct p2, int figura);
+
+	//settteri
+	void setX(int a) { x = a; }
+	void setY(int b) { y = b; }
+
+	//getteri
+	int getX() { return x; }
+	int getY() { return y; }
+};
+
+void Calcul(Punct p1, Punct p2, int figura) {
+	if (figura == 1 ) { //cerc
+		cout <<"\nFigura este cerc: ";
+		float r = (sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y)))/2.0; //raza cerc
+		float A = PI * r * r;
+		float P = 2 * PI * r;
+
+		cout << "\nPerimetru: " << P;
+		cout << "\nAria: " << A;
+	}
+	else if(figura == 2) { //triunghi dreptunghic
+		cout << "\nFigura este triunghi dreptunghic: ";
+		//din pitagora ip=sqrt(c^2*c^2) si din formula distantei ip=sqrt((x1-x2)^2+(y1-y2)^2) am dedus ca cateta=diferenta de coordonate
+		int c1, c2;
+		float ip;
+		c1 = p1.x - p2.x;
+		c2 = p1.y - p2.y;
+		ip = sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
+		if (c1 < 0)c1 = -c1;
+		if (c2 < 0)c2 = -c2;
+		float P=c1+c2+ip;
+		float A=(c1*c2)/2.0;
+		cout << "\nPerimetru: " << P;
+		cout << "\nAria: " << A;
+
+
+	}
+
+
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P7
+//Clasa Publicatii:
+/*La un chiosc se vand ziare, reviste si carti. Fiecare publicatie are un nume, o editura, un numar de pagini, un numar de exemplare per publicatie si un pret fara TVA. 
+Scrieti clasa care modeleaza publicatiile. 
+Adaugati un membru static valoare_tva (procent) si o metoda statica pentru modificarea valorii TVA-ului. 
+Sa se calculeze suma totala cu TVA pe fiecare tip de publicatie (ziare, reviste si carti) si pretul mediu pe pagina la fiecare publicatie in parte. 
+Modificati TVA-ul si refaceti calculele. Afisati editurile ordonate in functie de incasari.*/
+
+#include "Chiosc.h"
+#include <iostream>
+using namespace std;
+
+int comp(const void* a, const void* b);
+
+int main() {
+	Publicatii *tp=new Publicatii[5];
+	tp->setNume("Carti");
+	tp->setEdit("Alma");
+	tp->setNr_exemplare(30);
+	tp->setNr_pagini(100);
+	tp->setPret(10);
+	tp->SetTVA(5);
+
+	(tp+1)->setNume("Ziare");
+	(tp+1)->setEdit("Balena");
+	(tp+1)->setNr_exemplare(10);
+	(tp + 1)->setNr_pagini(10);
+	(tp + 1)->setPret(5.2);
+
+	(tp + 2)->setNume("Carti");
+	(tp + 2)->setEdit("W5");
+	(tp + 2)->setNr_exemplare(98);
+	(tp + 2)->setNr_pagini(300);
+	(tp + 2)->setPret(40);
+	
+	(tp + 3)->setNume("Ziare");
+	(tp + 3)->setEdit("CanCan");
+	(tp + 3)->setNr_exemplare(900);
+	(tp + 3)->setNr_pagini(12);
+	(tp + 3)->setPret(9.9);
+
+	(tp + 4)->setNume("Reviste");
+	(tp + 4)->setEdit("Model");
+	(tp + 4)->setNr_exemplare(1000);
+	(tp + 4)->setNr_pagini(15);
+	(tp + 4)->setPret(25);
+
+	float s1 = 0.0f, s2 = 0.0f, s3 = 0.0f;
+
+	cout << "TVA: " << Publicatii::getTVA()<<endl;
+
+	for (int i = 0; i < 5; i++) {
+		cout << "Tip publicatie: " << (tp + i)->getNume();
+		cout<<"\nEditura: "<< (tp + i)->getEdit();
+		cout<<"\nNr.pagini: "<< (tp + i)->getNR_pagini();
+		cout << "\nNr.exemplare: " << (tp + i)->getNR_ex();
+		cout << "\nPret fara TVA: " << (tp + i)->getPret();
+		cout << "\nPret cu TVA: " << (tp + i)->Pret_cu_TVA();
+		cout << "\nSuma: " << (tp + i)->SumaTotala_exemplare();
+		cout <<endl<<endl;
+	}
+	
+
+	for (int i = 0; i < 5; i++) {
+		if (strcmp((tp + i)->getNume(), "Carti")==0) {
+			s1 += (tp + i)->SumaTotala_exemplare();
+		}
+		else if (strcmp((tp + i)->getNume(), "Ziare") == 0) {
+			s2 += (tp + i)->SumaTotala_exemplare();
+		}
+		else if (strcmp((tp + i)->getNume(), "Reviste") == 0) {
+			s3 += (tp + i)->SumaTotala_exemplare();
+		}
+	}
+
+	cout << "\nSumele Totale: \n";
+	cout << "\nPentru carti: " << s1;
+	cout << "\nPentru ziare: " << s2;
+	cout << "\nPentru reviste: " << s3;
+
+	//MODIFICARE TVA
+	Publicatii::SetTVA(1);
+	s1 = s2 = s3 = 0.0f;
+
+	cout << "\n\nTVA nou: " << Publicatii::getTVA();
+	for (int i = 0; i < 5; i++) {
+		if (strcmp((tp + i)->getNume(), "Carti") == 0) {
+			s1 += (tp + i)->SumaTotala_exemplare();
+		}
+		else if (strcmp((tp + i)->getNume(), "Ziare") == 0) {
+			s2 += (tp + i)->SumaTotala_exemplare();
+		}
+		else if (strcmp((tp + i)->getNume(), "Reviste") == 0) {
+			s3 += (tp + i)->SumaTotala_exemplare();
+		}
+	}
+	
+
+
+	cout << "\n\nSumele Totale Cu modificare de TVA: \n";
+	cout << "\nPentru carti: " << s1;
+	cout << "\nPentru ziare: " << s2;
+	cout << "\nPentru reviste: " << s3;
+
+	s1 = s2 = s3 = 0.0f;
+
+	
+	for (int i = 0; i < 5; i++) {
+		if (strcmp((tp + i)->getNume(), "Carti") == 0) {
+			s1 += (tp + i)->Pret_Pagina();
+		}
+		else if (strcmp((tp + i)->getNume(), "Ziare") == 0) {
+			s2 += (tp + i)->Pret_Pagina();
+		}
+		else if (strcmp((tp + i)->getNume(), "Reviste") == 0) {
+			s3 += (tp + i)->Pret_Pagina();
+		}
+	}
+
+	cout << "\n\nPretul mediu pe pagina: \n";
+	cout << "\nPentru carti: " << s1/2.0;
+	cout << "\nPentru ziare: " << s2/2.0;
+	cout << "\nPentru reviste: " << s3/1.0;
+
+	qsort(tp, 5, sizeof(Publicatii), comp);
+	cout << "\n\n\nEditorii in ordine crescatoare:  ";
+	for (int i = 0; i < 5; i++) {
+		cout << (tp + i)->getEdit()<<" ";
+	}
+
+}
+
+
+int comp(const void* a, const void* b) {
+	Publicatii* pa = (Publicatii*)a;
+	Publicatii* pb = (Publicatii*)b;
+
+	return (float)pa->SumaTotala_exemplare() - (float)pb->SumaTotala_exemplare();  //ascendent
+
+}
+
+
+
+#pragma once
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <cstring>
+#include <iostream>
+using namespace std;
+
+
+class Publicatii {
+	char nume[30], editura[30];
+	int nr_pagini,nr_exemplare;
+	float pret;
+	static int valoare_TVA;
+public:
+	
+
+	//setteri
+	void setNume(const char* s) { strcpy(nume, s); }
+	void setEdit(const char* s) { strcpy(editura, s); }
+	void setNr_pagini(int n) { nr_pagini = n; }
+	void setPret(float n) { pret = n; }
+	void setNr_exemplare(int n) { nr_exemplare = n; }
+	static void SetTVA(int n) { valoare_TVA = n; }
+
+	//getteri
+	char* getNume() { return nume; }
+	char* getEdit() { return editura; }
+	int getNR_pagini() { return nr_pagini; }
+	int getNR_ex() { return nr_exemplare; }
+	float getPret() { return pret; }
+	static int getTVA() { return valoare_TVA; }
+	
+	float Pret_cu_TVA();
+	float Pret_Pagina();
+	float SumaTotala_exemplare(); //calculam suma totala pentru exemplare
+	
+};
+
+int Publicatii::valoare_TVA; //=0
+
+float Publicatii::Pret_cu_TVA() {
+	int n = Publicatii::valoare_TVA;
+	return pret +pret*n/ 100.0;
+}
+
+float Publicatii::SumaTotala_exemplare() {
+	return nr_exemplare*Pret_cu_TVA();
+}
+
+float Publicatii::Pret_Pagina() {
+	return Pret_cu_TVA() / (float)nr_pagini;
+}
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A  P8
+//Modelarea clasei Fractie 
+/*Considerati clasa Fractie care are doua atribute intregi private a si b pentru numarator si numitor, doua metode de tip set( ) respectiv get( ) pentru fiecare din atributele clasei.
+Declarati o functie friend simplifica( ) care are ca si parametru un obiect al clasei, returnand un alt obiect simplificat. 
+Considerati o variabila private statica intreaga icount, care va fi initializata cu 0 si incrementata in cadrul constructorilor din clasa.
+Definiti un constructor explicit fara parametri care initializeaza a cu 0 si b cu 1, si un constructor explicit cu doi parametri care va putea fi apelat daca se verifica posibilitatea definirii unei fractii (b!=0). 
+Definiti un destructor explicit care afiseaza si decrementeaza contorul icount. Definti o functie friend _f_aduna_fractie(...) care are ca si parametri doua obiecte de tip Fractie si returneaza suma obiectelor in alt obiect Fractie. 
+Analog definiti functii friend pentru scadere, inmultire si impartire. Instantiati doua obiecte de tip Fractie cu date citite de la tastatura. Afisati atributele initiale si cele obtinute dupa apelul functiei simplifica( ).
+Printr-o metoda accesor, afisati*/
+
+#include "Fractie.h"
+#include <iostream>
+using namespace std;
+
+
+
+
+int main() {
+	Fractie f1, f2;
+	int n;
+
+	cout << "I:\n";
+	cout << "Introduceti numaratorul: ";
+	cin >> n;
+	f1.set_a(n);
+	cout << "Introduceti numitorul: ";
+	cin >> n;
+	f1.set_b(n);
+
+	cout << "\n\II:\n";
+	cout << "Introduceti numaratorul: ";
+	cin >> n;
+	f2.set_a(n);
+	cout << "Introduceti numitorul: ";
+	cin >> n;
+	f2.set_b(n);
+
+	cout << "\nDateIntroduse: ";
+	cout << "\nFractia I: " << f1.get_a() << "/" << f1.get_b();
+	cout << "\nFractia II: " << f2.get_a() << "/" << f2.get_b();
+
+	cout << "\nIcount: " << Fractie::getICOUNT();
+
+	f1 = simplifica(f1);
+	f2 = simplifica(f2);
+
+	cout << "\n\nSimplficari: ";
+	cout << "\nFractia I: " << f1.get_a() << "/" << f1.get_b();
+	cout << "\nFractia II: " << f2.get_a() << "/" << f2.get_b();
+
+	cout << "\nIcount: " << Fractie::getICOUNT();
+
+
+	
+	Fractie suma, diferenta, inmultire, impartire;
+	suma = aduna_fractie(f1, f2);
+	diferenta = scadere_fractie(f1, f2);
+	inmultire = inmultire_fractie(f1, f2);
+	impartire = impartire_fractie(f1, f2);
+
+	cout << "\n\nOperatii: ";
+	cout<<endl<<f1.get_a() << "/" << f1.get_b()<<"+"<< f2.get_a() << "/" << f2.get_b()<<"= "<<suma.get_a()<<"/"<<suma.get_b();
+	cout << endl << f1.get_a() << "/" << f1.get_b() << "-" << f2.get_a() << "/" << f2.get_b() << "= " << diferenta.get_a() << "/" << diferenta.get_b();
+	cout << endl << f1.get_a() << "/" << f1.get_b() << "*" << f2.get_a() << "/" << f2.get_b() << "= " << inmultire.get_a() << "/" << inmultire.get_b();
+	cout << endl << f1.get_a() << "/" << f1.get_b() << " : " << f2.get_a() << "/" << f2.get_b() << "= " << impartire.get_a() << "/" <<impartire.get_b();
+	cout << "\nIcount: " << Fractie::getICOUNT();
+}
+
+#pragma once
+
+#include <iostream>
+using namespace std;
+
+
+class Fractie {
+private:
+	int a, b;
+	static int icount;
+	float cmmdc();
+
+public:
+	//constructori
+	Fractie() :a(0), b(1) { icount++; }
+	Fractie(int a, int b) {
+		this->a = a;
+		if (b != 0) {
+			this->b = b;
+		}
+		icount++;
+	}
+
+	//setteri
+	void set_a(int x);
+	void set_b(int x);
+	//getteri
+	int get_a();
+	int get_b();
+	static int getICOUNT() { return icount; }
+	//metode
+	friend Fractie simplifica(Fractie);
+
+	friend Fractie aduna_fractie(Fractie,Fractie);
+	friend Fractie scadere_fractie(Fractie,Fractie);
+	friend Fractie inmultire_fractie(Fractie,Fractie);
+	friend Fractie impartire_fractie(Fractie,Fractie);
+
+	int cmdc_numitor(Fractie);
+	int cmmc_numitor(Fractie);
+
+	~Fractie() {
+		//cout <<"\n"<<Fractie::icount;
+		icount--;
+	}
+};
+
+int Fractie::icount; //=0
+
+//setteri
+void Fractie::set_a(int x) {
+	a = x;
+}
+void Fractie::set_b(int x) {
+	b = x;
+}
+//getteri
+int Fractie::get_a() {
+	return a;
+}
+int Fractie::get_b() {
+	return b;
+}
+
+
+//metode
+ Fractie simplifica(Fractie ob1) {
+	int n =ob1.cmmdc();
+
+	ob1.a = ob1.a / n;
+
+	ob1.b = ob1.b / n;
+
+	return ob1;
+}
+
+
+
+float Fractie::cmmdc() {
+	int r;
+	int x, y;
+	x = a;
+	y = b;
+	while (y != 0) {
+		r = x % y;
+		x = y;
+		y = r;
+
+	}
+	if (x < 0)x = -x;
+	return x;
+
+}
+
+Fractie aduna_fractie(Fractie ob,Fractie ob1) {
+	int num = ob.cmmc_numitor(ob1);
+	int aplif1 = num / ob.b, aplif2 = num / ob1.b;
+
+	Fractie plus(ob.a * aplif1 + aplif2 * ob1.a, num);
+	plus = simplifica(plus);
+	return plus;
+}
+
+Fractie scadere_fractie(Fractie ob, Fractie ob1) {
+	int num = ob.cmmc_numitor(ob1);
+	int aplif1 = num / ob.b, aplif2 = num / ob1.b;
+
+	Fractie minus(ob.a * aplif1 - aplif2 * ob1.a, num);
+	minus = simplifica(minus);
+	return minus;
+}
+
+Fractie inmultire_fractie(Fractie ob, Fractie ob1) {
+
+	Fractie steluta(ob.a*ob1.a,ob.b*ob1.b);
+	steluta = simplifica(steluta);
+	return steluta;
+}
+
+ Fractie impartire_fractie(Fractie ob,Fractie ob1) {
+	
+	Fractie slash(ob.a * ob1.b, ob.b * ob1.a);
+	slash = simplifica(slash);
+	return slash;
+}
+
+int Fractie::cmdc_numitor(Fractie ob) {
+	int x = b, y = ob.b;
+	int r;
+	while (y != 0) {
+		r = x % y;
+		x = y;
+		y = r;
+
+	}
+	if (x < 0)x = -x;
+	return x;
+}
+int Fractie::cmmc_numitor(Fractie ob) {
+	int cmmc;
+	cmmc = (b * ob.b) / cmdc_numitor(ob);
+	return cmmc;
+}
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A  P9
+/*. Considerati problema referitoare la gestiunea CNP-ului dintr-un laborator anterior, la care sa validati complet CNP-ul (zi corecta functie de luna corecta si an corect, inclusiv anii bisecti), 
+in care sa introduceti cu confirmare mai multe date de tip Person, 
+afisand la final cate obiecte au data introdusa corect. 
+Contorizati folosind atribute statice private.ca( ).
+Printr-o metoda accesor, afisati*/
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A
+//Program ce modifica exemplu 6
+//->utilizarea valorilor returnate de metoda setValidCnp() pentru a valida suplimentar(luna si ziua) CNP-ul
+//->permiterea introducerii de coduri CNP care incep cu alte cifre decat 1 si 2, cu analizarea semnificatiei
+//noilor valori(5-masculin,6-feminin)
+
+
+//varianta functii de biblioteca VC++
+//Gestiune CNP cu validare CNP
+#include <conio.h>
+#include <iostream>
+using namespace std;
+#include <time.h>
+const int dim_sir = 24;
+
+int ii = 0;
+
+
+class Person {
+	// membri private
+	char nume[dim_sir];
+	char prenume[dim_sir];
+	char cnp[14];
+	static int count;
+	// structura CNP: S AN LU ZI 6cifre; total 13 cifre
+public:
+	// membri publici
+	void setNume(char* n);
+	void setPrenume(char* p);
+	int setValidCnp(char* c);
+	char* getNume(void) {
+		return nume;
+	}
+	char* getPrenume(void) {
+		return prenume;
+	}
+	char* getCnp(void) {
+		return cnp;
+	}
+	char get_gender(void);
+	int get_an_nast(void);
+	int get_luna_nast(void);
+	int get_zi_nast(void);
+	int get_varsta(void);
+	static int getCount() { return count; }
+
+	static void increment() { count++; };
+
+};
+int Person::count;//=0;
+
+void Person::setNume(char* n) {
+	if (n != 0)
+		strncpy_s(nume, n, dim_sir - 1);
+	else
+		strcpy_s(nume, "Necunoscut");
+}
+void Person::setPrenume(char* p) {
+	if (p != 0)
+		strncpy_s(prenume, p, dim_sir - 1);
+	else
+		strcpy_s(prenume, "Necunoscut");
+}
+int Person::setValidCnp(char* c) {
+	char buf[3];
+	int n;
+	if (c != 0) {
+		// validare CNP: numai pentru cifra gen, cifrele pentru AN, LU, ZI
+		if (strlen(c) != 13)//lungime cnp
+			return 1;
+		if (c[0] != '1' && c[0] != '2' && c[0] != '5' && c[0] != '6')//cod cnp
+			return 2;
+		strncpy_s(buf, c + 1, 2);//an
+		buf[2] = '\0';
+		n = atoi(buf);
+		if (n > 99)
+			return 3;//inconsistent
+		strncpy_s(buf, c + 3, 2);//luna
+		buf[2] = '\0';
+		n = atoi(buf);
+		if (n == 0 || n > 12)
+			return 4;
+		strncpy_s(buf, c + 5, 2);//zi
+		buf[2] = '\0';
+		n = atoi(buf);
+		if (n == 0 || n > 31)
+			return 5;
+		strcpy_s(cnp, c);//copiere sir c valid in cnp
+		return 0;
+	}
+	else return -1;
+}
+char Person::get_gender(void) {
+	if (cnp[0] == '1' || cnp[0] == '5') return 'M';
+	if (cnp[0] == '2' || cnp[0] == '6') return 'F';
+	return 'X';
+}
+int Person::get_an_nast(void) {
+	char buf[3];
+	strncpy_s(buf, cnp + 1, 2);
+	buf[2] = '\0';
+	if ((cnp[0] - '0') <= 2) return(1900 + atoi(buf));
+	else return(2000 + atoi(buf));
+}
+int Person::get_luna_nast(void) {
+	char buf[3];
+	strncpy_s(buf, cnp + 3, 2);
+	buf[2] = '\0';
+	return(atoi(buf));
+}
+int Person::get_zi_nast(void) {
+	return((cnp[5] - '0') * 10 + (cnp[6] - '0'));
+}
+int Person::get_varsta(void) {
+	struct tm newTime;
+	int an_c;
+	time_t szClock;
+	time(&szClock);
+	localtime_s(&newTime, &szClock);
+	cout << cnp[0];
+	if ((cnp[0] - '0') <= 2)  an_c = 1900 + newTime.tm_year;
+	else  an_c = 2000 + newTime.tm_year - 100;
+	int an_n = get_an_nast();
+	int n = an_c - an_n;
+	int lu_c = newTime.tm_mon + 1;
+	int lu_n = get_luna_nast();
+	if (lu_c < lu_n)
+		n--;
+	else {
+		if (lu_c == lu_n) {
+			int zi_c = newTime.tm_mday;
+			int zi_n = get_zi_nast();
+			if (zi_c < zi_n) n--;
+		}
+	}
+	return n;
+}
+
+
+void menu(Person*);
+
+int main() {
+	Person p1;
+	Person* p2 = new Person[10];
+
+
+
+	/*
+	char aux_string[dim_sir];
+	cout << "\nEnter Name: ";
+	cin >> aux_string;//Popescu
+	p1.setNume(aux_string);
+	cout << "\nEnter SurName: ";
+	//cin >> aux_string;//Bitanescu
+	cin.ignore();
+	gets_s(aux_string, dim_sir);//Preia Prenume si cu spatiu
+	p1.setPrenume(aux_string);
+	cout << "\nEnter CNP: ";
+	cin >> aux_string;//1890403120671
+	int t_cnp = p1.setValidCnp(aux_string);
+	switch (t_cnp) {
+	case 0: cout << "\nCNP valid\n";
+		cout << "\nDate despre obiect: " << endl;
+		cout << "\tNume: " << p1.getNume() << ", Prenume: " << p1.getPrenume() << ", CNP: " << p1.getCnp() << endl;
+		cout << "\tGen: " << p1.get_gender() << endl;
+		cout << "\tData nasterii: " << p1.get_an_nast() << "/" << p1.get_luna_nast() << "/" << p1.get_zi_nast() << endl;
+		cout << "\tVarsta: " << p1.get_varsta() << endl; break;
+	case 1: cout << "\nLungime sir CNP invalid"; break;
+	case 2: cout << "\nGen invalid"; break;
+	case 3: cout << "\nAn invalid"; break;
+	case 4: cout << "\nLuna invalida"; break;
+	case 5: cout << "\nZi invalida"; break;
+	default: cout << "\nProbleme CNP"; break;
+	}
+	return 0;*/
+
+
+	menu(p2);
+	
+	
+
+}
+
+
+void menu(Person *pt) {
+	
+	cout << "Introduceti cifra pentru alegerea optiunii: \n";
+	cout << "1)Introduceti datele unei persoane; \n";
+	cout << "2)Afisati datele;\n";
+	cout << "3)Pentru a termina programu :(\n";
+
+	char c = _getch();
+	system("CLS");
+
+	if (c == '1') {
+		char aux_string[dim_sir];
+		cout << "\nEnter Name: ";
+		cin >> aux_string;//Popescu
+		(pt + ii)->setNume(aux_string);
+		cout << "\nEnter SurName: ";
+		//cin >> aux_string;//Bitanescu
+		cin.ignore();
+		gets_s(aux_string, dim_sir);//Preia Prenume si cu spatiu
+		(pt + ii)->setPrenume(aux_string);
+		cout << "\nEnter CNP: ";
+		cin >> aux_string;//1890403120671 
+		int t_cnp = (pt + ii)->setValidCnp(aux_string);
+
+		//i=luna 
+		int max = 0;				//j=ziua
+		bool verif = true;
+		if ((pt + ii)->get_an_nast() % 400 == 0 || (pt + ii)->get_an_nast() % 4 == 0 && (pt + ii)->get_an_nast() % 100 != 0) {
+			if ((pt + ii)->get_luna_nast() == 2 && (pt + ii)->get_zi_nast() > 29) verif = false;
+		}
+		else if ((pt + ii)->get_luna_nast() == 2 && (pt + ii)->get_zi_nast() > 28)verif = false;
+		if ((pt + ii)->get_luna_nast() > 12 || (pt + ii)->get_zi_nast() > 31)verif = false;
+
+		if (verif) {                        //daca e valida data (true) se incrementeaza
+			Person::increment();
+		}
+
+
+		ii++;
+		system("CLS");
+		menu(pt);
+
+
+
+
+	}
+	else if (c == '2') {
+
+		for (int i = 0; i < ii; i++) {
+			cout << "\nDate despre Persoana " << i + 1 << ": " << endl;
+			cout << "\tNume: " << (pt + i)->getNume() << ", Prenume: " << (pt + i)->getPrenume() << ", CNP: " << (pt + i)->getCnp() << endl;
+			cout << "\tGen: " << (pt + i)->get_gender() << endl;
+			cout << "\tData nasterii: " << (pt + i)->get_an_nast() << "/" << (pt + i)->get_luna_nast() << "/" << (pt + i)->get_zi_nast() << endl;
+			cout << "\tVarsta: " << (pt + i)->get_varsta() << endl;
+
+		}
+
+		cout << "\nNr.Persoanelor cu datele corecte: " << Person::getCount();
+		cout << endl;
+		cout << "\n\n Press any test to return to menu: ";
+		char x = _getch();
+		system("CLS");
+		menu(pt);
+	}
+	else if (c == '3')return;
+	else menu(pt);
+	
+}
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////

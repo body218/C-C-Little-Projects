@@ -1,0 +1,674 @@
+LABORATOR 2
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P1
+//Program ce calculeaza A(n,k) recursiv si verifica si prin metoda factorialului
+
+#include <iostream>
+using namespace std;
+
+//prototipuri
+long int Aranj(int n, int k);
+long int  fact(int);
+
+int main() {
+	int n, k;
+	long int a;
+	cout << "Introduceti valorile: ";
+	cout << endl << "n= ";
+	cin >> n;
+	cout << "k= ";
+	cin >> k;
+
+	if (k > n)cout << "Valori nepotrivite!!!";
+	else {
+		a = Aranj(n, k);
+		cout << endl << "A(" << n << ")(" << k << ")= " << a;
+		 cout << endl << "Verificare rezultat: " << (fact(n) / fact(n - k)) << endl;
+	}
+	
+	
+}
+
+//definirea f.recursive de aranjamente
+long int Aranj(int n, int k) {
+
+	if (k == 1) return n;
+	else return n * Aranj(n - 1, k - 1);
+
+
+}
+
+//definirea f.de calcul a factorialului
+long int  fact(int n) {
+	int fact = 1;
+
+	for (int i = 1; i <= n; i++) {
+		fact = i * fact;
+	}
+	return fact;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan Andrei Grupa 3 Seria A P2
+//Program ce calculeaza recursiv Combinari C(n,k) si verifica rezultatul cu ajutorul factorialului
+
+
+#include <iostream>
+using namespace std;
+
+//prototipuri  functii
+double C(int n, int k);
+double fact(int n);
+
+
+int main() {
+	int n, k;
+	cout << "Introduceti: \n";
+	cout << "n= ";
+	cin >> n;
+	cout << "k= ";
+	cin >> k;
+
+	if (n < k) {
+		cout << "\nParametrii nu respecta conditia combinarilor!";
+		return 0;
+	}
+	else cout <<"\nC("<<n<<")("<<k<<")= "<<C(n, k);     //apel f.recursiva
+
+	cout << "\nVerificare prin factorial: " << fact(n) / (fact(n - k) * fact(k)); //apel f.de verificare prin formula
+
+
+}
+
+
+//definirea f.de calcul a combinarilor recursiv
+double C(int n, int k) {
+	
+	if (n == 0 || k == 0 || n == k)return 1;
+	else return (n / (float)(n - k))*C(n - 1, k);
+}
+
+
+//definirea f. factorial
+double fact(int n) {
+	int fact = 1;
+
+	for (int i = 1; i <= n; i++) {
+		fact = fact * i;
+	}
+
+	return fact;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P3
+//Program ce calculeaza CMMDC-ul a doua numere recursiv
+
+#include <iostream>
+using namespace std;
+
+//prototip functii
+int CMMDC(int x, int y);
+
+int main() {
+	int x, y;
+	cout << "Introduceti numerele: ";
+	cout << "\nx= ";
+	cin >> x;
+	cout << "y= ";
+	cin >> y;
+
+	cout << " \nCMMDC(" << x << ")(" << y << ")= " << CMMDC(x, y);     //apel f recursiva
+
+
+}
+
+
+//definirea f.de calcul recursiv CMMDC
+int CMMDC(int x, int y) {
+	if (x == 0)return y;
+	if (y == 0)return x;
+	if (x > y)return CMMDC(y, x % y);
+	else return CMMDC(x, y % x);
+
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P4
+//Program ce calculeaza an si bn recursiv
+
+#include <math.h>
+#include <iostream>
+using namespace std;
+
+//prototipuri
+float a(int n);
+float b(int n);
+
+float a0, b0;
+
+int main() {
+	int n;
+	cout << "Introduceti valorile: ";
+	cout << endl << "n= ";
+	cin >> n;
+	cout << "a0= ";
+	cin >> a0;
+	cout << "b0= ";
+	cin >> b0;
+
+	cout << endl<<"an= " << a(n);
+	cout << endl << "bn= " << b(n);
+
+
+
+}
+
+
+float a(int n) {
+	if (n == 0)return a0;
+	else return (a(n - 1) + b(n - 1)) / 2.0;
+
+}
+
+float b(int n) {
+	if (n == 0)return b0;
+	else return sqrt(a(n - 1) * b(n - 1));
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P5
+//Program ce citeste un sir de caractere,caracter cu caracter, si afiseaza in ordine inversa recursiv
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <iostream>
+using namespace std;
+
+//prototipuri functii
+void cit(char s[],int l);
+void invers(char s[],int l);
+
+
+int main() {
+	int l;
+	char s[30];
+	cout << "Introduceti lungimea sirului: ";
+	cin >> l;
+
+	
+	//apel f de citire fiecarui caracter
+	cit(s, l);
+
+	//apel f.recursiva de afisare a inversului sirului
+	invers(s, l);
+
+}
+
+//definirea f.de citire
+void cit(char s[],int l) {
+	for (int i = 0; i < l; i++) {
+		scanf(" %c", s + i);
+	}
+}
+
+//definirea f.de inversare
+void invers(char s[],int l) {
+	
+	if (l < 1)return;
+	printf("%c ", *(s + l - 1)); //ultimu caracter
+	invers(s, l-1);
+
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P6
+//Program ce calculeaza produsul scalar a doi vectori de acelasi lungime folosing recursivitate
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <iostream>
+using namespace std;
+
+//prototipuri
+void cit(int tab[], int n);
+int produs(int [],int [], int n);
+
+int main() {
+	int v[30], u[30],n;
+	cout << "Introduceti lungimea vectorilor: ";
+	cin >> n;
+
+	//apel f.de citire
+	cout << "\nPrimu tablou: \n";
+	cit(v, n);
+	cout << "\nAl doilea tablou: \n";
+	cit(u, n);
+
+	cout << "Produsul scalar este: " << produs(v, u, n); //apel f.de calcul
+
+}
+
+
+//definirea f.de citire a tablourilor
+void cit(int tab[], int n) {
+
+	for (int i = 0; i < n; i++) {
+
+		printf("tab[%d]= ", i);
+		scanf("%d", &tab[i]);
+	}
+
+}
+
+
+int produs(int v[],int u[], int n) {
+
+
+	if (n < 1) return 0;
+	return produs(v,u,n-1)+v[n-1]*u[n-1]; 
+	    //restul elemente   //element actual
+
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P7
+//Program ce citeste dintr -un fisier elementele intregi si calculeaza recursiv suma elementelor impare
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <iostream>
+using namespace std;
+
+//prototipuri
+int suma(int tab[], int n);
+
+
+int main() {
+	int n,x, tab[40];
+	FILE* fp;
+
+	fp = fopen("Suma.in", "r+");
+	if (!fp) {
+		cout << "Eroare!";
+		return 0;
+	}
+
+	fscanf(fp, "%d", &n);
+
+	for (int i = 0; i < n; i++) {
+		fscanf(fp, "%d", &x);
+		tab[i] = x;
+	}
+
+	cout << "Suma elementelor impare este: " << suma(tab, n);
+
+}
+
+//definirea f.recursiva de calcul
+int suma(int tab[], int n) {
+
+	if (n < 1) return 0;
+	if (tab[n-1] % 2 == 0 ) return suma(tab,n-1);
+	else return suma(tab, n - 1) + tab[n-1];
+	
+
+
+
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P8
+//Program ce citeste dintr -un fisier elementele intregi si calculeaza recursiv produsul elementelor aflate pe pozitii impare
+//si suma elementelor prime
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <iostream>
+using namespace std;
+
+//prototipuri
+int produs(int tab[], int n);
+int suma(int tab[], int n);
+bool prim(int x);
+
+
+int main() {
+	int n, x, tab[40];
+	FILE* fp;
+
+	fp = fopen("Suma.in", "r+");
+	if (!fp) {
+		cout << "Eroare!";
+		return 0;
+	}
+
+	fscanf(fp, "%d", &n);
+
+	for (int i = 0; i < n; i++) {
+		fscanf(fp, "%d", &x);
+		tab[i] = x;
+	}
+
+	cout << "Produsul elementelor de pe pozitii impare impare este: " << produs(tab, n);  //apel f.de calcul produs
+	cout << "\nSuma elementelor prime este: " << suma(tab, n);// apel f.de calcul produs
+
+	fclose(fp);
+}
+
+//definirea f.recursiva de calcul a produsului pe pozitii impare
+int produs(int tab[], int n) {
+
+	if (n < 1) return 1;
+	if ((n-1)%2 == 0) return produs(tab, n - 1);
+	else return produs(tab, n - 1) * tab[n - 1];
+
+}
+
+
+//definirea f.de calcul a sumei elementelor prime
+int suma(int tab[], int n) {
+
+	if (n < 1) return 0;
+	if (!prim(tab[n-1])) return suma(tab, n - 1);
+	else return suma(tab, n - 1) + tab[n - 1];
+
+
+}
+
+//definirea d. de testare de prim
+bool prim(int x) {
+
+	if (x == 1)return false;
+
+	for (int i = 2; i * i <= x; i++) {
+		if (x % i == 0)return false;
+	}
+
+	return true;
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P9
+//Program ce utilizeaza o functie recursiva pentru a calcula suma valorilor introduse cu confirmare.Functia se modifica pentru
+//a afisa si media valorilor. Se va introduce o valoare si cand va fi depasita se va semnala
+
+#include <Windows.h>
+#include <conio.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <iostream>
+using namespace std;
+
+#define MAX 100
+
+//prototipuri
+void recursiv(int &suma,int &n);
+
+
+int main() {
+	int suma = 0,n=0;
+
+	//apel f.recursiva
+	recursiv(suma,n);
+	system("CLS");
+	cout << "\nRezultate finale: ";
+	cout << "\nSf= " << suma;
+	if(n!=0) cout << "\nMedf= " << suma / (float)n << endl;
+
+}
+
+
+//definirea f. de recursivitate
+void recursiv(int& suma,int &n) {
+	char c;
+	int x;
+
+	cout << "S= " << suma;
+	if(n!=0) cout << "\nMed= " << suma / (float)n;
+
+	cout << "\nDoriti sa introduceti o valoare?(Y-Yes; N-No)\n";
+	c = _getch();
+	if (c != 'y') return;
+
+	cout << "Introduceti valoarea: ";
+	cin >> x;
+
+	suma += x;
+	if (suma > MAX) {
+		cout << "\nValoarea prestabilita a fost depasita!";
+
+		Sleep(1000);
+	}
+
+	system("CLS");
+
+	recursiv(suma,++n);
+
+}
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P10
+//Program ce calculeaza numarul de aparitii al unui numar , utilizand recursivitate dar si prin iterativ
+
+#include <iostream>
+using namespace std;
+
+//prototipuri
+void Nr_recursiv(int*,int valoare_cautata,int lungime,int &nr);
+void Nr_iterativ(int*, int, int);
+
+
+int main() {
+	int* tab, n, x, nr=0;
+
+	cout << "Introduceti dimensiunea sirului: ";
+	cin >> n;
+	if (n > 30) {
+		cout << "Dimensiune EXAGERATA!";
+		return 0;
+	}
+
+	//alocare dinamica
+	tab = new int[n];
+	if (!tab) {
+		cout << "EROARE!";
+		return 0;
+	}
+
+	cout << "Introduceti valori intregi pentru sir: \n";
+	for (int i = 0; i < n; i++) {
+		cout << "tab[" << i << "]= ";
+		cin >> tab[i];
+
+
+	}
+
+	cout << "\nIntroduceti valoarea dorita: ";
+	cin >> x;
+
+	//apel f.recursiva
+	Nr_recursiv(tab, x, n, nr);
+
+	//apel f.iterativ
+	Nr_iterativ(tab, x, n);
+}
+
+//definirea f.de calcul recursiv al numarului de aparitii
+void Nr_recursiv(int* tab, int x, int n, int& nr) {
+
+	if (n < 1) {
+		cout << "Numar de aparitii(recursivitate): " << nr << endl;
+		return;
+	}
+
+
+	if (x == tab[n - 1])nr++;
+	Nr_recursiv(tab, x, n - 1, nr);
+
+}
+
+
+//definirea f.iterative de calcul a numarului de aparitii
+void Nr_iterativ(int* tab, int x, int n) {
+	int nr = 0;
+
+	for (int i = 0; i < n; i++) {
+		if (x == tab[i]) nr++;
+	}
+
+	cout<<"Numarul de aparitii(iterativ): "<< nr<<endl;
+
+
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 P11
+//Conversia numerelor in orice baza introdusa folosind o functie recursiva
+
+#include <iostream>
+using namespace std;
+
+//prototipuri
+int conversie(int x,int baza);
+
+
+int main() {
+	int x, baza,aux;
+	cout << "Introduceti valoarea: ";
+	cin >> x;
+	cout << "Introduceti baza de conversie: ";
+	cin >> baza;
+	if (baza < 1 || baza>10) {
+		cout << "Baza nu apartine intervalului [1;10]";
+		return 0;
+	}
+
+	aux = conversie(x, baza);
+	cout << "\nConversia: " << aux<<endl;
+
+
+}
+
+//definirea f.de conversie recursiva
+int conversie(int x, int baza) {
+
+	if (x == 0)return 0;
+	return 10 * conversie(x / baza, baza) + x%baza; 
+	                     //cat              //rest 
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P12
+//Program ce calculeaza S(n)=x1^n+x2^n fara a calcula radacinile folosind reprezentarea recursiva
+
+#include <iostream>
+using namespace std;
+
+//prototipul f.de recursivitate
+float S_n(float s, float p,int n);
+
+int main() {
+	int n;
+	float s, p,Suma_n;
+	cout << "Introduceti coeficientul lui x: ";
+	cin >> s;
+	cout << "Introduceti coeficientul liber: ";
+	cin >> p;
+	cout << "Introduceti gradul sumei: ";
+	cin >> n;
+	
+	Suma_n = S_n(s, p, n);
+	cout << "Suma S(n) Ecuatiei: x^2 - " << s << "x + " << p << " este: " << Suma_n;
+
+}
+
+
+//definirea f.de recursivitate
+float S_n(float s, float p,int n) {
+
+	if (n == 0) return 2;
+	if (n == 1) return s;
+	if (n > 1) return s * S_n(s, p, n - 1) - p * S_n(s, p, n - 2);
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P13
+//Program ce calculeaza seria armonica in mod recursiv si nerecursiv
+
+#include <iostream>
+using namespace std;
+
+//prototipuri
+float SArmonica_R(int n);
+float SArmonica_I(int n);
+
+
+int main() {
+	float n1,n2,s1=0,s2=0;
+	cout << "Introduceti n-ul pentru armonica: ";
+	cin >> n1;
+	cout << "Introduceti n-ul pentru iterativ: ";
+	cin >> n2;
+
+	s1 = SArmonica_R(n1);
+	s2 = SArmonica_I(n2);
+
+	cout<<"Seria armonica recursiv pentru valoarea "<<n1<<" este: "<<s1;
+	cout <<"\nSeria armonica iterativ pentru valoarea " << n2 << " este: " << s2;
+
+
+}
+
+//definirea f.de calcul a seriei armonice recursive
+float SArmonica_R(int n) {
+	if (n == 1)return 1;
+		return 1 / (float)n + SArmonica_R(n - 1);
+}
+
+//definirea f.de calcul a seriei armonice iterative
+float SArmonica_I(int n) {
+	float s = 0;
+
+	for (int i = 1; i <= n; i++) {
+		s += 1 / float(i);
+	}
+	return s;
+
+}
+
+

@@ -1,0 +1,677 @@
+LABORATOR 12
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P1
+//Scrieti un program C++ in care afisati diferite valori in zecimal, octal si hexazecimal.
+//Afisati valorile aliniate la dreapta, respectiv la stanga intr - un camp de afisare cu dimensiunea 15. 
+//Utilizati manipulatorul setfill() pentru stabilirea caracterului de umplere si metodele width() si precision() 
+//pentru stabilirea dimensiunii campului de afisare si a preciziei.
+
+#include <iomanip>
+#include <iostream>
+using namespace std;
+
+
+int main() {
+	int x=10, y=11, z=12; 
+	float f = 3.14567;
+
+	cout << "Numarul " << x << " in zecimal: " << dec << x;
+	cout << "\nNumarul " << x << " in hexazecimal: " << hex << x;  //x=a;
+	cout << "\nNumarul " << x << " in octal: " << oct << x;
+	
+	cout.setf(ios::dec);
+
+	cout << "\n\nNumarul " << y << " in zecimal: " << dec << y;
+	cout << "\nNumarul " << y << " in hexazecimal: " << hex << y;
+	cout << "\nNumarul " << y << " in octal: " << oct << y;
+
+	cout.setf(ios::dec); //urmatoarea valoare in zecimal
+
+	cout << "\n\nNumarul " << z << " in zecimal: " << dec << z;
+	cout << "\nNumarul " << z << " in hexazecimal: " << hex << z;
+	cout << "\nNumarul " << z << " in octal: " << oct << z;
+
+
+	cout.setf(ios::dec);
+	cout << setfill('_'); //stabilirea caracterului de umplere
+	cout << "\n\nAliniere dreapta:\n";
+	cout.width(15);
+	cout << x;
+	cout.width(15);
+	cout << endl << y;
+	cout.width(15);
+	cout << endl << z;
+
+	cout << "\n\nAliniere stanga: \n";
+	cout.setf(ios::left); //aliniere stanga
+	cout.width(15);
+	cout << x;
+	cout.width(15);
+	cout << endl << y;
+	cout.width(15);
+	cout << endl << z;
+	cout.unsetf(ios::left);
+
+
+	cout << "\n\n";
+	cout.width(0);
+	cout.precision(1);
+	cout << f;
+	cout.precision(2);
+	cout << "\n" << f;
+
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P2
+//Scrieti o aplicatie C++ in care se citesc de la tastatura date de diferite tipuri, 
+//urmand a fi afisate pe ecran utilizand manipulatorii standard.
+
+#include <iomanip>
+#include <iostream>
+using namespace std;
+
+
+
+int main() {
+	int a = 10;
+	float b = 2.5;
+	double c = 300.356778;
+	char ca = 'c';
+	char s[30] = "Albast ru";
+
+	cout<<"Zecimal: \n";
+	cout << a << " = " << dec << a<<endl;
+	cout << b << " = " << dec << b<<endl;
+	cout << c << " = " << dec << c << endl;
+	//cout << ca << " = " << dec << ca << endl;
+	//cout << s << " = " << dec << s << endl;
+
+	cout << "\n\nHexazecimal: \n";
+	cout << a << " = " << hex << a << endl;
+	cout << b << " = " << hex << b << endl;
+	cout << c << " = " << hex << c << endl;
+	//cout << ca << " = " << dec << ca << endl;
+	//cout << s << " = " << dec << s << endl;
+
+
+	cout << "\n\nOctal: \n";
+	cout << a << " = " << oct << a << endl;
+	cout << b << " = " << oct << b << endl;
+	cout << c << " = " << oct << c << endl;
+	//cout << ca << " = " << dec << ca << endl;
+	//cout << s << " = " << dec << s << endl;
+
+	cout << "\n\nAlti manipulatori: pe caracterul " << ca << " si sirul " << s << endl;
+	cout<<setfill('t')<<setw(20);
+	cout <<ca;
+	cout <<endl<<setfill('t') << setw(20);
+	cout << s;
+	
+
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P3
+//Considerati achizitia de date de la un dispozitiv electronic(10 date).Afisati folosind un mesaj adecvat datele primite
+//considerand un format minimal(partea intreaga).Determinati media acestor valori, iar daca depaseste un prag stabilit anterior,
+//afisati aceste date in format detaliat considerand ca avem date de tip real, cu o precizie de 8 digiti.
+
+#include <iomanip>
+#include <iostream>
+using namespace std;
+
+
+int main() {
+	int prag_stabilit;
+	float tab[10], total=0.0f;
+
+	cout << "Introduceti numerele flotante: \n";
+	for (int i = 0; i < 10; i++) {
+		cout << "(" << i + 1 << "): ";
+		cin >> tab[i];
+		total += tab[i];
+	}
+
+	cout << "\nValorile in format minimal(parte intreaga): ";
+	for (int i = 0; i < 10; i++) {
+		cout << (int)tab[i]<<" ";
+	}
+
+	cout << "\nValorile in format flotant: ";
+	for (int i = 0; i < 10; i++) {
+		cout << tab[i] << " ";
+	}
+
+		
+	cout << "Introduceti pragul: ";
+	cin >> prag_stabilit;
+	float medie = total / (float)10;
+	if (medie > prag_stabilit) {
+		cout << "\n\nFormat detaliat: ";
+		cout << setprecision(8);
+		for (int i = 0; i < 10; i++) {
+			cout << tab[i] << " ";
+		}
+	}
+	else cout << "\n\nPrag nedepasit!";
+
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P4
+//Definiti o clasa numita MiscareAccelerata care contine atributele private dc(distanta curenta, vc(viteza curenta) si a(acceleratia).
+//atributele dc, vc si a sunt initializate in constructor iar valoarea lor este cea data de d0 si v0, si a0 ca si parametri.
+//In clasa sunt supraincarcati operatorii de extractie si de insertie pentru a se putea initializa si afisa caracteristicile 
+//unei instante.Implementati metoda determinaMiscarea care re - calculeaza variabilele dc si vc, pe baza unui 
+//numar de secunde primit ca parametru si avand in vedere legea miscarii rectilinii uniform accelerate cu acceleratie a0.
+//Instantiati clasa si apoi folositi membrii definiti.
+
+#include <iostream>
+using namespace std;
+
+class MiscareAccelerata {
+	float dc, vc, a;
+public:
+	MiscareAccelerata(float d0,float v0,float a0):dc(d0),vc(v0),a(a0){}
+
+	friend ostream& operator << (ostream& stream, MiscareAccelerata ob);
+	friend istream& operator>>(istream& stream, MiscareAccelerata& ob);
+	void determinareMiscare(int secunde);
+
+};
+
+void MiscareAccelerata::determinareMiscare(int secunde) {
+	float v0 = vc;  //viteza  initiala
+	vc += a * secunde;
+	dc += v0 * secunde + (a * secunde * secunde) / 2.0;
+
+}
+
+ostream& operator << (ostream& stream, MiscareAccelerata ob) {
+	stream << "Distanta curenta: " << ob.dc;
+	stream << "\nViteza curenta: " << ob.vc;
+	stream << "\nAcceleratia: " << ob.a<<endl;
+	return stream;
+}
+
+
+istream& operator>>(istream& stream, MiscareAccelerata& ob) {
+	cout << "Introduceti distanta: ";
+	stream >> ob.dc;
+	cout << "Introduceti viteza: ";
+	stream >> ob.vc;
+	cout << "Introduceti acceleratia: ";
+	stream >> ob.a;
+	return stream;
+}
+
+
+
+int main() {
+	MiscareAccelerata ob1(0, 0, 0),ob2(0,0,0);
+	cout << "Date initiale: \n";
+	cout << "Obiect 1: \n";
+	cout << ob1;
+	cout << "\n\nObiect 2: \n";
+	cout << ob2;
+
+	cout << "\n\nDatele pentru primu obiect: \n";
+	cin >> ob1;
+	cout << "\n\nDatele pentru al doilea obiect: \n";
+	cin >> ob2;
+
+	cout << "\n\nDatele introduse: \n";
+	cout << "Obiect 1: \n";
+	cout << ob1;
+	cout << "\n\nObiect 2: \n";
+	cout << ob2;
+
+
+	int timp;
+	cout << "\nIntroduceti timpul: ";
+	cin >> timp;
+	ob1.determinareMiscare(timp);
+	ob2.determinareMiscare(timp);
+
+	cout << "\n\nDatele recalculate: \n";
+	cout << "Obiect 1: \n";
+	cout << ob1;
+	cout << "\n\nObiect 2: \n";
+	cout << ob2;
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P5
+//Supraincarcati operatorii de extractie si de insertie pentru clasa Complex,
+//in care partile reale si imaginare sunt ambele protected de tip real.Derivati public o
+//clasa Punct din clasa Complex, adaugand atributul culoare pentru punctul de coordonate 
+//x si y corespunzator partii reale, respectiv imaginare a numarului complex.Supraincarcati 
+//din nou aceiasi operatori de intrare - iesire.Instantiati obiecte de tip Complex si Punct si 
+//verificati functionalitatea supraincarcarii operatorilor.Asignati un obiect de tip Punct la unul de tip 
+//Complex prin upcasting si afisati atributele lui.
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <iostream>
+using namespace std;
+
+class Complex {
+protected:
+	float x, y;
+public:
+	Complex() {
+		x = 0;
+		y = 0;
+	}
+	Complex(int a, int b) :x(a), y(b) {}
+
+
+	friend ostream& operator << (ostream& stream, Complex ob);
+	friend istream& operator>>(istream& stream, Complex &ob);
+
+
+};
+
+
+ostream& operator << (ostream& stream, Complex ob) {
+	if (ob.y > 0) {
+		stream << "Numar Complex: " << ob.x << "+" << ob.y<<"i\n";
+	}
+	else stream << "Numar Complex: " << ob.x << ob.y<<"i\n";
+	return stream;
+}
+
+istream& operator>>(istream& stream, Complex &ob) {
+	cout << "Introduceti partea reala: ";
+	stream >> ob.x;
+	cout << "Introduceti partea imaginara: ";
+	stream >> ob.y;
+	return stream;
+
+}
+
+
+class Punct :public Complex {
+protected:
+	char culoare[30];
+public:
+	Punct(int a, int b, const char* sir) :Complex(a, b) {
+		strcpy(culoare, sir);
+	}
+
+	friend ostream& operator << (ostream& stream, Punct ob);
+	friend istream& operator>>(istream& stream, Punct& ob);
+	
+
+};
+ostream& operator << (ostream& stream, Punct ob) {
+	if (ob.y > 0) {
+		stream << "Numar Complex: " << ob.x << "+" << ob.y << "i\n";
+		stream << "Culoarea complex: " << ob.culoare<<endl;
+	}
+	else {
+		stream << "Numar Complex: " << ob.x << ob.y << "i\n";
+		stream << "Culoarea complex: " << ob.culoare<<endl;
+	}
+	return stream;
+}
+
+istream& operator>>(istream& stream, Punct& ob) {
+	cout << "Introduceti culoarea: ";
+	stream >> ob.culoare;
+	return stream;
+}
+
+
+
+
+
+int main() {
+	Complex ob(1, 2);
+	cout << ob;
+
+	cout << endl;
+
+	cin >> ob;
+
+	cout << "\nModificare: \n";
+	cout << ob;
+
+
+	cout << endl;
+	Punct pt(3, 3, "Rosu");
+	cout << pt<<endl;
+	cin >> pt;
+
+	cout << "\nCuloarea schimbata:\n";
+	cout << pt;
+	
+	Complex *copy;
+	copy = &pt;
+
+	cout << "\nUpCasting:\n";
+	cout << *copy;
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P6
+//Considerati clasa Fractie care are doua atribute intregi private a si b pentru numarator si numitor, doua metode de tip set() 
+//respectiv get() pentru atributele clasei.Declarati o metoda simplifica() care simplifica un obiect Fractie returnand o valoare reala.
+//Considerati o variabila privata statica intreaga icount, care va fi initializata cu 0 si incrementata in cadrul constructorilor din 
+//clasa.Definiti un constructor explicit fara parametri care initializeaza a cu 0 si b cu 1, si un constructor explicit cu doi
+//parametri care va putea fi apelat daca se verifica posibilitatea definirii unei fractii(b != 0).Definiti un destructor explicit
+//care afiseaza un mesaj.Supraincarcati operatorii de adunare, scadere, inmultire si impartire(+, -, *, / ) a fractiilor folosind
+//functii friend fara a simplifica rezultatele obtinute.Instantiati doua obiecte de tip Fractie cu date citite de la tastatura.
+//Afisati atributele initiale ale obiectelor pe linii diferite iar fiecare membru al fractiei va fi afisat pe o latime de 10 digiti,
+//caracter de umplere*, primul numar aliniat la stanga iar al doilea aliniat la dreapta.Printr - o metoda accesor, afisati contorul
+//icount ca si un intreg cu semn, pe 15 pozitii, caracter de umplere $, aliniat la stanga.Efectuati operatiile implementate prin 
+//functiile friend, initializand alte 4 obiecte cu rezultatele obtinute.Afisati rezultatele(numarator / numitor) folosind
+//supraincarcarea operatorul de iesire(<< , insertie) si contorul(ca si un intreg cu semn, pe 20 de pozitii, caracter de umplere #,
+//	aliniat la dreapta) dupa ultima operatie folosind o metoda accesor adecvata.Simplificati rezultatele obtinute pe care le veti 
+//	afisa ca numere reale de tip fixed cu o precizie de 4 digiti la partea fractionara.
+
+#include <iomanip>
+#include <iostream>
+using namespace std;
+
+class Fractie {
+private:
+	int a, b;
+	static int icount;
+	float cmmdc();
+
+public:
+	//constructori
+	Fractie() :a(0), b(1) { icount++; }
+	Fractie(int a, int b) {
+		this->a = a;
+		if (b != 0) {
+			this->b = b;
+		}
+		icount++;
+	}
+
+	//setteri
+	void set_a(int x);
+	void set_b(int x);
+	//getteri
+	int get_a();
+	int get_b();
+	static int getICOUNT() { return icount; }
+	//metode
+	friend float simplifica(Fractie);
+
+	friend Fractie operator +(Fractie, Fractie);
+	friend Fractie operator -(Fractie, Fractie);
+	friend Fractie operator *(Fractie, Fractie);
+	friend Fractie operator /(Fractie, Fractie);
+
+	friend ostream& operator << (ostream& stream, Fractie ob);
+
+
+
+	int cmdc_numitor(Fractie);
+	int cmmc_numitor(Fractie);
+
+	~Fractie() {
+		//cout <<"\n"<<Fractie::icount;
+		icount--;
+	}
+};
+
+int Fractie::icount; //=0
+
+ostream& operator << (ostream& stream, Fractie ob) {
+	stream << ob.a << "/" << ob.b;
+	return stream;
+}
+
+
+//setteri
+void Fractie::set_a(int x) {
+	a = x;
+}
+void Fractie::set_b(int x) {
+	b = x;
+}
+//getteri
+int Fractie::get_a() {
+	return a;
+}
+int Fractie::get_b() {
+	return b;
+}
+
+
+//metode
+float simplifica(Fractie ob1) {
+	int n = ob1.cmmdc();
+
+	ob1.a = ob1.a / n;
+
+	ob1.b = ob1.b / n;
+
+	return ob1.a/(float)ob1.b;
+}
+
+
+
+float Fractie::cmmdc() {
+	int r;
+	int x, y;
+	x = a;
+	y = b;
+	while (y != 0) {
+		r = x % y;
+		x = y;
+		y = r;
+
+	}
+	if (x < 0)x = -x;
+	return x;
+
+}
+
+Fractie operator +(Fractie ob, Fractie ob1) {
+	int num = ob.cmmc_numitor(ob1);
+	int aplif1 = num / ob.b, aplif2 = num / ob1.b;
+
+	Fractie plus(ob.a * aplif1 + aplif2 * ob1.a, num);
+	
+	return plus;
+}
+
+Fractie operator -(Fractie ob, Fractie ob1) {
+	int num = ob.cmmc_numitor(ob1);
+	int aplif1 = num / ob.b, aplif2 = num / ob1.b;
+
+	Fractie minus(ob.a * aplif1 - aplif2 * ob1.a, num);
+
+	return minus;
+}
+
+Fractie operator *(Fractie ob, Fractie ob1) {
+
+	Fractie steluta(ob.a * ob1.a, ob.b * ob1.b);
+
+	return steluta;
+}
+
+Fractie operator /(Fractie ob, Fractie ob1) {
+
+	Fractie slash(ob.a * ob1.b, ob.b * ob1.a);
+
+	return slash;
+}
+
+int Fractie::cmdc_numitor(Fractie ob) {
+	int x = b, y = ob.b;
+	int r;
+	while (y != 0) {
+		r = x % y;
+		x = y;
+		y = r;
+
+	}
+	if (x < 0)x = -x;
+	return x;
+}
+int Fractie::cmmc_numitor(Fractie ob) {
+	int cmmc;
+	cmmc = (b * ob.b) / cmdc_numitor(ob);
+	return cmmc;
+}
+
+
+
+
+
+int main() {
+	Fractie f1, f2;
+	int n;
+
+
+	cout << "Valori initiale:\nI:\n";
+	cout << setfill('*');
+	cout.width(10);
+	cout.setf(ios::left);
+	cout << f1.get_a();
+	cout.unsetf(ios::left);
+
+	cout << endl;
+
+	cout << setfill('*');
+	cout.width(10);
+	cout << f1.get_b();
+
+	cout << "\nII:\n";
+
+	cout.width(10);
+	cout.setf(ios::left);
+	cout << f2.get_a();
+	cout.unsetf(ios::left);
+
+	cout << endl;
+
+	cout << setfill('*');
+	cout.width(10);
+	cout << f2.get_b();
+
+	cout << "\nIcount: \n";
+	cout << setfill('$');
+	cout.setf(ios::left);
+	cout.width(15);
+	cout << Fractie::getICOUNT();
+	cout.unsetf(ios::left);
+
+
+	cout << "\n\nI:\n";
+	cout << "Introduceti numaratorul: ";
+	cin >> n;
+	f1.set_a(n);
+	cout << "Introduceti numitorul: ";
+	cin >> n;
+	f1.set_b(n);
+
+	
+
+	cout << "\n\II:\n";
+	cout << "Introduceti numaratorul: ";
+	cin >> n;
+	f2.set_a(n);
+	cout << "Introduceti numitorul: ";
+	cin >> n;
+	f2.set_b(n);
+
+	cout << "\n\nDate introduse:\nI:\n";
+	cout << setfill('*');
+	cout.width(10);
+	cout.setf(ios::left);
+	cout << f1.get_a();
+	cout.unsetf(ios::left);
+
+	cout << endl;
+
+	cout << setfill('*');
+	cout.width(10);
+	cout << f1.get_b();
+
+	cout << "\nII:\n";
+
+	cout.width(10);
+	cout.setf(ios::left);
+	cout << f2.get_a();
+	cout.unsetf(ios::left);
+
+	cout << endl;
+
+	cout << setfill('*');
+	cout.width(10);
+	cout << f2.get_b();
+
+	cout << "\nIcount: \n";
+	cout << setfill('$');
+	cout.setf(ios::left);
+	cout.width(15);
+	cout << Fractie::getICOUNT();
+	cout.unsetf(ios::left);
+
+
+
+	Fractie suma, diferenta, inmultire, impartire;
+	suma = f1 + f2;
+	diferenta = f1 - f2;
+	inmultire = f1 * f2;
+	impartire = f1 / f2;
+
+	cout << "\n\nOperatii: ";
+	cout <<endl<<f1 << "+" << f2 << "= " << suma;
+	cout <<endl<<f1 << "-" << f2 << "= " << diferenta;
+	cout << endl << f1 << "*" << f2 << "= " << inmultire;
+	cout << endl << f1 << " : " << f2 << "= " << impartire;
+	cout << "\nIcount: \n";
+	cout << setfill('#');
+	cout.width(20);
+	cout<< Fractie::getICOUNT();
+
+	cout << endl;
+	cout << "Suma: ";
+	cout.setf(ios::fixed);
+	cout.precision(4);
+	cout << simplifica(suma);
+
+	cout << endl;
+	cout << "Diferenta: ";
+	cout.precision(4);
+	cout << simplifica(diferenta);
+
+
+	cout << endl;
+	cout << "Produs: ";
+	cout.precision(4);
+	cout << simplifica(inmultire);
+
+
+	cout << endl;
+	cout << "Impartire: ";
+	cout.precision(4);
+	cout << simplifica(impartire);
+
+}
+
+

@@ -1,0 +1,1681 @@
+LABORATOR 4
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P1
+//Program ce foloseste metoda Bubble Sort care foloseste un indicator flag si optimizeaza ciclul interior.
+#include <iostream>
+#include<time.h>
+using namespace std;
+
+//prototipuri
+void sortBubble(int*, int n);
+void afis(int*, int n);
+void generare(int*, int n);
+
+int main() {
+	int* p, n;
+	cout << "Introduceti numarul de elemente: ";
+	cin >> n;
+
+	p = new int[n];
+	if (!p) {
+		cout << "Eroare!";
+		return 0;
+	}
+
+	//apel.f de generare tablou
+	generare(p, n);
+
+	cout << "Nesortat: ";
+	//apel f.de afisare tablou
+	afis(p, n);
+
+	//apel f.bubble sort
+	sortBubble(p, n);
+
+	cout << "\nSortat: ";
+	//apel de afisare
+	afis(p, n);
+
+
+}
+
+//definirea f. bubble sort
+void sortBubble(int* p, int n) {
+
+	int i, j, temp, flag;
+	for (i = 0; i < n; i++) {
+		flag = 0;
+		for (j = 1; j < n - i; j++) {
+			if (p[j - 1] > p[j]) {
+
+				temp = p[j];
+				p[j] = p[j - 1];
+				p[j - 1] = temp;
+				flag = 1;
+			}
+			
+
+		}
+
+		//daca nu s-a facut nici o interschimbare
+		if (flag == 0) break;
+	}
+
+}
+
+//definirea f.de afisare
+void afis(int*p, int n) {
+
+	for (int i = 0; i < n; i++) {
+		cout << " " << p[i];
+	}
+}
+
+//definirea f.de generare
+void generare(int*p, int n) {
+	srand(time(0));
+
+	for (int i = 0; i < n; i++) {
+		p[i] = rand() % 100;
+	}
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P2
+//Program ce sorteaza descrescator folosing algoritmul QuickSort
+
+#include <time.h>
+#include <iostream>
+using namespace std;
+
+//prototipuri
+void quickSort(int* p, int prim, int ultim);
+void afis(int*, int n);
+void generare(int*, int n);
+
+int main() {
+	int* p, n;
+	cout << "Introduceti numarul de elemente: ";
+	cin >> n;
+
+	p = new int[n];
+	if (!p) {
+		cout << "Eroare!";
+		return 0;
+	}
+
+	//apel f.de generare numre
+	generare(p, n);
+
+	cout << "Sir nesortat: ";
+	afis(p, n);
+
+	//apel f.quicksort
+	quickSort(p, 0, n - 1);
+
+	cout << "\nSir sortat descrescator: ";
+	afis(p, n);
+
+
+
+
+
+}
+
+//definirea f.de sortare prin QuickSort
+void quickSort(int* p, int prim, int ultim) {
+	int i, j, pivot, temp;
+	i = prim;
+	j = ultim;
+	pivot = p[ultim];
+	// partitionare
+	do {
+		while (p[i] > pivot)
+			i++;
+		while (p[j] < pivot)
+			j--;
+		if (i < j) {
+			temp = p[i];
+			p[i] = p[j];
+			p[j] = temp;
+		}//end if
+		if (i <= j) {
+			j--;
+			i++;
+		}//end if
+	} while (i < j);//end do-while
+	// apel recursiv
+	if (prim < j)
+		quickSort(p, prim, j);
+	if (i < ultim)
+		quickSort(p, i, ultim);
+}//end quickSort
+
+
+
+//definirea f.de afisare
+void afis(int* p, int n) {
+
+	for (int i = 0; i < n; i++) {
+		cout << " " << p[i];
+	}
+}
+
+//definirea f.de generare
+void generare(int* p, int n) {
+	srand(time(0));
+
+	for (int i = 0; i < n; i++) {
+		p[i] = rand() % 100;
+	}
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P3
+//Program ce sorteaza o structura cu mai multe campuri , o data crescator dupa nume si dupa descrescator dupa data angajarii
+//folosind qsort
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <conio.h>
+#include <stdio.h>
+#include <iostream>
+using namespace std;
+
+struct data_angajarii {
+	int zi, luna, an;
+};
+
+struct Date_Personale {
+	char nume[30], prenume[30];
+	int CNP[13];
+	struct data_angajarii date;   //structura implicita
+
+};
+
+//prototipuri
+void cit(Date_Personale*);
+void afis(Date_Personale*);
+int compare_nume(const void* a, const void* b);
+int compare_angajare(const void* a, const void* b);
+
+int main() {
+	Date_Personale* pt;
+	int n;
+	cout << "Introduceti numarul de angajati: ";
+	cin >> n;
+
+	pt = new Date_Personale[n];
+	if (!pt) {
+		cout << "Eroare!";
+		return 0;
+	}
+	
+
+	for (int i = 0; i < n; i++) {
+		cout << "\n\n\t\tDatele pentru angajatul " << i+1<<"\n\n";
+		cit(&pt[i]);
+	}
+
+	cout << "\t\nApasati orice tasta pentru rezultate: ";
+	char c = _getch();
+
+	system("CLS");
+
+	cout << "\t\tNesortate date: \n";
+	for (int i = 0; i < n; i++) {
+		cout << "\nAngajat (" << i + 1 << ")";
+		afis(&pt[i]);
+	}
+
+	cout << "\n\t\tSortate date dupa nume crescator: \n";
+
+	qsort(pt, n,sizeof(Date_Personale) ,compare_nume);   //sortare crescatoare dupa numele intreg
+
+	for (int i = 0; i < n; i++) {
+		cout << "\nAngajat (" << i + 1 << ")";
+		afis(&pt[i]);
+	}
+
+	cout << "\n\t\tSortare date descrescator dupa data angajarii: \n";
+
+	qsort(pt, n, sizeof(Date_Personale), compare_angajare);       //sortare descrescatoare dupa data angajarii
+	
+	for (int i = 0; i < n; i++) {
+		cout << "\nAngajat (" << i + 1 << ")";
+		afis(&pt[i]);
+	}
+
+}
+
+
+//definirea f.de citire a campurilor
+void cit(Date_Personale* pt) {
+	cout << "Introduceti numele si prenumele: ";
+	scanf("%s %s", pt->nume, pt->prenume);
+	//cout << "Introduceti CNP: ";
+	/*for (int i = 0; i < 13; i++) {
+		cout << "[" << i+1 << "]= ";
+		cin >> pt->CNP[i];
+	}
+	*/
+	cout << "Introduceti Data Angajarii: \n";
+	cout << "Ziua: ";
+	cin >> pt->date.zi;
+	cout << "Luna: ";
+	cin >> pt->date.luna;
+	cout << "Anul: ";
+	cin >> pt->date.an;
+
+}
+
+//definirea f.de afisare
+void afis(Date_Personale *pt) {
+	cout << "\nNume: " << pt->nume;
+	cout << "\nPrenume: " << pt->prenume;
+	/*cout << "\nCNP: " << endl;
+	for (int i = 0; i < 13; i++) {
+		cout << pt->CNP[i];
+	}
+	*/
+	cout << "\nData Angajarii: " << pt->date.zi << "." << pt->date.luna << "." << pt->date.an << endl;
+}
+
+//definirea f.de comaparare dupa nume
+int compare_nume(const void* a, const void* b) {
+	
+	Date_Personale* pa = (Date_Personale*)a;
+	Date_Personale* pb = (Date_Personale*)b;
+	
+	if (strcmp(pa->nume, pb->nume) == 0) return strcmp(pa->prenume, pb->prenume);
+	return strcmp(pa->nume, pb->nume);
+
+
+}
+
+//definirea d.de comparare dupa data angajarii
+int compare_angajare(const void* a, const void* b) {
+	Date_Personale* pa = (Date_Personale*)a;
+	Date_Personale* pb = (Date_Personale*)b;
+
+	if (pa->date.an == pb->date.an && pb->date.luna == pa->date.luna) return pb->date.zi - pa->date.zi; //descendent
+	else if (pa->date.an == pb->date.an)return pb->date.luna - pa->date.luna;
+	return pb->date.an - pa->date.an;
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P4
+//Program ce pleaca de la tablouri si obtine un al treilea tablou ce contine toate elementele tablourilor
+//fara a se repeta aranjate in ordine crescatoare
+
+#include <stdlib.h>
+#include <conio.h>
+#include <iostream>
+using namespace std;
+
+//prototipuri
+void cit(int*,int &);
+void afis(int*,int );
+int compare(const void* a, const void* b);
+int merge(int*,int *tab,int *rab, int i, int j);
+void stergere(int*, int&);
+
+int main() {
+	int* tab, * rab,*TR,*Copy, i = 0,j=0,n,l;
+
+
+
+	tab = new int[100];
+	rab = new int[100];
+	if (!tab || !rab) {
+		cout << "Eroare alocare";
+		return 0;
+	}
+
+	//apel f.de citire
+	cout << "I:\n";
+	cit(tab, i);
+
+	system("CLS");
+	cout << "II: \n";
+	cit(rab, j);
+
+
+
+	TR = new int[i * j];
+	if (!TR) {
+		cout << "Eroare!";
+		return 0;
+
+	}
+
+	//apel f.de sortare
+	qsort(tab, i, sizeof(int), compare);
+	qsort(rab, j, sizeof(int), compare);
+
+	//apel f.de afisare tablou
+	cout << "I: ";
+	afis(tab, i);
+	cout << " Dim: " << i;
+	cout << endl;
+	cout << "II: ";
+	afis(rab, j);
+	cout << " Dim: " << j;
+
+
+
+	//apel f.de interclasare
+	n = merge(TR, tab, rab, i, j);
+	cout <<"\nSirul interclasat: "<<endl;
+	afis(TR, n);
+
+	
+
+
+	 stergere(TR,n);
+	cout << "\nTabloul creat este: \n";
+	afis(TR, n);
+
+}
+
+
+
+
+
+//definirea f.de citire
+void cit(int* p,int &i) {
+	int x;
+	char n;
+
+
+	cout << "Doriti sa introduceti valori pentru tablou?(Y-YES;N-NO)\n";
+	n = _getch();
+	
+	if (!n == 'y') {
+		system("CLS");
+		return;
+	}
+	if (n == 'y') {
+		cout << "\nIntroduceti o valoare pentru elementu tabloului:  ";
+		cin >> x;
+		*(p + i) = x;
+
+		system("CLS");
+
+		cit(p, ++i);
+	}
+
+
+
+
+}
+
+//definirea f.de afisare
+void afis(int* p, int i) {
+
+	for (int l = 0; l < i; l++) {
+		cout << *(p + l);
+		cout << " ";
+
+	}
+
+}
+
+//definirea f.de comparare
+int compare(const void* a, const void* b)
+{
+	return (*(int*)a - *(int*)b); //crescator
+}
+
+//definirea f.de creare a tabloului
+int merge(int* TR, int* Tab, int* Rab, int i, int j) {
+	int n = 0, m = 0,k=0;
+
+	
+	while (n < i && m < j)
+	{
+		if (Tab[n] < Rab[m])
+		{
+			TR[k] = Tab[n];
+			k++;
+			n++;
+		}
+		else 
+
+		{
+			TR[k] = Rab[m];
+			k++;
+			m++;
+		}
+		
+	}
+	if (n <= i)
+	{
+		for (int l = n; l < i; l++)
+		{
+			TR[k] = Tab[l];
+			k++;
+		}
+	}
+	if (m <= j)
+	{
+		for (int l = m; l < j; l++)
+		{
+			TR[k] = Rab[l];
+			k++;
+		}
+	}
+
+
+
+	return k;
+
+
+}
+
+//definirea f.de deplasare
+void stergere(int* tab, int &n) {
+
+	for (int i = 0; i < n-1;) {
+		if (tab[i] == tab[i + 1]) {
+			for (int j = i + 1; j < n; j++) {
+				tab[j] = tab[j + 1];
+			}
+
+			n--;
+		}
+		else i++;
+	}
+	
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P5
+//Program ce modifica exemplul 2 adaugand mai multe tipuri de sortari si compara timpul de executie intre acestea
+#include <time.h>
+#include <iostream>
+using namespace std;
+
+void ShellSort(int* p, int);
+void sortSel(int* , int );
+void bubble(int *, int);
+void quick(int *, int);
+int comparare(const void* arg1, const void* arg2);
+
+
+void citire(int*, int);
+
+int main() {
+	int dim, * numere;
+	cout << "\nIntrodu nr. elemente: ";
+	cin >> dim;
+	numere = new int[dim];
+
+	citire(numere, dim);
+	
+
+	//ShellSort(numere, dim);
+
+	//sortSel(numere, dim);
+
+	//bubble(numere, dim);
+
+	//sortSel(numere, dim);
+
+	quick(numere, dim);
+
+	delete[]numere;
+}
+
+
+
+
+void bubble(int *numere, int dim)
+{
+	clock_t start, end;
+	double dif;
+	int aux, ok;
+	start = clock();
+	do {
+		ok = 1;
+		for (int i = 0; i < dim - 1; i++) {
+			if (numere[i] > numere[i + 1]) {
+				aux = numere[i];
+				numere[i] = numere[i + 1];
+				numere[i + 1] = aux;
+				ok = 0;
+			}
+		}
+	} while (ok == 0);
+	end = clock();
+	dif = (double)(end - start);
+	cout << "\nOrdonarea cu \"bubble sort\" a numerelor a durat (clicks) " << dif << " si (seconds) " << ((float)dif) / CLOCKS_PER_SEC << endl;
+}
+
+void quick(int *numere, int dim) {
+	clock_t start, end;
+	double dif;
+	start = clock();
+	qsort((int*)numere, dim, sizeof(int), comparare);
+	end = clock();
+	dif = (double)(end - start);
+	cout << "\nOrdonarea cu \"quick sort\" a numerelor a durat (clicks) " << dif << " si (seconds) " << ((float)dif) / CLOCKS_PER_SEC << endl;
+}
+
+int comparare(const void* arg1, const void* arg2)
+{
+	if (*(int*)arg1 < *(int*)arg2)
+		return -1;
+	if (*(int*)arg1 == *(int*)arg2)
+		return 0;
+	if (*(int*)arg1 > * (int*)arg2)
+		return 1;
+}
+
+//definirea f . de citire a sirului
+void citire(int* p, int dim) {
+	clock_t start, end;
+	double dif;
+	start = clock();
+	for (int i = 0; i < dim; i++) {
+
+		cout << "tab[" << i << "]= ";
+		cin >> p[i];
+	}
+
+	end = clock();
+	dif = (double)(end - start);
+	cout << "\nCitirea  numerelor a durat (clicks) " << dif << " si (seconds) " << ((float)dif) / CLOCKS_PER_SEC << endl;
+}
+
+
+void sortSel(int* p, int n){
+	clock_t start, end;
+	double dif;
+	start = clock();
+
+	int i, j, pozmin, temp;
+	for (i = 0; i < n; i++) {
+		// cautare pozitie cel mai mic element din sirul curent
+		pozmin = i;
+		for (j = i + 1; j < n; j++) {
+			if (p[pozmin] > p[j])
+				pozmin = j;
+		}//end for
+		// interschimbare cu elementul de pe prima pozitie
+		temp = p[pozmin];
+		p[pozmin] = p[i];
+		p[i] = temp;
+	}//end for
+
+	end = clock();
+	dif = (double)(end - start);
+	cout << "\nOrdonarea cu \"selection sort\" a numerelor a durat (clicks) " << dif << " si (seconds) " << ((float)dif) / CLOCKS_PER_SEC << endl;
+}//end sortSel
+
+void ShellSort(int* p, int max) {
+	clock_t start, end;
+	double dif;
+	start = clock();
+
+
+	int stop = 0, temp = 0, h = 0, i, j, k;
+	while (h <= max / 3) h = 3 * h + 1; //se porneste de la un h>max/3
+	while (h > 0) {
+		for (int i = h; i < max; i++) {
+			temp = p[i];
+			j = i;
+			while ((j >= h) && (p[j - h] > temp)) {
+				p[j] = p[j - h]; //deplasare la dreapta
+					j -= h;
+			}
+			p[j] = temp;
+		}
+		h = (h - 1) / 3; //modificarea distantei
+	}
+
+	end = clock();
+	dif = (double)(end - start);
+	cout << "\nOrdonarea cu \"shell sort\" a numerelor a durat (clicks) " << dif << " si (seconds) " << ((float)dif) / CLOCKS_PER_SEC << endl;
+
+}
+
+
+/*
+Introdu nr. elemente: 10
+tab[0]= 9
+tab[1]= 8
+tab[2]= 7
+tab[3]= 6
+tab[4]= 5
+tab[5]= 4
+tab[6]= 3
+tab[7]= 2
+tab[8]= 1
+tab[9]= 0
+
+Citirea  numerelor a durat (clicks) 9574 si (seconds) 9.574
+
+Ordonarea cu "shell sort" a numerelor a durat (clicks) 0 si (seconds) 0
+
+Ordonarea cu "selection sort" a numerelor a durat (clicks) 0 si (seconds) 0
+
+Ordonarea cu "bubble sort" a numerelor a durat (clicks) 0 si (seconds) 0
+
+Ordonarea cu "quick sort" a numerelor a durat (clicks) 0 si (seconds) 0
+
+C:\Users\Body_\Desktop\UTCN-ETII-Sem II\PCL\Programe\Lab04\(5) Exemplul 2 sortari multiple\Debug\(5) Exemplul 2 sortari multiple.exe (process 2652) exited with code 0.
+Press any key to close this window . . .
+
+
+
+
+*/
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A  P6
+//Program ce citeste un tablou de m elemente si il imparte in doua tablouri unul de n elemente citit si restul
+//se ordoneaza crescator cele doua tablouri
+//si se sorteaza tabloul initial, prin  interclasarea celor doua tablouri (merge-sort)
+#include <iostream>
+using namespace std;
+
+//prototipuri
+void cit(int*, int m);
+void afis(int*, int);
+void sort_I(int*, int);
+void sort_II(int*, int, int);
+
+void interclas(int* a, int i, int m, int j);
+
+void divimp(int* a, int i, int j);
+
+int main() {
+	int* p, m, n;
+	cout << "Introduceti numarul de elemente: ";
+	cin >> m;
+
+	p = new int[m];
+	if (!p) {
+		cout << "Eroare!";
+		return 0;
+	}
+
+	cit(p, m);
+
+	system("CLS");
+	cout << "Introduceti o valoare intreaga (n<m): ";
+	cin >> n;
+
+	if (n >= m) {
+		cout << "Nu ati respectat termenii!";
+		return 0;
+	}
+
+	cout << "Sirul introdus: ";
+	afis(p, m);
+
+	//apel f de sortare crescator pe portiuni
+	sort_I(p, n);
+	sort_II(p, n, m);
+
+	cout << "\nSirul sortat pe portiuni: ";
+	afis(p, m);
+
+	cout << "\nSirul sortat: ";
+
+	interclas(p, 0, n-1, m-1);
+	afis(p, m);
+
+}
+
+//definirea f.de citire
+void cit(int* p, int m) {
+	for (int i = 0; i < m; i++) {
+		cout << "[" << i << "]= ";
+		cin >> p[i];
+	}
+}
+
+//definirea f.de sortare pe portiuni
+void sort_II(int* p, int n, int m) {
+	bool tp = true;
+	int aux;
+
+	while (tp) {
+		tp = false;
+
+		for (int i = n; i < m - 1; i++) {
+			if (p[i] > p[i + 1]) {
+				aux = p[i];
+				p[i] = p[i + 1];
+				p[i + 1] = aux;
+				tp = true;
+			}
+		}
+
+
+	}
+
+
+}
+
+void sort_I(int* p, int m) {
+	bool tp = true;
+	int aux;
+
+	while (tp) {
+		tp = false;
+
+		for (int i = 0; i < m - 1; i++) {
+			if (p[i] > p[i + 1]) {
+				aux = p[i];
+				p[i] = p[i + 1];
+				p[i + 1] = aux;
+				tp = true;
+			}
+		}
+
+
+	}
+
+
+
+}
+
+//definirea f.de afisare
+void afis(int* p, int m) {
+
+	for (int i = 0; i < m; i++) {
+		cout << " " << p[i];
+	}
+}
+
+//definirea f. merge sort
+void divimp(int* a, int i, int j) {
+
+	if (i < j) {
+		int m = (i + j) / 2;
+		divimp(a, i, m);   //apel f pentru prima jumatate a sirului
+		divimp(a, m + 1, j);  //apel pentru cealalta jumatate
+		interclas(a, i, m, j);
+	}
+
+
+}
+
+//definirea f.de interclasare
+void interclas(int* a, int i, int m, int j) {
+	int b[40];
+	int x = i; //pentru deplasarea in primul subsir
+	int k = 0;
+	int y = m + 1; //pentru deplasarea in al doilea subsir
+
+	while (x <= m && y <= j)
+		if (a[x] < a[y])
+			b[k++] = a[x++];
+		else
+			b[k++] = a[y++];
+	while (x <= m)
+		b[k++] = a[x++];  // restul elementelor din primul subsir
+	while (y <= j)
+		b[k++] = a[y++];  // restul elementelor din al doilea subsir
+	int t = i;
+	for (k = 0; k < (j - i) + 1; k++) {
+		a[t++] = b[k];  //mut elementele sortate in sirul initial
+	}
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A  P7
+//Program ce sorteaza un stoc de calculatoare.Sortarea se face dupa alegerea utilizatorului.
+//Apoi se considera un sir de caractere si unul numeric.Se afiseaza rezultate
+
+#include <Windows.h>
+#include <conio.h>
+#include <time.h>
+#include <iostream>
+using namespace std;
+
+struct PC {
+	char nume[30];
+	char procesor[30];
+	long int frecventa;
+	int RAM;
+	float pret;
+};
+
+
+
+//prototipuri
+void cit(PC*);
+void afis (PC*);
+void menu(PC*,int);
+int compare_nume(const void* a, const void* b);
+int compare_procesor(const void* a, const void* b);
+int compare_frecv(const void* a, const void* b);
+int compare_ram(const void* a, const void* b);
+int compare_pret(const void* a, const void* b);
+int compare_both(const void* a, const void* b);
+
+int main() {
+	PC* pt;
+	int n;
+	cout << "Introduceti numarul de calculatoare: ";
+	cin >> n;
+
+	pt = new struct PC[n];
+	if (!pt) {
+		cout << "Eroare la alocare dinamica!";
+		return 0;
+	}
+
+	//apel f.de citire
+	for (int i = 0; i < n; i++) {
+		cout<<"PC ("<<i+1<<"): \n";
+		cit(&pt[i]);
+		cout << "\n";
+	}
+	
+	//afisare nesortate
+	cout << "\t\t\nStocul introdus: \n";
+	for (int i = 0; i < n; i++) {
+		cout << "PC(" << i << "): ";
+		afis(&pt[i]);
+		cout << "\n\n";
+	}
+
+	
+	Sleep(1000);
+	menu(pt, n);
+
+}
+
+
+//definirea f.de citire
+void cit(PC* pt) {
+
+	cout << "Introduceti numele Pc-ului: ";
+	cin >> pt->nume;
+	cout << "Introduceti tipul de procesor: ";
+	cin >> pt->procesor;
+	cout << "Introduceti frecventa de tact: ";
+	cin >> pt->frecventa;
+	cout << "Introduceti capacitatea memoriei RAM: ";
+	cin >> pt->RAM;
+	cout << "Introduceti pretul: ";
+	cin >> pt->pret;
+}
+
+
+//definirea f.de afisare
+void afis(PC* pt) {
+
+	cout << "\nNume PC: " << pt->nume;
+	cout << "\nProcesor: " << pt->procesor;
+	cout << "\nTip frecventa de tact: " << pt->frecventa;
+	cout << "\nMemorie RAM: " << pt->RAM;
+	cout << "\nPret: " << pt->pret<<" ron";
+
+}
+
+//definirea f.de meniu
+void menu(PC* pt, int n) {
+	cout << "Alegeti dupa ce doriti sortarea: ";
+	cout << "\na)Nume\nb)Procesor\nc)Frecventa\nd)RAM\ne)Pret\nf)Camp char si valoare numerica";
+	cout << "\nIntroduceti litera corespunzatoare: ";
+	char x = _getch();
+
+	system("CLS");
+
+	if (x == 'a') {
+
+		qsort(pt, n, sizeof(PC), compare_nume);
+
+		cout << "Sortate dupa nume: \n";
+		for (int i = 0; i < n; i++) {
+			cout << "PC(" << i << "): ";
+			afis(&pt[i]);
+			cout << "\n\n";
+		}
+
+		cout << "Doriti sa mai sortati dupa altceva?(Y-Yes,N-NO)\n";
+		char y = _getch();
+		if (y != 'y') {
+			system("CLS");
+			cout << "O zi buna!:3";
+			return;
+		}
+		else {
+			system("CLS");
+			menu(pt, n);
+		}
+	}//end a
+	else if (x == 'b') {
+		qsort(pt, n, sizeof(PC), compare_procesor);
+
+		cout << "Sortate dupa procesor: \n";
+		for (int i = 0; i < n; i++) {
+			cout << "PC(" << i << "): ";
+			afis(&pt[i]);
+			cout << "\n\n";
+		}
+
+		cout << "Doriti sa mai sortati dupa altceva?(Y-Yes,N-NO)\n";
+		char y = _getch();
+		if (y != 'y') {
+			system("CLS");
+			cout << "O zi buna!:3";
+			return;
+		}
+		else {
+			system("CLS");
+			menu(pt, n);
+		}
+	}//end b
+	else if (x == 'c') {
+		qsort(pt, n, sizeof(PC), compare_frecv);
+
+		cout << "Sortate dupa frecventa: \n";
+		for (int i = 0; i < n; i++) {
+			cout << "PC(" << i << "): ";
+			afis(&pt[i]);
+			cout << "\n\n";
+		}
+
+		cout << "Doriti sa mai sortati dupa altceva?(Y-Yes,N-NO)\n";
+		char y = _getch();
+		if (y != 'y') {
+			system("CLS");
+			cout << "O zi buna!:3";
+			return;
+		}
+		else {
+			system("CLS");
+			menu(pt, n);
+		}
+
+	}//end c
+	else if (x == 'd') {
+		qsort(pt, n, sizeof(PC), compare_ram);
+
+		cout << "Sortate dupa RAM: \n";
+		for (int i = 0; i < n; i++) {
+			cout << "PC(" << i << "): ";
+			afis(&pt[i]);
+			cout << "\n\n";
+		}
+
+		cout << "Doriti sa mai sortati dupa altceva?(Y-Yes,N-NO)\n";
+		char y = _getch();
+		if (y != 'y') {
+			system("CLS");
+			cout << "O zi buna!:3";
+			return;
+		}
+		else {
+			system("CLS");
+			menu(pt, n);
+		}
+
+	}//end d
+	else if (x == 'e') {
+		qsort(pt, n, sizeof(PC), compare_pret);
+
+		cout << "Sortate dupa pret: \n";
+		for (int i = 0; i < n; i++) {
+			cout << "PC(" << i << "): ";
+			afis(&pt[i]);
+			cout << "\n\n";
+		}
+
+		cout << "Doriti sa mai sortati dupa altceva?(Y-Yes,N-NO)\n";
+		char y = _getch();
+		if (y != 'y') {
+			system("CLS");
+			cout << "O zi buna!:3";
+			return;
+		}
+		else {
+			system("CLS");
+			menu(pt, n);
+		}
+
+	}//end e
+	else if (x == 'f') {
+	
+	qsort(pt, n, sizeof(PC), compare_both);
+	
+
+	cout << "Sortate dupa nume si frecventa: \n";
+	for (int i = 0; i < n; i++) {
+		cout << "PC(" << i << "): ";
+		afis(&pt[i]);
+		cout << "\n\n";
+	}
+
+	cout << "Doriti sa mai sortati dupa altceva?(Y-Yes,N-NO)\n";
+	char y = _getch();
+	if (y != 'y') {
+		system("CLS");
+		cout << "O zi buna!:3";
+		return;
+	}
+	else {
+		system("CLS");
+		menu(pt, n);
+	}
+}//end f
+	else {
+	menu(pt, n);
+}
+
+}//end menu
+
+
+//definirea f.de comparare
+int compare_nume(const void* a, const void* b) {
+	PC* pa = (PC*)a;
+	PC* pb = (PC*)b;
+
+	return strcmp(pa->nume, pb->nume);
+
+
+}
+
+int compare_procesor(const void* a, const void* b) {
+	PC* pa = (PC*)a;
+	PC* pb = (PC*)b;
+
+	return strcmp(pa->procesor, pb->procesor);
+}
+
+int compare_frecv(const void* a, const void* b) {
+	PC* pa = (PC*)a;
+	PC* pb = (PC*)b;
+
+	return pa->frecventa-pb->frecventa;
+
+}
+
+int compare_ram(const void* a, const void* b) {
+	PC* pa = (PC*)a;
+	PC* pb = (PC*)b;
+
+	return pa->RAM - pb->RAM;
+
+}
+
+int compare_pret(const void* a, const void* b) {
+	PC* pa = (PC*)a;
+	PC* pb = (PC*)b;
+
+	return (int)pa->pret - (int)pb->pret;
+}
+
+int compare_both(const void* a, const void* b) {
+	PC* pa = (PC*)a;
+	PC* pb = (PC*)b;
+
+	if (strcmp(pa->nume, pb->nume) == 0) return pa->frecventa - pb->frecventa;
+	return strcmp(pa->nume, pb->nume);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P8
+//Program ce preia din doua fisiere doua tablouri cu valori reale.Se genereaza un al treilea tablou care contine
+//toate valorile din ambele tablouri si toate valorile obtinute prin medierea valorilor  de pe aceeasi pozitie.
+//Daca numarul de elemente ale tablourilor difera,media se va face considerand valoarea 0.0 pt valoarea lipsa
+//Se ordoneaza tabloul si se afiseaza numarul de valori neunice
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <iostream>
+using namespace std;
+
+//prototipuri
+
+void fisier(FILE*, FILE*);
+int generare(float*, float*,float* &,int n,int m);
+int neunic(float*, int);
+void sort(float*&, int k);
+
+int main() {
+	FILE *f1=NULL,  *f2=NULL;
+	float* v, * u, * w,x;
+	int n, m, nm;
+	 
+	//apel f.creare fisier
+	fisier(f1, f2);
+	
+
+	//citire in tablouri
+	f1 = fopen("Tablou I.in", "r+");
+	if (!f1) {
+		cout << "Eroare deschidere fisier!";
+		return 0;
+	}
+
+	fscanf(f1, "%d", &n);
+
+	v = new float[n];
+	for (int i = 0; i < n; i++) {
+		fscanf(f1, "%f", &x);
+		v[i] = x;
+	}
+	fclose(f1);
+	
+
+	f2 = fopen("Tablou II.in", "r+");
+	if (!f2) {
+		cout << "Eroare deschidere fisier!";
+		return 0;
+	}
+
+	fscanf(f2, "%d", &m);
+
+	u = new float[m];
+	for (int i = 0; i < m; i++) {
+		fscanf(f2, "%f", &x);
+		u[i] = x;
+	}
+	fclose(f2);
+	//end citire
+
+	//afisare
+	cout << "Sirurile: \n";
+	cout << "I: ";
+	for (int i = 0; i < n; i++) {
+		printf("%.2f ", v[i]);
+	}
+	cout << endl;
+	cout << "II: ";
+	for (int i = 0; i < m; i++) {
+		printf("%.2f " , u[i]);
+	}
+	
+	cout << "\nIII: ";
+	int k;
+	k=generare(v, u, w, n, m);
+	for (int i = 0; i < k; i++) {
+		printf("%.2f ",w[i]);
+ 	}
+
+	//sortare
+	sort(w, k);
+	cout << "\nIII sortat: ";
+	for (int i = 0; i < k; i++) {
+		printf("%.2f ", w[i]);
+	}
+	int aparitii = neunic(w, k);
+	cout << "\nNr.neunice: " << aparitii;
+
+}
+
+//definirea f.de creare a fisierelor
+void fisier(FILE * f1, FILE* f2) {
+	//fisier
+	f1 = fopen("Tablou I.in", "w+");
+	if (!f1) {
+		cout << "Eroare deschidere fisier!";
+		return ;
+	}
+
+	fprintf(f1, "6\n");
+	fprintf(f1, "8.5 6.7 5 2.1 6 3");
+
+	fclose(f1);
+
+	f2 = fopen("Tablou II.in", "w+");
+	if (!f1) {
+		cout << "Eroare deschidere fisier!";
+		return ;
+	}
+
+	fprintf(f2, "10\n");
+	fprintf(f2, "9.9 10.7 5 22 6.8 30 69 88 90.9 122 ");
+
+	fclose(f2);
+	//end fisier
+}
+
+
+//definirea f.de generare a tabloului
+int generare(float*v, float* u,float * &w, int n, int m) {
+	
+	int k=0;
+
+	if (n == m) {
+		w = new float[n*n];
+		for (int i = 0; i < n; i++) {
+			w[k] = v[i];
+			k++;
+		}
+		for (int i = 0; i < n; i++) {
+			w[k] = u[i];
+			k++;
+		}
+		for (int i = 0; i < n; i++) {
+			w[k] = (v[i]+u[i])/(float)2;
+			k++;
+		}
+		return k;
+	
+	}
+
+	else if (n != m) {
+		w = new float[n * m];
+		if (n<m) {
+			for (int i = 0; i < n; i++) {
+				w[k] = v[i];
+				k++;
+			}
+			for (int i = 0; i < m; i++) {
+				w[k] = u[i];
+				k++;
+			}
+			for (int i = 0; i < n; i++) {
+				w[k] = (v[i] + u[i]) / (float)2;
+				k++;
+			}
+			for (int i = m - n; i < m; i++) {
+				w[k] = u[i] / (float)2;
+				k++;
+			}
+			return k;
+		}
+		else if (n > m) {
+			for (int i = 0; i < m; i++) {
+				w[k] = u[i];
+				k++;
+			}
+			for (int i = 0; i < n; i++) {
+				w[k] = v[i];
+				k++;
+			}
+			for (int i = 0; i < m; i++) {
+				w[k] = (v[i] + u[i]) / (float)2;
+				k++;
+			}
+			for (int i = n - m; i < n; i++) {
+				w[k] = v[i] / (float)2;
+				k++;
+			}
+		}
+		return k;
+	}
+	
+
+}
+
+//definirea f.de sortare
+void sort(float*&w, int k) {
+
+	int i, j,flag;
+	float temp;
+
+	for (i = 0; i < k; i++) {
+		flag = 0;
+		for (j = 1; j < k - i; j++) {
+			if (w[j - 1] > w[j]) {
+
+				temp = w[j];
+				w[j] = w[j - 1];
+				w[j - 1] = temp;
+				flag = 1;
+			}
+
+
+		}
+
+		//daca nu s-a facut nici o interschimbare
+		if (flag == 0) break;
+	}
+}
+
+
+//definirea f.de numarare
+int neunic(float* w, int k) {
+	int nr = 0;
+	for (int i = 0; i < k-1; i++) {
+		if (w[i] == w[i + 1])nr++;
+	}
+	return nr;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P9
+//Program ce genereaza un tablou de 200 de intregi.Determina si afiseaza minimul maximul si mediana,sortand elementele
+//Se determina val medie si se afiseaza diferenta dintre valoarea medie si cea mediana si sa se verifice daca
+//valoarea medie se afla in tablou
+
+#include <time.h>
+#include <stdlib.h>
+#include <iostream>
+using namespace std;
+
+//prototipuri
+void generare();
+int cautareBi(int s, int d, float a);
+int comp(const void* a, const void* b);
+void min_max_mediana_medie();
+
+int* p;
+
+int main() {
+	
+	p = new int[200];
+	if (!p) {
+		cout << "Alocare nereusita!";
+		return 0;
+	}
+
+	//apel f.de generare tablou
+	generare();
+	cout << "Sirul: ";
+	for (int i = 0; i < 200; i++) {
+		cout << " " << p[i];
+	}
+
+	//apel de sortare tablou
+	qsort(p, 200, sizeof(int), comp);
+	cout << "\nSirul sortat: ";
+	for (int i = 0; i < 200; i++) {
+		cout << " " << p[i];
+	}
+
+	//apel de determinare
+	min_max_mediana_medie();
+}
+
+//definirea f.de generarea a tabloului
+void generare() {
+
+	srand(time(0));
+
+	for (int i = 0; i < 200; i++) {
+		p[i] = rand() % 100 ;
+	}
+}
+
+int comp(const void* a, const void* b) {
+	return *(int*)a - *(int*)b;
+}
+
+//definirea f.de afisare min max mediana medie diferenta si daca se afla valoarea medie in tablou
+void min_max_mediana_medie() {
+	cout << "\n\nMinimul este: " << p[0];
+	cout << "\nMaximul este: " << p[199];
+	cout << "\nMediana este: " << p[99];
+
+	int x, suma=0;
+	float medie;
+
+	for (int i = 0; i < 200; i++) {
+		suma += p[i];
+	}
+
+	medie = suma /(float) 200;
+	cout << "\nValoarea medie: " << medie;
+	cout << "\nDiferenta dintre medie si mediana: " << medie - p[99];
+	
+	//verificarea apartentei
+	x = cautareBi(0, 199, medie);
+	if (x == -1) {
+		cout << "\nMedia nu se afla in tablou.";
+		return;
+
+	}
+	else cout << "\nMedia se afla in tablou!";
+	
+
+}
+
+//definirea f. recursive de cautare binara
+int cautareBi(int s, int d, float a)
+{
+	if (s > d)
+		return -1;
+	else
+	{
+		int m = (s + d) / 2;
+		if (a == p[m])
+			return m;
+		if (a < p[m])
+			return cautareBi(s, m - 1, a);
+		else
+			return cautareBi(m + 1, d, a);
+	}
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P10
+//Program ce genereaza un tablou de 200 de valori reale prin combinarea a doua tablouri de aceeasi dimensiune
+//unul ce reprezinta partea intreaga iar celalalt partea fractionara si se sorteaza tabloul obtinut
+//prin qsort()
+
+#include <time.h>
+#include <stdlib.h>
+#include <iostream>
+using namespace std;
+
+//prototipuri
+void generare_intreaga(int*);
+void generare_fractionara(int*);
+void afis(int* pt);
+void generare(float*,int*,int *);
+int comp(const void* a, const void* b);
+
+
+int main() {
+	int* pi, * pf;
+	float *numar;
+	pi = new int[200];
+	pf = new int[200];
+	numar = new float[200];
+	if (!pf || !pi || !numar) {
+		cout << "Eroare la alocare !";
+		return 0 ;
+	}
+
+	//apel f.generare numere 
+	generare_intreaga(pi);
+	generare_fractionara(pf);
+	generare(numar, pi, pf);
+
+	cout << "\nPartea intreaga: ";
+	afis(pi);
+	cout << "\n\nPartea fractionara: ";
+	afis(pf);
+	cout << "\n\nNumere formate: ";
+	for (int i = 0; i < 200; i++) {
+		cout << " " << numar[i];
+	}
+	
+	qsort(numar, 200, sizeof(float), comp);
+	cout << "\n\nNumere formate sortate: ";
+	for (int i = 0; i < 200; i++) {
+		cout << " " << numar[i];
+	}
+
+
+}
+
+//definirea f.de generare tablouri
+void generare_intreaga(int* pt) {
+
+	srand(time(0));
+	for (int i = 0; i < 200; i++) {
+		pt[i] = rand() % 100;
+	}
+}
+
+void generare_fractionara(int* pt) {
+	int x;
+
+	srand(time(0));
+	for (int i = 0; i < 200; i++) {
+		x = rand() % 20 +1;
+		pt[i] = x;
+	}
+}
+
+void generare(float* nr, int* pi, int* pf) {
+
+	for (int i = 0; i < 200; i++) {
+		nr[i] = pi[i] + pf[i] / (float)100;
+	}
+
+}
+
+//definire f.de afisare
+void afis(int* pt) {
+	for (int i = 0; i < 200; i++) {
+		cout << " " << pt[i];
+
+	}
+}
+
+int comp(const void* a, const void* b) {
+
+	if (*(float*)a > *(float*)b) return 1;
+	else return -1;
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P11
+//Program ce aloca dinamic un tablou de n numere intregi citit si afisat.Se citeste o valoare cheie
+//prin functia lfind() se cauta valoarea si se afiseaza pozitiile
+//se sorteaza tabloul cu qsort si se afiseaza
+//apoi se cauta aceeasi cheie dar cu bsearch si se afiseaza pozitia
+
+
+#include <iostream>
+using namespace std;
+
+//prototipuri
+void cit(int* pt,int *tab);
+void afis(int* pt);
+int compare(const void* a, const void* b);
+
+int n;
+
+int main() {
+	int* pt,*tab,cheie;
+	int* x, a, aux, nr = 0, k = 0;
+	x = &a;
+	
+	cout << "Introduceti numarul de elemente: ";
+	cin >> n;
+	aux = n;
+	pt = new int[n];
+	tab = new int[n];
+	if (!pt || !tab) {
+		cout << "Eroare la alocare!";
+		return 0;
+	}
+
+	//apel functii
+	cit(pt,tab);
+	cout << "Introduceti valoarea cheie: ";
+	cin >> cheie;
+	system("CLS");
+	cout << "Sirul introdus este: ";
+	afis(pt);
+
+	cout << "\nCheia: " << cheie;
+	
+	bool bol = true;
+
+	cout << "\nIndicii prin lfind(): ";
+	while (bol) {
+		bol = false;
+
+		x = (int*)_lfind(&cheie, tab, (size_t*)&aux, sizeof(int), (int (*) (const void*, const void*)) compare);
+		if (x != NULL) {
+			cout << " " << x - tab + 1;
+			tab[x - tab] = 0;
+			bol = true;
+			nr++;
+		}
+
+		else if (nr != 0) bol = false;
+		else {
+			cout << "Nu se afla in tablou!";
+			bol = false;
+		}
+	}
+
+
+	qsort(pt, n, sizeof(int), compare);
+	cout << "\nSirul sortat: ";
+	afis(pt);
+
+
+	void* poz = (int*)bsearch(&cheie, pt, n, sizeof(int),
+		(int (*) (const void*, const void*)) compare);   //apel f.bsearch
+	if (poz != NULL)printf("\nPozitia valorii gasite prin bsearch este: %d", (int*)poz - pt+1);
+	else printf("\nPozitia valorii gasite prin bsearch este: -1 ");
+
+}
+
+
+//definire functii
+void cit(int* pt,int *tab) {
+	for (int i = 0; i < n; i++) {
+		cout << "[" << i << "]= ";
+		cin >> pt[i];
+		tab[i] = pt[i];
+	}
+}
+
+void afis(int* pt) {
+
+	for (int i = 0; i < n; i++) {
+		cout << " " << pt[i];
+	}
+}
+
+
+
+int compare(const void* a, const void* b)
+{
+	return (*(int*)a - *(int*)b);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////

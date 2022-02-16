@@ -1,0 +1,1351 @@
+LABORATOR 7
+
+
+P1
+
+#pragma once
+#include <math.h>
+#include <iostream>
+using namespace std;
+
+const int dim_sir = 20;
+class CPunctText {
+	int x;
+	int y;
+	int lungime_sir;
+	char* sNume;
+public:
+	//modificari
+	CPunctText* suma(CPunctText);
+	float dist();
+
+	//getteri
+	int getX();
+	int getY();
+	char* getNume();
+
+	//constructor explicit vid
+	CPunctText();
+	//constructor cu parametri
+	CPunctText(int ix, int iy, const char* sText = "Punct");
+	//constructor de copiere
+	CPunctText(const CPunctText& pct);
+	//destructor:
+	~CPunctText();
+
+};
+
+
+
+
+float CPunctText::dist() {
+	float d = 0.0f;
+	d = sqrt(x * x + y * y);
+
+	return d;
+
+}
+
+CPunctText* CPunctText::suma(CPunctText ob) {
+	CPunctText* ptc_nou = new CPunctText;
+	ptc_nou->x = x + ob.x;
+	ptc_nou->y = y + ob.y;
+	ptc_nou->lungime_sir = 2 * dim_sir;
+	strcpy(ptc_nou->sNume, sNume);
+	strcat(ptc_nou->sNume, ob.sNume);
+
+	return ptc_nou;
+
+
+}
+
+CPunctText::CPunctText() {
+	
+	lungime_sir = dim_sir;
+	sNume = new char[lungime_sir];
+}
+CPunctText::CPunctText(int ix, int iy, const char* sText) {
+	
+	 lungime_sir = strlen(sText) + 1;// pentru |0
+	sNume = new char[lungime_sir];
+	x = ix;
+	y = iy;
+	strcpy(sNume, sText);
+}
+CPunctText::CPunctText(const CPunctText& pct) {
+	
+	sNume = new char[pct.lungime_sir];
+	x = pct.x;
+	y = pct.y;
+	lungime_sir = pct.lungime_sir;
+	strcpy(sNume, pct.sNume);
+}
+CPunctText::~CPunctText() {
+	
+	delete[] sNume;
+}
+
+//getteri 
+int CPunctText::getX() {
+	return x;
+}
+int CPunctText::getY() {
+	return y;
+}
+char* CPunctText:: getNume() {
+	return sNume;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria  A P2
+//Program ce modeleaza obiectual un tablou unidimensional de numere intregi.Se instantiaza doua obiecte ale clasei si afisati
+//valorile ale unui al treilea tablou obtinute prin scaderea corespunzatoare din primele 2 tablouri.
+//Daca tablourile au lungimi diferite,tabloul rezultat va avea lungimea tabloului celui mai scurt.
+
+#include <time.h>
+#include <iostream>
+using namespace std;
+
+class Array {
+	float* tab;
+	int dim;
+public:
+	//constructori
+	Array() {}  
+	Array(int);
+	Array(const Array&);
+
+	//getteri
+	float getEl(int i);
+	int getDim();
+
+	//setteri
+	void setArray();
+	
+
+	Array* diferenta(Array);      
+
+	//destructor
+	~Array() { delete[]tab; }
+};
+
+
+//getteri
+float Array::getEl(int i) {
+	return tab[i];
+}
+
+int Array::getDim() {
+	return dim;
+}
+
+//metoda de generare elemente
+void Array::setArray() {
+	float x;
+	
+	for (int i = 0; i < dim; i++) {
+		x = rand() % 100;
+		tab[i] = x;
+	}
+}
+
+//constructor copiere
+Array :: Array(const Array&pt) {
+	dim = pt.dim;
+	tab = new float[dim];
+	for (int i = 0; i < dim; i++) {
+		tab[i] = pt.tab[i];
+	}
+
+}
+
+//metoda de construire al treilea tablou
+Array* Array::diferenta(Array pt) {
+	Array *dif=new Array; 
+	int length;
+
+	if (dim == pt.dim)length = dim;
+	else if (dim > pt.dim)length = pt.dim;
+	else length = dim;
+	dif->dim = length;
+	dif->tab = new float[length];
+
+	for (int i = 0; i < length; i++) {
+		dif->tab[i] = tab[i] - pt.tab[i];
+	}
+
+	return dif;
+
+}
+
+ //constructor alocare dinamica tablou
+Array::Array(int n) {
+	dim = n;
+	tab = new float[dim];
+}
+
+
+int main() {
+	int n, m;
+	cout << "Introduceti numarul de elemente pentru primul tablou: ";
+	cin >> n;
+	cout << "Introduceti numarul de elemente pentru al doilea tablou: ";
+	cin >> m;
+	Array ob1(n), ob2(m);
+	
+	ob1.setArray();
+	Array ob_cop(ob1); //copiere 
+	srand(time(0));
+	ob2.setArray();
+
+	int dim1=ob1.getDim(), dim2=ob2.getDim();
+	
+	//afisare
+	cout << "Primu tablou: ";
+	for (int i = 0; i < dim1; i++) {
+		cout << ob1.getEl(i) << " ";
+	}
+	cout << "\nAl doilea tablou: ";
+	for (int i = 0; i < dim2; i++) {
+		cout << ob2.getEl(i) << " ";
+	}
+
+
+	Array *ar_dif=new Array;
+	ar_dif = ob1.diferenta(ob2);
+
+	int dim3=ar_dif->getDim();
+
+	cout << "\nAl treilea tablou: ";
+	for (int i = 0; i <dim3 ; i++) {
+		cout << ar_dif->getEl(i) << " ";
+	}
+
+	
+
+
+
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A  P3
+//Program care modeleaza o clasa Student cu atributele: nume,prenume,note;
+//Se afiseaza numele studentilor care au restanta si apoi numele primilor 3 studenti din grupa in ordinea mediilor
+//*Am ales mediile cele mai mari*
+
+
+#include <cstring>
+#include <iostream>
+using namespace std;
+
+
+class Student {
+	char nume[30], prenume[30];
+	int note[5];
+public:
+	//constructori
+	Student() {}
+
+	//setteri
+	void setNume(char *s);
+	void setPrenume(char *s);
+	void setNote(int ,int);
+
+	//getteri
+	char* getNume();
+	char* getPrenume();
+	int getNota(int );
+	float getMedie();
+
+
+};
+
+//setteri
+void Student::setNume(char* s) {
+	int l = strlen(s);
+	if (s != NULL) strncpy_s(nume, s, l);
+	else strcpy_s(nume, "Anonim");
+
+}
+
+void Student::setPrenume(char* s) {
+	int l = strlen(s);
+	if (s != NULL) strncpy_s(prenume, s, l);
+	else strcpy_s(prenume, "Anonim");
+
+}
+
+void Student::setNote(int n,int i) {
+	note[i] = n;
+}
+
+//getteri
+char* Student::getNume() {
+	return nume;
+}
+char* Student::getPrenume() {
+	return prenume;
+}
+int Student::getNota(int i) {
+	return note[i];
+}
+float Student::getMedie() {
+	float  s = 0.0f;
+	for (int i = 0; i < 5; i++) {
+		s += note[i];
+	}
+	return s / 5.0;
+}
+
+//prototipuri
+void menu(Student* pt);
+void afis_restanta(Student* pt);
+void afis_3(Student* pt);
+int compare(const void* a, const void* b);
+
+
+int main() {
+	Student* pt;
+	int n;
+	cout << "Introduceti numarul de studenti din catalog: ";
+	cin >> n;
+
+	pt = new Student[n];
+
+	//citire date
+	for (int i = 0; i < n; i++) {
+		cout << "Student (" << i + 1 << "): \n";
+		menu(&pt[i]);
+	}
+
+	//afisare restantieri
+	cout << "\nRestantieri: ";
+	for (int i = 0; i < n; i++) {
+		afis_restanta(&pt[i]);
+	}
+
+	//afisare primii 3
+	qsort(pt, n, sizeof(Student), compare);
+	afis_3(pt);
+}
+
+//definire functii
+void menu(Student* pt) {
+	char* s = new char[30];
+	int n;
+
+	cout << "Introduceti Numele: ";
+	cin >> s;
+	pt->setNume(s);
+	cout << "Introduceti Prenumele: ";
+	cin >> s;
+	pt->setPrenume(s);
+	cout << "Introduceti notele: "<<endl;
+	for (int i = 0; i < 5; i++) {
+		cout << "Nota " << i + 1 << ": ";
+		cin >> n;
+		pt->setNote(n, i);
+	
+	}
+
+	cout << endl;
+	
+}
+
+void afis_restanta(Student* pt) {
+	bool tp = false;
+
+	for (int i = 0; i < 5; i++) {
+		if ((pt->getNota(i)) < 5) { 
+			tp = true;
+			break;
+		}
+	}
+	if (tp)cout << pt->getNume()<<" ";
+}
+
+void afis_3(Student* pt) {
+	
+	cout << "\nPrimii 3 studenti cu mediile cele mai mari: ";
+	for (int i = 0; i < 3; i++) {
+		cout << (pt + i)->getNume()<<"("<<(pt+i)->getMedie()<<")"<<"  ";
+	}
+
+}
+
+int compare(const void* a, const void* b) {
+	Student* pa = (Student*)a;
+	Student* pb = (Student*)b;
+
+	return (int)pb->getMedie() - (int)pa->getMedie();    //descrescator
+
+}
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A  P4
+//Program citeste un punct(x,y,z) si face translatia acestuia pe fiecare dintre cele trei axe.Sa se verifice
+//daca dreapta care uneste primu punct si cel rezultat in urma translatiei trec printr-un al treilea punct citit
+
+#include <iostream>
+using namespace std;
+
+class Punct {
+	int x, y, z;
+public:
+	Punct() {};
+	Punct(int a,int b,int c):x(a),y(b),z(c) {}
+
+	//getteri impliciti
+	int getX() { return x; }
+	int getY() { return y; }
+	int getZ() { return z; }
+
+	Punct translatie(int ,int ,int);
+	bool verificare(Punct, Punct);
+
+
+
+
+};
+
+Punct Punct:: translatie(int tx, int ty, int tz) {
+	Punct prim(x + tx, y + ty, z + tz);
+	return prim;
+
+}
+
+bool Punct::verificare(Punct p1, Punct p2) {
+	bool tp = false;
+	if ((p2.getX() - x) /(float)(p1.getX() - x) == (p2.getY() - y) /(float)(p1.getY() - y) && ((p2.getX() - x) /(float)(p1.getX() - x)) == ((p2.getZ() - z) /(float)(p1.getZ() - z))) tp = true;
+	return tp;
+}
+
+
+int main() {
+	int a, b, c;
+	cout << "Introduceti coordonata x: ";
+	cin >> a;
+	cout << "Introduceti coordonata y: ";
+	cin >> b;
+	cout << "Introduceti coordonat z: ";
+	cin >> c;
+	Punct p1(a, b, c);
+	cout << "Introduceti distanta OX: ";
+	cin >> a;
+	cout << "Introduceti distanta OY: ";
+	cin >> b;
+	cout << "Introduceti distanta OZ: ";
+	cin >> c;
+	Punct p_ = p1.translatie(a, b, c);
+	cout << "\n(1)Punct: " << "(" << p1.getX() << ";" << p1.getY()<< ";" << p1.getZ() << ")\n";
+	cout << "(Translatie)Punct: " << "(" << p_.getX() << ";" << p_.getY() << ";" << p_.getZ() << ")\n\n";
+
+	cout << "Introduceti coordonata x noua: ";
+	cin >> a;
+	cout << "Introduceti coordonata y noua: ";
+	cin >> b;
+	cout << "Introduceti coordonat z noua: ";
+	cin >> c;
+	Punct p2(a, b, c);
+
+	bool tp = p1.verificare(p_, p2);
+	if (tp)cout << "\nPunctul apartine dreptei formate de P1 si P2 Translatat!";
+	else cout << "\nNu apartine dreptei!";
+
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P5
+//Se modeleaza clasa Student care contine atribute private(nume,prenume,note-tablou,grupa)
+//Se aloca dinamic n studenti se calculeaza media si se sorteaza studentii dupa medie si se afiseaza datele
+//se implementeaza si desctructorul
+#include <cstring>
+#include <iostream>
+using namespace std;
+
+
+class Student {
+	char nume[30], prenume[30];
+	int grupa;
+	int note[7];
+public:
+	//constructori
+	Student() {}
+
+	//setteri
+	void setNume(char* s);
+	void setPrenume(char* s);
+	void setNote(int, int);
+	void setGrupa(int);
+
+	//getteri
+	char* getNume();
+	char* getPrenume();
+	int getNota(int);
+	int getGrupa();
+
+	float getMedie();
+
+	~Student() {
+		
+		cout << "\nDestructor";}
+
+};
+
+//setteri
+void Student::setGrupa(int x){
+	grupa = x;
+}
+
+void Student::setNume(char* s) {
+	int l = strlen(s);
+	if (s != NULL) strncpy_s(nume, s, l);
+	else strcpy_s(nume, "Anonim");
+
+}
+
+void Student::setPrenume(char* s) {
+	int l = strlen(s);
+	if (s != NULL) strncpy_s(prenume, s, l);
+	else strcpy_s(prenume, "Anonim");
+
+}
+
+void Student::setNote(int n, int i) {
+	note[i] = n;
+}
+
+//getteri
+int Student::getGrupa() {
+	return grupa;
+}
+
+char* Student::getNume() {
+	return nume;
+}
+char* Student::getPrenume() {
+	return prenume;
+}
+int Student::getNota(int i) {
+	return note[i];
+}
+float Student::getMedie() {
+	float  s = 0.0f;
+	for (int i = 0; i < 7; i++) {
+		s += note[i];
+	}
+	return s / 7.0;
+}
+
+//prototipuri
+void menu(Student* pt);
+void afis(Student* pt);
+int compare(const void* a, const void* b);
+
+
+int main() {
+	Student* pt;
+	int n;
+	cout << "Introduceti numarul de studenti din catalog: ";
+	cin >> n;
+
+	pt = new Student[n];
+
+	//citire date
+	for (int i = 0; i < n; i++) {
+		cout << "Student (" << i + 1 << "): \n";
+		menu(&pt[i]);
+	}
+
+
+	//sortare studenti
+	qsort(pt, n, sizeof(Student), compare);
+
+	//afisare
+	cout << "Studentii sortati dupa MEDIE: \n";
+	for (int i = 0; i < n; i++) {
+		afis(&pt[i]);
+		cout << endl;
+	}
+
+	delete[]pt;
+}
+
+//definire functii
+void menu(Student* pt) {
+	char* s = new char[30];
+	int n,x;
+
+	cout << "Introduceti Numele: ";
+	cin >> s;
+	pt->setNume(s);
+	cout << "Introduceti Prenumele: ";
+	cin >> s;
+	pt->setPrenume(s);
+	cout << "Introduceti grupa: ";
+	cin >> x;
+	pt->setGrupa(x);
+	cout << "Introduceti notele: " << endl;
+	for (int i = 0; i < 7; i++) {
+		cout << "Nota " << i + 1 << ": ";
+		cin >> n;
+		pt->setNote(n, i);
+
+	}
+
+	cout << endl;
+
+}
+
+
+
+int compare(const void* a, const void* b) {
+	Student* pa = (Student*)a;
+	Student* pb = (Student*)b;
+
+	return (int)pb->getMedie() - (int)pa->getMedie();    //descrescator
+
+}
+
+void afis(Student* pt) {
+	cout << "\nNume: " << pt->getNume();
+	cout << "\nPrenume: " << pt->getPrenume();
+	cout << "\nGrupa: " << pt->getGrupa();
+	cout << "\nMedia: " << pt->getMedie();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P6
+//Clasa Complex:
+//atribute(double=real,imag, char*nume); constructor explicit cu doi parametrii care au implicit valoarea 1.0
+//si aloca dinamic un sir de max 7 caractere pt nume
+//un constructor de copiere
+//setteri,getteri,metode de operatii, si un destructor
+//se introduc cel mult 10 numere complexe se calculeaza suma lor care creeaza un nou numar complex cu numele Suma_c
+//se face si diferenta dar si produsul
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <cstring>
+#include <iostream>
+using namespace std;
+
+class Complex {
+	double re, im;
+	char* nume;
+public:
+	Complex(float a = 1.0, float b = 1.0);
+	Complex(const Complex& pt);
+
+
+	//setteri
+	void setRe(double re) { this->re = re; }
+	void setIm(double im) { this->im = im; }
+	void setNume(const char* s) {
+		int l = strlen(s);
+		for (int i = 0; s[i] != '\0'; i++) {
+			this->nume[i] = s[i];
+			this->nume[i + 1] = '\0';
+		}
+	}
+
+
+	//getteri
+	double getRe() { return re; }
+	double getIm() { return im; }
+	char* getNume() { return nume; }
+
+	//metode operatii
+	void suma(Complex &pt);
+	void dif(Complex &pt);
+	void inm(Complex &pt);
+
+	~Complex() {
+		delete[]nume;
+	}
+
+};
+
+//metode: /////////////////////////////////////
+//->Adunare
+void Complex::suma(Complex &pt) {
+	re = re + pt.re;
+	im = im + pt.im;
+}
+//Scadere
+void Complex::dif(Complex &pt) {
+	re = re - pt.re;
+	im = im - pt.im;
+}
+//Inmultire
+void Complex::inm(Complex &pt) {
+	re = re * pt.re - im * pt.im;
+	im = re * pt.im + pt.re * im;
+}
+
+
+//constructori//////////////////////////////////
+Complex::Complex(float a, float b) {
+	re = a;
+	im = b;
+	nume = new char[7];
+
+}
+
+//constructori copiere
+Complex::Complex(const Complex& pt) {
+	nume = new char[strlen(pt.nume)];
+	re = pt.re;
+	im = pt.im;
+	strcpy(nume, pt.nume);
+}
+
+void menu(Complex* pt);
+void afis(Complex* pt);
+
+/////////////////////////////////////MAIN//////////////////////////////////////////////////////////////////////////
+
+int main() {
+	Complex* pt;
+	int n, a, b;
+	cout << "Introduceti numarul de complexe: ";
+	cin >> n;
+	pt = new Complex[n];
+	pt->setNume("PT");
+
+	//citire date
+	for (int i = 0; i < n; i++) {
+		cout << "Z(" << i + 1 << "): \n";
+		menu(&pt[i]);
+		cout << endl;
+
+	}
+
+	//afisare date
+	cout << "\nNumerele complexe: \n";
+	for (int i = 0; i < n; i++) {
+		afis(&pt[i]);
+		cout << endl;
+
+	}
+
+	//Suma_c
+	Complex Suma_c;
+	Suma_c.setRe(0);
+	Suma_c.setIm(0);
+
+
+	for (int i = 0; i < n; i++) {
+		Suma_c.suma(pt[i]);
+
+	}
+
+	Suma_c.setNume("Suma_c");
+
+	if (Suma_c.getIm() > 0)cout << Suma_c.getNume() << ": " << Suma_c.getRe() << "+" << Suma_c.getIm() << "i";
+	else cout << Suma_c.getNume() << ": " << Suma_c.getRe() << Suma_c.getIm() << "i";
+
+	cout << endl;
+	//Dif_c
+	Complex Dif_c;
+	Dif_c.setRe(pt->getRe());
+	Dif_c.setIm(pt->getIm());
+
+	for (int i = 1; i < n; i++) {
+		Dif_c.dif(pt[i]);
+	}
+
+	Dif_c.setNume("Dif_c");
+
+	if (Dif_c.getIm() > 0)cout << Dif_c.getNume() << ": " << Dif_c.getRe() << "+" << Dif_c.getIm() << "i";
+	else cout << Dif_c.getNume() << ": " << Dif_c.getRe() << Dif_c.getIm() << "i";
+
+	cout << endl;
+	//Inmultire_c
+	Complex Inm_c;
+	Inm_c.setRe(pt->getRe());
+	Inm_c.setIm(pt->getIm());
+
+	for (int i = 1; i < n; i++) {
+		Inm_c.inm(pt[i]);
+	}
+
+	Inm_c.setNume("Inm_c");
+
+	if (Inm_c.getIm() > 0)cout << Inm_c.getNume() << ": " << Inm_c.getRe() << "+" << Inm_c.getIm() << "i";
+	else cout << Inm_c.getNume() << ": " << Inm_c.getRe() << Inm_c.getIm() << "i";
+
+	delete[]pt;
+
+}
+
+/////////////////////////////////////////////END/MAIN////////////////////////////////////////////////////////////////
+
+
+void menu(Complex* pt) {
+	double n;
+	char* s = new char[10];
+	cout << "Introduceti numele: ";
+	cin >> s;
+	pt->setNume(s);
+	cout << "P.reala: ";
+	cin >> n;
+	pt->setRe(n);
+	cout << "P.imaginara: ";
+	cin >> n;
+	pt->setIm(n);
+
+}
+
+
+void afis(Complex* pt) {
+	cout << pt->getNume() << ": ";
+	cout << pt->getRe();
+	if (pt->getIm() > 0) {
+		cout << "+" << pt->getIm() << "i";
+	}
+	else cout << pt->getIm() << "i";
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A  P7
+//Modelarea clasei Fractie 
+//-setteri,getteri,o metoda simplifica cu returnare de obiect care apeleaza o metoda private cmmdc();
+//-metode adunare,scadere,inmultire,impartire
+
+#include <iostream>
+using namespace std;
+
+class Fractie {
+private:
+	int a, b;
+	float cmmdc();
+
+public:
+	//constructori
+	Fractie() :a(0), b(1) {}
+	Fractie(int a, int b) {
+		this->a = a;
+		this->b = b;
+	}
+
+	//setteri
+	void set_a(int x);
+	void set_b(int x);
+	//getteri
+	int get_a();
+	int get_b();
+
+	//metode
+	Fractie simplifica_obiect();
+	void simplifica();
+	Fractie adunare(Fractie);
+	Fractie scadere(Fractie);
+	Fractie inmultire(Fractie);
+	Fractie impartire(Fractie);
+
+	int cmdc_numitor(Fractie);
+	int cmmc_numitor(Fractie);
+};
+
+//setteri
+void Fractie::set_a(int x) {
+	a = x;
+}
+void Fractie::set_b(int x) {
+	b = x;
+}
+//getteri
+int Fractie::get_a() {
+	return a;
+}
+int Fractie::get_b() {
+	return b;
+}
+
+
+//metode
+Fractie Fractie::simplifica_obiect() {
+	Fractie ob1;
+	int n = cmmdc();
+
+	ob1.a = a / n;
+
+	ob1.b = b / n;
+
+	return ob1;
+}
+
+void Fractie::simplifica() {
+	int x = a, y = b;
+	int max = 0, min;
+
+	cout << "Divizorii: ";
+
+	if (x < y)min = x;
+	else min = y;
+	for (int i = 1; i <= min; i++) {
+		if (x % i == 0 && y % i == 0) {
+			cout << " " << i;
+			max = i;
+		}
+	}
+
+
+	a = a / max;
+	b = b / max;
+
+
+	cout << "\nFractia simplificata: " << a << "/" << b;
+}
+
+
+float Fractie::cmmdc() {
+	int r;
+	int x, y;
+	x = a;
+	y = b;
+	while (y != 0) {
+		r = x % y;
+		x = y;
+		y = r;
+
+	}
+	if (x < 0)x = -x;
+	return x;
+
+}
+
+Fractie Fractie:: adunare(Fractie ob) {
+	Fractie obiect(a, b);
+	obiect = obiect.simplifica_obiect();
+	ob = ob.simplifica_obiect();
+
+	int num = obiect.cmmc_numitor(ob);
+	int aplif1 = num / obiect.b,aplif2=num/ob.b;
+
+	Fractie plus(obiect.a * aplif1 + aplif2 * ob.a, num);
+	plus = plus.simplifica_obiect();
+	return plus;
+}
+
+Fractie Fractie::scadere(Fractie ob) {
+	Fractie obiect(a, b);
+	obiect = obiect.simplifica_obiect();
+	ob = ob.simplifica_obiect();
+
+	int num = obiect.cmmc_numitor(ob);
+	int aplif1 = num / obiect.b, aplif2 = num / ob.b;
+
+	Fractie minus(obiect.a * aplif1 - aplif2 * ob.a, num);
+	minus = minus.simplifica_obiect();
+	
+	return minus;
+}
+
+Fractie Fractie::inmultire(Fractie ob) {
+	Fractie obiect(a, b);
+	obiect = obiect.simplifica_obiect();
+	ob = ob.simplifica_obiect();
+
+	Fractie steluta(obiect.a * ob.a, obiect.b * ob.b);
+	steluta = steluta.simplifica_obiect();
+	return steluta;
+
+
+}
+
+Fractie Fractie::impartire(Fractie ob) {
+	Fractie obiect(a, b);
+	obiect = obiect.simplifica_obiect();
+	ob = ob.simplifica_obiect();
+
+	Fractie slash(obiect.a * ob.b, obiect.b * ob.a);
+	slash = slash.simplifica_obiect();
+	return slash;
+
+
+}
+
+int Fractie::cmdc_numitor(Fractie ob) {
+	int x = b, y = ob.b;
+	int r;
+	while (y != 0) {
+		r = x % y;
+		x = y;
+		y = r;
+
+	}
+	if (x < 0)x = -x;
+	return x;
+}
+int Fractie::cmmc_numitor(Fractie ob) {
+	int cmmc;
+	cmmc = (b * ob.b) / cmdc_numitor(ob);
+	return cmmc;
+}
+
+
+
+
+int main() {
+	Fractie ob1, ob2;
+	Fractie ob3(1, 15);
+	ob1.set_a(16);
+	ob1.set_b(8);
+	ob2.set_a(3);
+	ob2.set_b(9);
+	
+	int a;
+	cout << "a/b :\n";
+	cout << "I: \n";
+	cout << "a= ";
+	cin >> a;
+	ob1.set_a(a);
+	cout << "b= ";
+	cin >> a;
+	ob1.set_b(a);
+	cout << "II: \n";
+	cout << "a= ";
+	cin >> a;
+	ob3.set_a(a);
+	cout << "b= ";
+	cin >> a;
+	ob3.set_b(a);
+
+	
+	cout << "Fractie I: " << ob1.get_a() << "/" << ob1.get_b() << endl;
+	cout << "Fractie II: " << ob3.get_a() << "/" << ob3.get_b() << endl;
+	cout<<"Fractie implicita a programului: "<<ob2.get_a()<<"/" << ob2.get_b() << endl;
+
+	ob1 = ob1.simplifica_obiect();
+	ob3 = ob3.simplifica_obiect();
+	ob2 = ob2.simplifica_obiect();
+
+	cout << "\n\nSimplificari:\nFractie I: " << ob1.get_a() << "/" << ob1.get_b() << endl;
+	cout << "Fractie II: " << ob3.get_a() << "/" << ob3.get_b() << endl;
+	cout<<"Fractia implicita: "<< ob2.get_a() << "/" << ob2.get_b() << endl;
+
+	Fractie plus;
+	plus = ob1.adunare(ob3);
+	cout << ob1.get_a() << "/" << ob1.get_b() << "+" << ob3.get_a() << "/" << ob3.get_b() << "= " << plus.get_a() << "/" << plus.get_b();
+	
+	cout << endl;
+
+	Fractie minus;
+	minus = ob1.scadere(ob3);
+	cout << ob1.get_a() << "/" << ob1.get_b() << "-" << ob3.get_a() << "/" << ob3.get_b() << "= " << minus.get_a() << "/" << minus.get_b();
+	cout << endl;
+
+	Fractie inm;
+	inm = ob1.inmultire(ob3);
+	cout << ob1.get_a() << "/" << ob1.get_b()<< " * " << ob3.get_a() << "/" << ob3.get_b() << "= " << inm.get_a() << "/" << inm.get_b();
+	cout << endl;
+
+	Fractie imp;
+	imp = ob1.impartire(ob3);
+	cout << ob1.get_a() << "/" << ob1.get_b() << " * " << ob3.get_b() << "/" << ob3.get_a() << "= " << imp.get_a() << "/" << imp.get_b();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A  P8
+//Remodelarea clasei Fractie
+//+atribut pointer spre nume alocat dinamic,copy constructor
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <cstring>
+#include <iostream>
+using namespace std;
+
+class Fractie {
+private:
+	int a, b;
+	char* nume;
+	float cmmdc();
+
+public:
+	//constructori
+	Fractie() :a(0), b(1) {
+		nume = new char[20];
+	}
+	Fractie(int a, int b,const char *s) {
+		nume = new char[strlen(s)];
+		if (s != NULL) strcpy(nume, s);
+		else strcpy(nume,"Necunoscut");
+		this->a = a;
+		this->b = b;
+	}
+
+	Fractie(const Fractie&pt) {
+		nume = new char[strlen(pt.nume)];
+		a = pt.a;
+		b = pt.b;
+		strcpy(nume, pt.nume);
+	}
+
+	//setteri
+	void set_a(int x);
+	void set_b(int x);
+	void setNume(const char* s) {
+		strcpy(nume, s);
+	}
+	//getteri
+	int get_a();
+	int get_b();
+	char* getNume() { return nume; }
+
+	//metode
+	Fractie simplifica_obiect();
+	void simplifica();
+	Fractie adunare(Fractie);
+	Fractie scadere(Fractie);
+	Fractie inmultire(Fractie);
+	Fractie impartire(Fractie);
+
+	int cmdc_numitor(Fractie);
+	int cmmc_numitor(Fractie);
+
+
+};
+
+//setteri
+void Fractie::set_a(int x) {
+	a = x;
+}
+void Fractie::set_b(int x) {
+	b = x;
+}
+//getteri
+int Fractie::get_a() {
+	return a;
+}
+int Fractie::get_b() {
+	return b;
+}
+
+
+//metode
+Fractie Fractie::simplifica_obiect() {
+	Fractie ob1;
+	int n = cmmdc();
+
+	ob1.a = a / n;
+	ob1.b = b / n;
+
+	return ob1;
+}
+
+void Fractie::simplifica() {
+	int x = a, y = b;
+	int max = 0, min;
+
+	cout << "Divizorii: ";
+
+	if (x < y)min = x;
+	else min = y;
+	for (int i = 1; i <= min; i++) {
+		if (x % i == 0 && y % i == 0) {
+			cout << " " << i;
+			max = i;
+		}
+	}
+
+
+	a = a / max;
+	b = b / max;
+
+
+	cout << "\nFractia simplificata: " << a << "/" << b;
+}
+
+
+float Fractie::cmmdc() {
+	int r;
+	int x, y;
+	x = a;
+	y = b;
+	while (y != 0) {
+		r = x % y;
+		x = y;
+		y = r;
+
+	}
+	if (x < 0)x = -x;
+	return x;
+
+}
+
+Fractie Fractie::adunare(Fractie ob) {
+	Fractie obiect(a, b,"ob");
+	obiect = obiect.simplifica_obiect();
+	ob = ob.simplifica_obiect();
+
+	int num = obiect.cmmc_numitor(ob);
+	int aplif1 = num / obiect.b, aplif2 = num / ob.b;
+
+	Fractie plus(obiect.a * aplif1 + aplif2 * ob.a, num,"Adunare");
+	plus = plus.simplifica_obiect();
+	return plus;
+}
+
+Fractie Fractie::scadere(Fractie ob) {
+	Fractie obiect(a, b,"ob");
+	obiect = obiect.simplifica_obiect();
+	ob = ob.simplifica_obiect();
+
+	int num = obiect.cmmc_numitor(ob);
+	int aplif1 = num / obiect.b, aplif2 = num / ob.b;
+
+	Fractie minus(obiect.a * aplif1 - aplif2 * ob.a,num,"Scadere");
+	minus = minus.simplifica_obiect();
+	return minus;
+}
+
+Fractie Fractie::inmultire(Fractie ob) {
+	Fractie obiect(a, b,"ob");
+	obiect = obiect.simplifica_obiect();
+	ob = ob.simplifica_obiect();
+
+	Fractie steluta(obiect.a * ob.a, obiect.b * ob.b,"Inmultire");
+	steluta = steluta.simplifica_obiect();
+	return steluta;
+
+
+}
+
+Fractie Fractie::impartire(Fractie ob) {
+	Fractie obiect(a, b,"ob");
+	obiect = obiect.simplifica_obiect();
+	ob = ob.simplifica_obiect();
+
+	Fractie slash(obiect.a * ob.b, obiect.b * ob.a,"Impartire");
+	slash = slash.simplifica_obiect();
+	return slash;
+
+
+}
+
+int Fractie::cmdc_numitor(Fractie ob) {
+	int x = b, y = ob.b;
+	int r;
+	while (y != 0) {
+		r = x % y;
+		x = y;
+		y = r;
+
+	}
+	if (x < 0)x = -x;
+	return x;
+}
+int Fractie::cmmc_numitor(Fractie ob) {
+	int cmmc;
+	cmmc = (b * ob.b) / cmdc_numitor(ob);
+	return cmmc;
+}
+
+
+
+
+int main() {
+	Fractie ob1;
+
+	Fractie ob3(1, 15,"Fractie_II");
+
+	char s[20];
+	int a;
+	cout << "a/b :\n";
+	cout << "I: \n";
+	cout << "Introduceti numele primei fractii: ";
+	cin >> s;
+	ob1.setNume(s);
+	cout << "a= ";
+	cin >> a;
+	ob1.set_a(a);
+	cout << "b= ";
+	cin >> a;
+	ob1.set_b(a);
+	cout << "II: \n";
+	cout << "a= ";
+	cin >> a;
+	ob3.set_a(a);
+	cout << "b= ";
+	cin >> a;
+	ob3.set_b(a);
+
+	Fractie ob2(ob1);
+	cout <<ob1.getNume()<<": "<< ob1.get_a() << "/" << ob1.get_b() << endl;
+	cout << ob3.getNume()<<": "<< ob3.get_a() << "/" << ob3.get_b() << endl;
+	cout <<"Fractia copiata: "<< ob2.getNume()<<": "<< ob2.get_a() << "/" << ob2.get_b() << endl;
+
+	ob1 = ob1.simplifica_obiect();
+	ob3 = ob3.simplifica_obiect();
+	ob2 = ob2.simplifica_obiect();
+
+	cout << "\n\nSimplificari:\nFractie I: " << ob1.get_a() << "/" << ob1.get_b() << endl;
+	cout << "Fractie II: " << ob3.get_a() << "/" << ob3.get_b() << endl;
+	cout << "Fractia implicita: " << ob2.get_a() << "/" << ob2.get_b() << endl;
+
+	Fractie plus;
+	plus = ob1.adunare(ob3);
+	cout << ob1.get_a() << "/" << ob1.get_b() << "+" << ob3.get_a() << "/" << ob3.get_b() << "= " << plus.get_a() << "/" << plus.get_b();
+
+	cout << endl;
+
+	Fractie minus;
+	minus = ob1.scadere(ob3);
+	cout << ob1.get_a() << "/" << ob1.get_b() << "-" << ob3.get_a() << "/" << ob3.get_b() << "= " << minus.get_a() << "/" << minus.get_b();
+	cout << endl;
+
+	Fractie inm;
+	inm = ob1.inmultire(ob3);
+	cout << ob1.get_a() << "/" << ob1.get_b() << " * " << ob3.get_a() << "/" << ob3.get_b() << "= " << inm.get_a() << "/" << inm.get_b();
+	cout << endl;
+
+	Fractie imp;
+	imp = ob1.impartire(ob3);
+	cout << ob1.get_a() << "/" << ob1.get_b() << " * " << ob3.get_b() << "/" << ob3.get_a() << "= " << imp.get_a() << "/" << imp.get_b();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////

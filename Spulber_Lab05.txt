@@ -1,0 +1,800 @@
+LABORATOR 5
+
+//Spulber Bogdan-Andrei Grupa 3  Seria A P1
+//Program ce calculeaza raza si circumferinta a doua cercuri de raze diferite prin intermediul unei structuri.
+//Aceleasi cerinte sunt implementate dar prin intermediul unei clase care contine in plus un constructor cu parametru
+//un destructor si o metoda de afisare a razei
+//Se extinde aplicatia si se acceseaza prin pointeri,referinte si se realizeaza accesorul getRaza();
+
+#include <conio.h>
+#include <iostream>
+using namespace std;
+
+//structura
+struct Scerc {
+
+	int raza;
+	float arie_struct();
+	float circumf_struct();
+
+};
+
+//metodele structurii
+float Scerc:: arie_struct() {
+	
+	return 3.14 * raza * raza;
+
+}
+
+float Scerc:: circumf_struct() {
+	return 2 * 3.14 * raza;
+}
+
+
+//clasa
+class Cerc {
+	int raza;
+
+public:
+	Cerc(int r) { raza = r; }
+
+	float arie_clas();
+	float circumf_clas();
+	void afis_raza();
+	int getRaza();
+
+	~Cerc() { cout << "\nDesctructor"; }
+
+};
+
+//definirea metodelor clasei
+float Cerc:: arie_clas() {
+	return 3.14 * raza * raza;
+}
+float Cerc::circumf_clas() {
+	return 2 * 3.14 * raza;
+}
+void Cerc:: afis_raza() {
+	cout << raza;
+}
+int Cerc::getRaza() {
+	return raza;
+}
+
+
+
+
+
+int main() {
+	Scerc c1, c2;
+	int r1, r2;
+	
+
+	cout << "Introduceti o valoare intreaga pentru raza Cerc(1): ";
+	cin >> r1;
+	c1.raza = r1;
+
+	cout << "Introduceti o valoare intreaga pentru raza Cerc(2): ";
+	cin >> r2;
+	c2.raza = r2;
+
+	cout << "\nArie Cerc(1): " << c1.arie_struct();
+	cout << "\nArie Cerc(2): " << c2.arie_struct();
+	cout << "\n\nCircumferinta Cerc(1): " << c1.circumf_struct();
+	cout << "\nCircumferinta Cerc(2): " << c2.circumf_struct() << endl;
+	cout << "\nApasati orice tasta pentru a continua: ";
+
+	_getch();
+	system("CLS");
+
+	int a, b,aux1,aux2;
+	cout << "Introduceti o valoare intreaga pentru raza Cerc(1): ";
+	cin >> a;
+	
+	cout << "Introduceti o valoare intreaga pentru raza Cerc(2): ";
+	cin >> b;
+
+	//constructorii
+	Cerc cerc1(a),cerc2(b);
+
+	cout << "\nArie Cerc(1): " << cerc1.arie_clas();
+	cout << "\nCircumferinta Cerc(1): " << cerc1.circumf_clas();
+	cout << "\nRaza Cercului(1) prin metoda: ";
+	cerc1.afis_raza();
+	cout << "\nRaza Cercului(1) print getter: "<<cerc1.getRaza();
+
+	cout << "\n\nPointer: ";
+	Cerc* pt;
+	pt = &cerc2;
+	cout << "\n\nArie Cerc(2): " << pt->arie_clas();
+	cout << "\nCircumferinta Cerc(2): " << pt->circumf_clas();
+	cout << "\nRaza Cercului(2) prin metoda: ";
+	pt->afis_raza();
+	cout << "\nRaza Cercului(2) print getter: " << pt->getRaza();
+	
+	cout << "\n\nReferinta: ";
+	Cerc& adresa = cerc2;
+	cout << "\n\nArie Cerc(2): " << (&adresa)->arie_clas();
+	cout << "\nCircumferinta Cerc(2): " << (&adresa)->circumf_clas();
+	cout << "\nRaza Cercului(2) prin metoda: ";
+	adresa.afis_raza();
+	cout << "\nRaza Cercului(2) print getter: " << (&adresa)->getRaza();
+
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
+ P2
+ 
+#pragma once
+
+#include <iostream>
+#include <cstring>
+
+class myString {
+	char* sir;
+public:
+	void setSir(char s[]);
+	char* getSir();
+	int length();
+	char* min();
+	char* majs();
+	int apartitie(char);
+	int nr();
+
+
+};
+
+void myString::setSir(char s[]) {
+	sir = new char[strlen(s)];
+	sir = s;
+}
+
+char* myString::getSir() {
+	return sir;
+}
+
+int myString::length() {
+	return strlen(sir);
+
+}
+
+char* myString::min() {
+	for (int i = 0; i < strlen(sir); i++) {
+		sir[i] = tolower(sir[i]);
+
+
+	}
+
+	return sir;
+
+}
+
+char* myString::majs() {
+	for (int i = 0; i < strlen(sir); i++) {
+		sir[i] = toupper(sir[i]);
+
+
+	}
+	
+	return sir;
+
+}
+
+int myString::apartitie(char a) {
+	for (int i = strlen(sir); i > 0; i--) {
+		if (sir[i] == a) {
+			 
+			return i+1;
+		}
+	}
+
+
+
+}
+
+int myString::nr() {
+	char a = sir[1];
+	int nr = 0;
+	for (int i = 0; i < strlen(sir); i++) {
+		if (sir[i] == a)nr++;
+	}
+
+	return nr;
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3  Seria A P3
+//Program ce efectueaza operatii pe un sir
+
+#include "strClass.h"
+#include <cstring>
+#include <iostream>
+using namespace std;
+
+
+/*class myString {
+	char *sir;
+public:
+	void setSir(char s[]);
+	void getSir();
+	int length();
+	void min();
+	void majs();
+	void apartitie(char);
+
+ };
+
+void myString::setSir(char s[]) {
+	sir = new char[strlen(s)];
+	sir = s;
+}
+
+void myString::getSir() {
+	cout << "Sirul introdus este: " << sir;
+}
+
+int myString::length() {
+	return strlen(sir);
+
+}
+
+void myString::min() {
+	for (int i = 0; i < strlen(sir); i++) {
+		sir[i] = tolower(sir[i]);
+
+
+	}
+
+	cout << "\nSirul cu minuscule: " << sir;
+
+}
+
+void myString::majs() {
+	for (int i = 0; i < strlen(sir); i++) {
+		sir[i] = toupper(sir[i]);
+
+
+	}
+
+	cout << "\nSirul cu majuscule: " << sir;
+
+}
+
+void myString::apartitie(char a) {
+	for (int i = strlen(sir); i >0; i--) {
+		if (sir[i] == a) {
+			cout << "\nUltima pozitie a caracterului este: "<<i;
+			return;
+		}
+	}
+
+
+}
+*/
+
+int main() {
+	char s[10],a;
+	myString string;
+
+
+
+	cout << "Introduceti sirul: ";
+	cin >> s;
+	cout << "Introduceti un caracter: ";
+	cin >> a;
+
+
+
+	if (strlen(s) > 10) {
+		cout << "Sirul e prea mare!";
+		return 0;
+	}
+
+	string.setSir(s);
+	cout<<"\nSirul introdus este:"<<string.getSir();
+
+	cout << "\nLungimea sirului este: " << string.length();
+	cout << "\nUltima aparitie: "<< string.apartitie(a);
+	cout<<"\nSirul cu minuscule: "<<string.min();
+	cout<<"\nSirul cu majuscule: "<<string.majs();
+	cout << "\nNumarul de aparitii: " << string.nr();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P4
+//Program ce implementeaza o clasa Numar cu atribut int val;
+//declara un obiect de tipul clasei si apoi un pointer la acesta, 
+//prin intermediul carora se va afisa pe ecran rezultatul adunarii a doua numere de tip 
+//Numar cu valorile preluate de la tastatura in cadrul unor obiecte Numar.
+//Implementati metoda int suma_nr(Numar) care realizeaza suma in cadrul clasei si o returneaza ca un int,
+//metoda care insumeaza cele doua obiecte (curent si parametru).Implementati metoda in cadrul clasei si alta 
+//metoda cu acelas scop, dar nume diferit, in afara clasei.
+
+
+#include <iostream>
+using namespace std;
+
+
+class Numar {
+	int val;
+public:
+	Numar(int x) : val(x) {}
+
+	int suma_nr(Numar ob) {
+		return val + ob.val;
+	}
+
+	int suma_afara(Numar ob);
+
+};
+
+int Numar::suma_afara(Numar ob) {
+	return val + ob.val;
+}
+
+
+int main() {
+	int n,m;
+	cout << "Introduceti valoarea: ";
+	cin >> n;
+	cout << "Introduceti valoarea: ";
+	cin >> m;
+
+	Numar nr(n),nr2(m);
+	Numar* pt;
+	pt = &nr;
+
+	cout << "\nSuma numerelor prin functia implicita: " << pt->suma_nr(nr2);
+	cout << "\nSuma numerelor prin functia explicita: " << pt->suma_afara(nr2);
+
+
+
+
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P5
+//Program ce utilizeaza functii cu parametrii in cadrul unei clase si apoi se utilizeaza atunci cand avem
+//x si y ca obiecte si nu mai e necesara utilizarea parametrilor
+
+#include <iostream>
+using namespace std;
+
+class Operatii {
+	int a,b;
+public:
+	Operatii() {};
+	Operatii(int c,int d) :a(c),b(d) {};
+
+	int plus(int x, int y);
+	int minus(int x, int y);
+	int inmultit(int x, int y);
+	float impartit(int x, int y);
+	int plus();
+	int minus();
+	int inmultit();
+	float impartit();
+
+	~Operatii() { cout << "\nDesctructor"; }
+
+};
+
+int Operatii::plus(int x, int y) {
+	return x + y;
+}
+int Operatii::minus(int x, int y) {
+	return x - y;
+}
+int Operatii::inmultit(int x, int y) {
+	return x * y;
+
+}
+float Operatii:: impartit(int x, int y) {
+	if (y == 0) return 0.0100010101010010010100100100111101010010;
+	else return x /(float) y;
+}
+
+int Operatii::plus() {
+	return a + b ;
+}
+int Operatii::minus() {
+	return a - b;
+}
+int Operatii::inmultit() {
+	return a * b;
+
+}
+float Operatii::impartit() {
+	if (b == 0) return 0.0100010101010010010100100100111101010010;
+	else return a / (float)b;
+}
+
+
+int main() {
+	Operatii ob;
+	Operatii ob1(4, 5);
+
+	cout << "Suma: " << ob.plus(5, 4);
+	cout << "\nDiferenta: " << ob.minus(5, 4);
+	cout << "\nProdus: " << ob.inmultit(5, 4);
+	cout << "\nImpartire: " << ob.impartit(5,4);
+	cout << "\nImpartire cu 0: " << ob.impartit(54, 0);
+
+	cout << "\n\nSuma: " << ob1.plus();
+	cout << "\nDiferenta: " << ob1.minus();
+	cout << "\nProdus: " << ob1.inmultit();
+	cout << "\nImpartire: " << ob1.impartit();
+	
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P6
+//Program ce detine o clasa si modeleaza numerele complexe
+
+#include <math.h>
+#include <iostream>
+using namespace std;
+
+class Complex {
+	int im, re;
+public:
+	Complex() {};
+	Complex(int x, int y): re(x),im(y) {};
+
+	Complex adunare(Complex);
+	Complex inmultire(Complex);
+	int getReal();
+	int getIm();
+	float modul();
+
+
+
+};
+
+Complex Complex::adunare(Complex ob) {
+	Complex tmp;
+	tmp.re = re + ob.re;
+	tmp.im = im + ob.im;
+	return tmp;
+
+
+
+}
+
+Complex Complex::inmultire(Complex ob) {
+	Complex tmp;
+	tmp.re = re * ob.re;
+	tmp.im = im * ob.im;
+	return tmp;
+
+
+
+}
+
+float Complex::modul() {
+	return sqrt(re * re + im * im);
+
+
+}
+
+int Complex:: getReal() {
+	return re;
+}
+
+int Complex::getIm() {
+	return im;
+}
+
+
+
+int main() {
+	Complex ob1(2, 3), ob2(3, 4);
+	Complex ob_adunare, ob_inmultire;
+	
+	cout << "z1: " << ob1.getReal() << "+ " << ob1.getIm()<<"i";
+	cout << "\n|z1|= " << ob1.modul();
+	cout << "\n\nz2: " << ob2.getReal() << "+ " << ob2.getIm()<<"i";
+	cout << "\n|z2|= " << ob2.modul();
+
+	ob_adunare = ob1.adunare(ob2);
+	ob_inmultire = ob1.inmultire(ob2);
+	cout << "\n\nz_adunare: " << ob_adunare.getReal() << "+ " << ob_adunare.getIm()<<"i";
+	cout<< "\nz_inmultire: " << ob_inmultire.getReal() << "+ " << ob_inmultire.getIm()<<"i";
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P7
+//Program ce are implementata o clasa Aritmetica,doua atribute,set eri si get eri si doua metode
+//diferenta(definita in afara clasei Artimetica) si suma(definita in clasa)
+//Sunt instantiate 3 obiecte cu a si b diferite si se afiseaza suma si diferenta atributelor obiectelor
+//pentru fiecare operatie pe obiect se afiseaza si valorile a si b print get eri
+
+#include <iostream>
+using namespace std;
+
+class Aritmetica {
+	int a, b;
+public:
+
+	void setVal(int x,int y);
+	int getVal_a();
+	int getVal_b();
+	int suma() {
+		return a + b;
+	}
+	int diferenta();
+};
+
+int Aritmetica::diferenta() {
+	return a - b;
+}
+
+void Aritmetica::setVal(int x,int y) {
+	a = x;
+	b = y;
+}
+
+int Aritmetica::getVal_a() {
+	return a;
+}
+int Aritmetica::getVal_b() {
+	return b;
+}
+
+
+
+int main() {
+	Aritmetica ob1, ob2, ob3;
+	ob1.setVal(2, 3);
+	ob2.setVal(4, 0);
+	ob3.setVal(1, 1);
+
+	cout << "Obiect 1: \n";
+	cout << "a= " << ob1.getVal_a() << "\nb= " << ob1.getVal_b();
+	cout << "\nSuma obiect(1): " << ob1.suma();
+	cout << "\nDiferenta obiect(1): " << ob1.diferenta();
+
+
+	cout << "\n\nObiect 2: \n";
+	cout << "a= " << ob2.getVal_a() << "\nb= " << ob2.getVal_b();
+	cout << "\nSuma obiect(2): " << ob2.suma();
+	cout << "\nDiferenta obiect(2): " << ob2.diferenta();
+
+	cout << "\n\nObiect 3: \n";
+	cout << "a= " << ob3.getVal_a() << "\nb= " << ob3.getVal_b();
+	cout << "\nSuma obiect(3): " << ob3.suma();
+	cout << "\nDiferenta obiect(3): " << ob3.diferenta();
+
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P8
+//Program ce detine o clasa si modeleaza numerele complexe avand ca si operatii intre ele adunare,scadere
+//inmultire si impartire dar chiar si modul
+
+#include <math.h>
+#include <iostream>
+using namespace std;
+
+class Complex {
+	float im, re;
+public:
+	Complex() {};
+	Complex(float x, float y) : re(x), im(y) {};
+
+	Complex adunare(Complex);
+	Complex scadere(Complex);
+
+	Complex impartire(Complex);
+	Complex inmultire(Complex);
+	float getReal();
+	float getIm();
+	float modul();
+
+
+
+};
+
+Complex Complex::impartire(Complex ob) {
+	Complex tmp;
+	tmp.re = re/(float)ob.re;
+	tmp.im = im/(float) ob.im;
+	return tmp;
+
+
+
+}
+
+Complex Complex::scadere(Complex ob) {
+	Complex tmp;
+	tmp.re = re - ob.re;
+	tmp.im = im - ob.im;
+	return tmp;
+
+
+
+}
+
+Complex Complex::adunare(Complex ob) {
+	Complex tmp;
+	tmp.re = re + ob.re;
+	tmp.im = im + ob.im;
+	return tmp;
+
+
+
+}
+
+Complex Complex::inmultire(Complex ob) {
+	Complex tmp;
+	tmp.re = re * ob.re;
+	tmp.im = im * ob.im;
+	return tmp;
+
+
+
+}
+
+float Complex::modul() {
+	return sqrt(re * re + im * im);
+
+
+}
+
+float Complex::getReal() {
+	return re;
+}
+
+float Complex::getIm() {
+	return im;
+}
+
+
+
+int main() {
+	Complex ob1(2, 3), ob2(3, 4);
+	Complex ob_adunare, ob_inmultire;
+	Complex ob_scadere, ob_impartire;
+
+	cout << "z1: " << ob1.getReal() << "+ " << ob1.getIm() << "i";
+	cout << "\n|z1|= " << ob1.modul();
+	cout << "\n\nz2: " << ob2.getReal() << "+ " << ob2.getIm() << "i";
+	cout << "\n|z2|= " << ob2.modul();
+
+	ob_adunare = ob1.adunare(ob2);
+	ob_inmultire = ob1.inmultire(ob2);
+	ob_scadere = ob1.scadere(ob2);
+	ob_impartire = ob1.impartire(ob2);
+	cout << "\n\nz_adunare: " << ob_adunare.getReal() << " + " << ob_adunare.getIm() << "i";
+	cout << "\nz_scadere: " << ob_scadere.getReal() << " + " << ob_scadere.getIm() << "i";
+	cout << "\nz_inmultire: " << ob_inmultire.getReal() << " + " << ob_inmultire.getIm() << "i";
+	cout << "\nz_impartire: " << ob_impartire.getReal() << " + " << ob_impartire.getIm() << "i";
+
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P9
+//Program ce are implementat o clasa Fractie  cu doua atribute a si b reprezentand numarator si numitor
+//sunt definite doua metode set si get pentru fiecare atribut
+//sunt instantiate doua obiecte se afiseaza atributele initiale si apoi atributele dupa folosirea set ului
+//se defineste o metoda simplifica() ce determina divizorii numaratorului si numitorului ii afiseaza si realizeaza
+//simplificarea fractiei si se afiseaza in metoda noua fractie
+
+#include <iostream>
+using namespace std;
+
+class Fractie {
+	int a, b;
+public:
+	void set_a(int x);
+	void set_b(int x);
+	int get_a();
+	int get_b();
+
+	void simplifica();
+};
+
+void Fractie:: set_a(int x) {
+	a = x;
+}
+void Fractie::set_b(int x) {
+	b = x;
+}
+int Fractie::get_a() {
+	return a;
+}
+int Fractie::get_b() {
+	return b;
+}
+
+void Fractie:: simplifica() {
+	int x = a,y=b;
+	int max=0,min;
+
+	cout << "Divizorii: ";
+	
+	if (x < y)min = x;
+	else min = y;
+	for (int i = 1; i  <= min; i++) {
+		if (x % i == 0 && y%i==0) {
+			cout <<" "<< i;
+			max = i;
+		}
+	}
+
+
+	a = a / max;
+	b = b / max;
+
+
+	cout << "\nFractia simplificata: " << a << "/" << b;
+}
+
+
+int main() {
+	Fractie ob1, ob2;
+
+	cout << "Fara set: \n";
+	cout <<ob1.get_a()<<"/"<<ob1.get_b()<<endl;
+	cout << ob2.get_a() << "/" << ob2.get_b();
+
+	ob1.set_a(16);
+	ob1.set_b(8);
+	ob2.set_a(3);
+	ob2.set_b(9);
+
+	cout << "\n\nCu set: \n";
+	cout <<"Fractie I: "<< ob1.get_a() << "/" << ob1.get_b() << endl;
+	cout <<"Fractie II: " <<ob2.get_a() << "/" << ob2.get_b()<<endl;
+
+	cout << endl;
+	ob1.simplifica();
+	cout << endl;
+	ob2.simplifica();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////

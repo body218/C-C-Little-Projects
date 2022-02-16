@@ -1,0 +1,1081 @@
+LABORATOR 3
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P2
+//Program ce afiseaza solutiile de impartire a fluxurilor [2Mb/s-40Mb/s]
+
+#include <iostream>
+using namespace std;
+
+//prototipuri
+float min(float [],int n);
+
+
+int main() {
+	int n,k,posibil;
+	float v[10],psuma=0.0f,minim;
+
+	cout << "Introduceti numarul de utilizatori: ";
+	cin >> n;
+
+	if (n > 10) {
+		return 0;
+	}
+
+	cout << "Introduceti ponderile: \n";
+	for (int i = 0; i < n; i++) {
+		cout<<"p("<<i<<")= ";
+		cin >> v[i];
+
+		psuma += v[i];
+	}
+
+	if (psuma != 1) {
+			return 0;
+	}
+
+
+	minim = min(v, n);
+
+	for (int i = 40; i >= 2; i--) {
+		if (minim * i >= 2)cout << i << endl;      //testam daca utilizatorul cu ponderea cea mai mica poate avea un flux de 2Mb/s
+		else return 0;
+
+	}
+
+
+
+
+}
+
+float min(float v[],int n) {
+	float min = v[0];
+
+	for (int i = 0; i <n-1; i++) {
+		if (min > v[i + 1]) min = v[i + 1];
+	}
+
+	return min;
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A  P3
+//Program ce calculeaza ruta cu cost minim
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#define MAX 7
+int x[MAX], Y[MAX];//x componentele solutiei, rezultatul Y
+int COST[MAX][MAX];//mat. costuri
+void cit(int[][MAX], int&);// citire matrice
+void afis(int[][MAX], int&);//afisare matrice
+int max_cost(int[][MAX], int&);//det. Cost maxim
+void afis_sol(long&);//afisare solutie optima
+int posibil(int);//posibil solutie- sa existe drum direct intre orase si oras neales in prealabil
+int n;
+
+int main(void) {
+	int k;
+	long cost_M, C;
+	printf("Introduceti numarul de filiale (<=7): \n");
+	scanf("%d", &n);
+	printf("Introduceti valoarea rutei: \n");
+	cit(COST, n);
+	afis(COST, n);
+	cost_M = (n + 1) * (long)max_cost(COST, n) + 1;//stabilire un cost maxim initial
+	// printf("Cost maxim= %ld\n",cost_M);
+	k = 0;//prima componenta
+	printf("Introduceti filiala de plecare (0, ..., %d)",n);
+	scanf("%d", &x[k]);
+	k = 1;//urmatoarea componenta
+	x[k] = -1;//valori posibile de la 0 si de aceea prima val. sub cea posibila
+	do {
+		while (x[k] < n) //mai sunt valori posibile pentru componenta k
+		{
+			x[k]++; //trec la urmatoarea valoare
+			if (posibil(k)) if ((k == (n - 1)) && (COST[x[n - 1]][x[0]] != 0)) {
+				//adica a ajuns pana la orasul n-1 si se poate intoarce de unde a plecat
+				C = 0;//determin noul cost
+				for (int i = 0; i < n - 1; i++)C += COST[x[i]][x[i + 1]];
+				C += COST[x[n - 1]][x[0]];//cost total inclusiv revenire
+				if (C < cost_M)for (int i = 0; i < n; i++) { Y[i] = x[i]; cost_M = C; }
+				//salvare solutie noua obtinuta, modificare cost_M
+			}
+			else { k++; x[k] = -1; } //trec la urmatoarea componenta
+		}//while
+		k--; //nu mai sunt valori pentru componenta k. Revin la componenta k-1
+	} while (!(k < 1));//m-am intors mai mult decit se putea sau k>=1
+	afis_sol(cost_M); //e gata solutie
+}//main
+
+int posibil(int k)
+{
+	if (k == 0)return 1;
+	if (COST[x[k - 1]][x[k]] != 0) {//adica drum direct
+		for (int i = 0; i < k; i++)
+			if (x[k] == x[i])return 0;//orasul sa nu fi fost deja ales
+		return 1;
+	}
+	return 0;
+}//posibil
+
+void afis_sol(long& CF)
+{
+	for (int i = 0; i < n; i++) //afisez solutia curenta pentru componentele drapelului
+		printf("%d ", Y[i]);
+	printf("\nCostul este %ld", CF);
+}//afis_sol
+
+void cit(int mat[][MAX], int& n) {
+	for (int i = 0; i < n - 1; i++)
+	{
+		mat[i][i] = 0;
+		for (int j = i + 1; j < n; j++)
+		{
+			printf("Introdu Elem[%d][%d]= ", i, j);
+			scanf("%d", &mat[i][j]);
+			mat[j][i] = mat[i][j];
+		}
+	}
+}//cit
+
+void afis(int mat[][MAX], int& n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+			printf("%4d ", mat[i][j]);
+		printf("\n");
+	}
+}//afis
+
+int max_cost(int mat[][MAX], int& n)
+{
+	int max = mat[0][0];
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++)
+			if (mat[i][j] > max)max = mat[i][j];
+	return max;
+}//max_cost
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P4
+//Program Problema investirii optime de capital: pentru un investitor cu un capital C si n oferte la care trebuie avansate fondurile fi si care aduc beneficiile bi, se cere selectarea acelor oferte care ii aduc beneficiul maxim
+
+#include <iostream>
+using namespace std;
+                                       //n-nr oferte, 
+//prototipuri                          //c-capital 
+void cit();                            //f-fonduri
+void afis();                           //b-benifiicii-oferte
+void inapoi(int, int, int);            //bm-benificiu maxim 
+void salvare(int, int);                //m-oferte care aduc bm
+
+int c, n, bm, f[20], b[20], m[20], x[20];
+int main() {
+   
+    cout << "Introduceti valoarea pentru capital: ";
+    cin >> c;
+    cout << "Introduceti numarul de oferte: ";
+    cin >> n;
+
+    cit();
+    bm = 0;
+    inapoi(1, 0, 0);
+    afis();
+
+
+
+}
+
+//definirea f.de citire
+void cit() {
+    for (int i = 0; i < n; i++) {
+        cout << "\nIntroduceti fondurile si beneficiile aduse pentru oferta: " << i;
+        cout << "\nf[" << i << "]= ";
+        cin >> f[i];
+        cout << "b[" << i << "]= ";
+        cin >> b[i];
+    }
+
+}
+
+//definirea f.de afisare
+void afis() {
+    if (bm != 0) {
+        cout << "\nBeneficiul maxim este: " << bm << "provenit din ofertele: ";
+        for (int i = 0; i <= m[0]; i++) {
+            cout << m[i] << ", ";
+        }
+        cout << "\b\b \n";
+    }
+    else cout << "\nCapital prea mic!";
+}
+
+//definirea f.de salvare
+void salvare(int j, int max) {
+    if (max > bm) {
+        m[0] = j;
+        for (int i = 1; i <= j; i++) m[i] = x[i];
+        bm = max;
+    }
+}
+
+void inapoi(int j, int fp, int bp) {
+    int v[20];
+    if (fp > c)
+        salvare(j - 2, bp - b[x[j - 1]]);
+    else 
+        for(int i=1;i<=n;i++)
+            if (!v[i]) {
+                x[j] = i;
+                v[i] = 1;
+                inapoi(j + 1, fp + f[i], bp + b[i]);
+                v[i] = 0;
+            }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P5
+//Program ce stocheaza un sir de numere intregi,aleator, sunt preluate din fisier si prin divide et impera
+//se determina minimul si maximul valori ce sunt adaugate la finalul fisierului
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
+#include <time.h>
+#include <iostream>
+using namespace std;
+
+int min2 = 100, min1 = 101;
+
+//prototipuri
+int min(int*,int left,int right);
+int max(int* tab, int left, int right);
+
+int main() {
+	FILE* fp;
+	int x,*tab,l=0,minim,maxim;
+
+	tab = new int[100];
+	if (!tab) {
+		cout << "Eroare!";
+		return 0;
+	}
+
+	fp = fopen("Sir generat.in", "w+");
+	if (!fp) {
+		cout << "Eroare fisier!";
+		return 0;
+	}
+
+	srand(time(0));
+	//generare sir
+	for (int i = 0; i < 30; i++) {
+		x = rand() % 100 + 1;
+		fprintf(fp, "%d ", x);
+
+	}
+
+	fclose(fp);
+	fp = fopen("Sir generat.in", "r+");
+	if (!fp) {
+		cout << "Eroare Fisier 2!";
+		return 0;
+	}
+
+	while (fscanf(fp, "%d", &x) != EOF) {
+		tab[l] = x;
+		l++;
+	}
+	
+
+	cout << "Sirul preluat: ";
+	for (int i = 0; i < l; i++) {
+		cout <<" "<< tab[i];
+	}
+
+	int k = l;
+
+	minim = min(tab,0,l-1);
+	cout << endl <<"Minimul: "<< minim;
+	maxim = max(tab, 0, l - 1);
+	cout << endl <<"Maximul: "<<maxim;
+
+	fprintf(fp, "\nMin: %d \nMax: %d", minim, maxim);
+	fclose(fp);
+}
+
+
+//definirea f.de minim
+int min(int* tab,int left,int right) {
+	    //cat timp sunt peste doua elemente
+	
+	if (right - left < 1)return tab[left];
+	int m = (left + right) / 2;
+	int a = min(tab, left, m);           //se autoapeleaza pana cand a= minimului din stanga
+	int b = min(tab, m + 1, right);		//se autoapeleaza pana cand b= minimului din dreapta
+
+	if (a < b)return a;
+	else return b;
+
+
+
+}
+
+//definirea f.de maxim
+int max(int* tab, int left, int right) {
+
+	if (right - left < 1)return tab[left];
+	int m = (left + right) / 2;
+	int a = max(tab, left, m);           //se autoapeleaza pana cand a= maximul din stanga
+	int b = max(tab, m + 1, right);		//se autoapeleaza pana cand b= maximul din dreapta
+
+	if (a < b)return b;
+	else return a;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P6
+//Program ce calculeaza CMMDC utilizand divide et impera
+
+#include <time.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <iostream>
+using namespace std;
+
+//prototipuri
+int CMMDC(int*, int left,int right);
+int cmmdc(int a, int b);
+
+int main() {
+	int* tab,n;
+
+	tab = new int[2000];
+	if (!tab) {
+		cout << "EROARE!";
+		return 0;
+	}
+
+	cout << "Introduceti dimensiunea: ";
+	cin >> n;
+	
+	srand(time(0));
+
+	for (int i = 0; i < n; i++) {
+		tab[i] = rand() % 100 + 1;
+	}
+
+	cout << "Sirul: ";
+	for (int i = 0; i < n; i++) {
+		cout << " " << tab[i];
+	}
+
+	int C = CMMDC(tab, 0, n - 1);
+
+	cout << "\nCMMDC: " << C;
+
+
+}
+
+
+//definirea f.de calcul a cmmdc in tablou
+int CMMDC(int* tab, int left, int right) {
+
+	if (right - left < 1) return tab[left];
+	int m = (right + left) / 2;
+	int a = CMMDC(tab, left, m);
+	int b = CMMDC(tab, m + 1, right);
+	
+	return cmmdc(a, b);
+
+
+}
+
+
+
+//definirea f.de calcul cmmdc dintre doua numere
+int cmmdc(int a, int b) {
+	int r;
+
+	while (b != 0) {
+		r = a % b;
+		a = b;
+		b = r;
+	}
+	
+	return a;
+
+}
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A   P7
+//Program ce calculeaza integrala 1/(1+x^2) dx , astfel incat inaltimea fiecarui trapez a carui arie se insumeaza
+//sa fie mai mica decat E=0.0001
+
+#include <iostream>
+using namespace std;
+
+//prototipuri
+float explicitare(float x);
+float Arie_integral(float ,float );
+
+
+int main() {
+	float a, b;
+	cout << "Introduceti valoriile domeniului: \n";
+	cout << "a= ";
+	cin >> a;
+	cout << "b= ";
+	cin >> b;
+
+	if (b < a) {
+		cout << "Valorile nu sunt corespunzatoare!";
+		return 0;
+	}
+
+	cout << "\nValoarea integralei este: " << Arie_integral(a, b);
+
+}
+
+
+//definirea functiei f(x)
+float explicitare(float x) {
+		
+	return 1 / (float)(1 + x * x);
+
+}
+
+//definirea f.de calcul integral prin metoda trapezelor
+float Arie_integral(float a, float b) {
+
+	if ((float)(b - a) < 0.0001) {
+		return (b - a) * (explicitare(a) + explicitare(b)) / (float)2;
+	}
+	else {
+		float c = (a + b) / 2;
+
+		return Arie_integral(a, c) + Arie_integral(c, b);
+
+	}
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P8
+//Program ce genereaza maxim 10 numere intregi memorate intr-un tablou unidimensional si verifica daca o alta valoare generata
+//apartine tabloului utilizand functia lsearch
+
+#include <search.h>
+#include <conio.h>
+#include <time.h>
+#include <stdlib.h>
+#include <iostream>
+using namespace std;
+
+//protiotipuri
+void generare(int* );
+int compare(const void* a, const void* b);
+
+int main() {
+	int* tab,key,*x;
+	int n =10;
+
+	srand(time(0));
+	key = rand() % 100 + 1;
+	
+
+	//alocare dinamica
+	tab = new int[10];
+	if (!tab) {
+		cout << "EROARE ALOCARE!";
+		return 0;
+	}
+
+	//apel f.de generare
+	generare(tab);
+	//key = tab[3];
+	cout << "\nValoarea generata este: " << key;
+	//apel f. lsearch()
+	x = (int*)_lsearch(&key, tab, (size_t*)&n, sizeof(int), (int(*)(const void*, const void*))compare);
+
+	if (n==10) printf("\nValoarea %d apartine! ", *x);
+	else cout << "\nNu apartine:(";
+
+
+}
+
+//definirea f.de generare
+void generare(int* p) {
+
+	
+
+	for (int i = 0; i < 10; i++) {
+		*(p + i) = rand() % 100 + 1;
+	}
+	cout << "Sirul generat: ";
+	for (int i = 0; i < 10; i++) {
+		cout <<" "<<*(p + i);
+	}
+}
+
+//definirea d.de comparare
+int compare(const void* a, const void* b)
+{
+	return (*(int*)a - *(int*)b);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3  Seria A P9
+//Program care gaseste cele mai apropriate imagini folosind pe rand o cheie de cautare din antetul imaginii.
+
+#include <Windows.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <conio.h>
+#include <cstring>
+#include <iostream>
+using namespace std;
+
+//structura imagini
+struct Imagine {
+	char nume_fis[30];
+	char cale[100];
+	int rezolutie;
+	int octeti;
+
+
+};
+
+//prototipuri
+void cit(Imagine*);
+void afis(Imagine*);
+void menu(Imagine *,int );
+void cautare_nume(Imagine*,int n, char []);
+void cautare_cale(Imagine*, int n, char[]);
+void cautare_rezolutie(Imagine*, int n, int);
+void cautare_dim(Imagine* pt, int n, int x);
+
+int main() {
+	struct Imagine* pt;
+	int n;
+	cout << "Cate imagini doriti sa introduceti: ";
+	cin >> n;
+
+
+	pt = new struct Imagine[n];
+	if (!pt) {
+		cout << "EROARE";;
+		return 0;
+	}
+
+	
+	for (int i = 0; i < n; i++) {
+		cout << "Image " << i+1 << ": \n";
+		cit(&pt[i]);
+	}
+
+	system("CLS");
+	
+	menu(pt, n);
+
+
+}
+
+//definirea de f.citire
+void cit(Imagine* pt) {
+
+	cout << "Introduceti nume fisier: ";
+	cin >> pt->nume_fis;
+	cout << "Introduceti calea imagini: ";
+	cin >> pt->cale;
+	cout << "Introduceti rezolutia imaginii: ";
+	cin >> pt->rezolutie;
+	cout << "Introduceti dimensiunea imaginii: ";
+	cin >> pt->octeti;
+
+
+
+}
+
+//definirea f.de afisare
+void afis(Imagine* pt) {
+	cout << "\nFisier: " << pt->nume_fis;
+	cout << "\nCale: " << pt->cale;
+	cout << "\nRezolutie: " << pt->rezolutie;
+	cout << "\nDimensiune: " << pt->octeti;
+
+}
+
+
+//definirea f. de meniu
+void menu(Imagine *pt,int n) {
+	
+
+	cout << "Doriti sa cautati imaginea dupa: \na)Nume fisier\nb)Cale\nc)Rezolutie\nd)Dimensiune\n";
+	cout << "Introduceti litera corespunzatoare: ";
+	
+	char x = _getch();
+	
+	system("CLS");
+	if (x == 'a') {
+		char s[30];
+		cout << "Introduceti cheia : ";
+		cin >> s;
+
+
+
+		cautare_nume(pt, n, s);
+
+		Sleep(3000);
+		system("CLS");
+		menu(pt, n);
+		
+	}
+	else if (x == 'b') {
+		char s[30];
+		cout << "Introduceti cheia : ";
+		cin >> s;
+
+
+
+		cautare_cale(pt, n, s);
+
+		Sleep(3000);
+		system("CLS");
+		menu(pt, n);
+	}
+	else if (x == 'c') {
+
+		int s;
+		cout << "Introduceti cheia : ";
+		cin >> s;
+
+
+
+		cautare_rezolutie(pt, n, s);
+
+		Sleep(3000);
+		system("CLS");
+		menu(pt, n);
+
+
+	}
+	else if (x == 'd') {
+		int s;
+		cout << "Introduceti cheia : ";
+		cin >> s;
+
+
+
+		cautare_dim(pt, n, s);
+
+		Sleep(3000);
+		system("CLS");
+		menu(pt, n);
+	}
+
+	else {
+		menu(pt, n);
+	}
+
+
+
+
+
+}
+
+//definirea f.de cautare dupa sir
+void cautare_nume(Imagine* pt,int n, char s[]) {
+	bool gasit = false;
+
+	
+	for (int i = 0; i < n; i++) {
+
+		if (strcmp(pt[i].nume_fis, s) == 0) {
+			afis(&pt[i]);
+			cout << endl;
+			gasit = true;
+		}
+	}
+
+	if (gasit) return;
+	
+	for (int i = 0; i < n; i++){
+		if (_stricmp(pt[i].nume_fis, s) == 0) {
+			afis(&pt[i]);
+			cout << endl;
+			gasit = true;
+
+		}
+	}
+
+	if (gasit) return;
+
+	while (s != NULL) {
+
+		for (int i = 0; i < n; i++) {
+			if (strstr(pt[i].nume_fis, s)) {             //va afisa toate imaginile cu acelasi grad de asemanare
+				afis(&pt[i]);                      
+				cout << endl;
+				gasit = true;
+			}
+		}
+		if (gasit) return;
+
+		s[strlen(s) - 1] = '\0';
+
+	}
+
+	cout << "Nu s-a gasit nici o imagine asemanatoare cheii.";
+
+}
+
+
+//definirea f.de cautare dupa cale
+void cautare_cale(Imagine*pt, int n, char s[]) {
+
+	bool gasit = false;
+
+
+	for (int i = 0; i < n; i++) {
+
+		if (strcmp(pt[i].cale, s) == 0) {
+			afis(&pt[i]);
+			cout << endl;
+			gasit = true;
+		}
+	}
+
+	if (gasit) return;
+
+
+	while (s != NULL) {
+
+
+		
+		for (int i = 0; i < n; i++) {
+			if (strstr(pt[i].cale, s)) {             //va afisa toate imaginile cu acelasi grad de asemanare
+				afis(&pt[i]);
+				cout << endl;
+				gasit = true;
+			}
+		}
+		if (gasit) return;
+
+		if(s[strlen(s)-1]=='/')
+		s[strlen(s) - 1] = '\0';
+
+		while (s[strlen(s) - 1] != '/') {
+			s[strlen(s) - 1] = '\0';
+		}
+
+
+	}
+
+	cout << "Nu s-a gasit nici o imagine asemanatoare cheii.";
+ 
+
+}
+
+//definirea f.de cautare pentru rezolutie
+void cautare_rezolutie(Imagine*pt, int n, int x) {
+	int min =abs(x-pt[0].rezolutie);
+
+
+	for (int i = 0; i < n; i++) {
+		if (abs(x - pt[i].rezolutie)<min) {
+			min = abs(x - pt[i].rezolutie);   //diferenta minima dintre cele doua
+		}									//daca ele sunt egale dif=0
+	}
+
+	for (int i = 0; i < n; i++) {
+		if (abs(x - pt[i].rezolutie) == min) {     //afisam imaginile cu diferenta minima 
+			afis(&pt[i]);
+			cout << endl;
+		}
+	}
+
+	
+
+
+}
+
+//definirea f.de cautare
+void cautare_dim(Imagine* pt, int n, int x) {
+	int min = abs(x - pt[0].octeti);
+
+
+	for (int i = 0; i < n; i++) {
+		if (abs(x - pt[i].octeti) < min) {
+			min = abs(x - pt[i].octeti);   //diferenta minima dintre cele doua
+		}									//daca ele sunt egale dif=0
+	}
+
+	for (int i = 0; i < n; i++) {
+		if (abs(x - pt[i].octeti) == min) {     //afisam imaginile cu diferenta minima 
+			afis(&pt[i]);
+			cout << endl;
+		}
+	}
+
+
+
+
+
+
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3  Seria A P10
+//Program ce cauta o noua valoare folosind cautarea binara si daca exista afiseaza toti factorii primi ai acesteia
+
+
+#include <time.h>
+#include <iostream>
+using namespace std;
+
+int tab[20];
+
+//prototipuri
+int cautareBinara(int a);
+void fact(int a);
+int compare(const void* a, const void* b);
+
+
+int main() {
+	int a;
+
+	
+
+
+	
+
+	srand(time(0));
+
+	for (int i = 0; i < 20; i++) {
+		tab[i] = rand() % 100 + 1;
+	}
+
+	qsort(tab, 20, sizeof(int), compare);
+
+	for (int i = 0; i < 20; i++) {
+		cout<<" "<<tab[i];
+	}
+
+	cout << "\nIntroduceti o valoare pentru a: ";
+	cin >> a;
+	
+
+
+	
+
+	if (cautareBinara(a)) {
+		cout << "\nSe afla!\n";
+		fact(a);
+	}
+	else cout << "\nNu se afla!";
+	return 0;
+	
+}
+
+
+//definirea f. de cautare binara
+int  cautareBinara(int a) {
+	int item = -1, Left = 0, Right = 20;
+	while (Left <= Right)
+	{
+		int Mid = (Left + Right) / 2;
+		if (tab[Mid] == a)
+		{
+			item = Mid;
+			return true;
+		}
+		if (tab[Mid] > a)
+			Right = Mid - 1;
+		if (tab[Mid] < a)
+			Left = Mid + 1;
+	}
+
+	return false;
+
+}
+
+
+//definirea f.de factorial
+void fact(int a) {
+	int f=2,p;
+	bool prim;
+
+	while (a != 1) {
+		if (a % f == 0) {
+			prim = true;
+			for (int i = 2 ; i * i <= f && prim; i++) {
+				if (f % i == 0)prim = false;
+			}
+			if (prim) {
+				p=0;
+				while (a % f == 0) {
+					p++;
+					a /= f;
+					
+				}
+				cout << " " << f<<"^"<<p;
+				
+			}
+
+		}
+		f++;
+
+	}
+
+}
+
+int compare(const void* a, const void* b) {
+	return *(int*)a - *(int*)b;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P11
+//Program ce cauta o valoarea reala intr-un fisier folosing algoritmul de cautare binara iterativ,recursiv si bsearch
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <iostream>
+using namespace std;
+
+//prototipuri
+int cautareBinaraI(float a);
+int cautareBinaraR(int Left, int Right,float a);
+int compare(const void* a,const void* b);
+
+float* tab;
+int m;
+
+int main() {
+	FILE* fp=NULL;
+	float a,x;
+	int nr=12;
+	
+	cout << "Introduceti valoarea: ";
+	cin >> a;
+
+	//alocare dinamica
+	tab = new float[12];
+	if (!tab) {
+		cout << "Eroare!";
+		return 0;
+	}
+
+	//deshidere fisier
+	fp = fopen("Sir.in", "r+");
+	if(!fp){
+		cout << "Eroare!";
+		return 0;
+	}
+
+	cout << "Sirul citit: ";
+	//citire din fisier
+	for (int i = 0; i < 12; i++) {
+		fscanf(fp,"%f", &x);
+		*(tab + i) = x;
+		cout << " " << *(tab + i);
+	}
+
+	fclose(fp);
+	cout << "\nValoarea introdusa este: " << a;
+	cout << "\nPozitia valorii gasite iterativ este: " << cautareBinaraI(a);  //apel f.iterativa
+	cout << "\nPozitia valorii gasite recursiv este: " << cautareBinaraR(0, 11, a);  //apel f.recursiva
+
+	void* aux= (int*)bsearch(&a, tab, nr, sizeof(int),
+		(int (*) (const void*, const void*)) compare);   //apel f.bsearch
+
+
+	if (aux != NULL)printf("\nPozitia valorii gasite prin bsearch este: %d", (float*)aux - tab);
+	else printf("\nPozitia valorii gasite prin bsearch este: -1 ");
+}
+
+//definriea f.de cautare binara iterativ
+int cautareBinaraI(float a) {
+
+	int item = -1, Left = 0, Right = 11;
+	while (Left <= Right)
+	{
+		int Mid = (Left + Right) / 2;
+		if (tab[Mid] == a)
+		{
+			item = Mid;
+			break;
+		}
+		if (tab[Mid] > a)
+			Right = Mid - 1;
+		if (tab[Mid] < a)
+			Left = Mid + 1;
+	}
+	
+	return item;
+
+}
+
+//definirea f.recursive de cautare binara
+int cautareBinaraR(int s, int d,float a)
+{
+	if (s > d)
+		return -1;
+	else
+	{
+		m = (s + d) / 2;
+		if (a == tab[m])
+			return m;
+		if (a < tab[m])
+			return cautareBinaraR(s, m - 1,a);
+		else
+			return cautareBinaraR(m + 1, d,a);
+	}
+}
+
+//definirea f.de comparare
+int compare(const void* a, const void* b)
+{
+	return (*(int*)a - *(int*)b);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////

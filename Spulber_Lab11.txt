@@ -1,0 +1,1475 @@
+LABORATOR 11
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A  P1
+//In cazul exemplului 2 (care exemplifica mostenirea simpla, cu clasa de baza Pozitie si derivata Punct) se cer urmatoarele :
+//a.urmariti si verificati ordinea de apel pentru constructori / destructori
+//b.extindeti functia main() pentru a utiliza toate metodele din clasa de baza si din clasa derivata
+//c.introduceti o noua clasa Cerc(date si metode), derivata din clasa Pozitie
+//d.scrieti un program ce utilizeaza aceste clase.
+
+// program de test
+#include <iostream>
+using namespace std;
+#include "Poz_punct.h.h"
+
+
+int main() {
+	Pozitie pp0(7, 7);//base class object
+	cout << "\n Metode CB \n";
+	pp0.afisare();
+	pp0.deplasare(6, 9);
+	pp0.afisare();
+	cout << "\n Metode CD \n";
+	Punct p0(1, 1, 'V');//derived class object
+		p0.afisare();
+	Punct p1(p0);
+	p1.arata();
+	p1.deplasare(10, 10);
+	cout << "\nUpcasting - obiecte:\n";
+	pp0 = p0;//upcasting by objects
+	pp0.afisare();
+	cout << "\nUpcasting - pointeri:\n ";
+	Pozitie * p;//base class pointer
+	p = new Punct(100, 100, 'Z');//derived object to the base class pointer
+	//cout<<"\nAfisare CB: \n"; non virtual
+	cout << "\nAfisare CD: derived class object if virtual, else base class CB \n";
+	p->afisare();//afis invizibil
+	p = &pp0;
+	cout << "\nAfisare CB: base class object always\n";
+	p->afisare();
+	p = &p1;
+	cout << "\nAfisare CD: derived class object if virtual, else base class CB \n";
+	p->afisare();
+	Punct * pp;
+	pp = &p1;
+	cout << "\nAfisare CD: derived class object always\n";
+	pp->afisare();
+	cout << "\n Deplasare CD with 10, 10 \n";
+	pp->deplasare(10, 10);
+	cout << "\nAfisare CD: derived class object with ascunde()\n";
+	pp->ascunde();
+	pp->afisare();
+	cout << "\n Deplasare CD with 10, 10 and ascunde()\n";
+	pp->deplasare(10, 10);
+	cout << "\nAfisare direct from CB: derived object displayed with base class method always\n";
+	pp->Pozitie::afisare();
+	cout << "\nDowncasting:\n ";
+	Punct * pdown;//derived pointer
+	pdown = (Punct*)&pp0;//downcasting by base class object
+	cout << "\nAfisare CB: base class object using a derived pointer, else derived class CD \n";
+	pdown->afisare();
+	pdown = (Punct*)p;//downcasting by derived class object
+	cout << "\n Afisare din Derivat, Punct" << endl;
+	pdown->afisare();
+
+	Pozitie* pt;
+	Cerc cer(1,2);
+	pt = &cer;
+	pt->afisare();
+	pt->deplasare(2, 2);
+	pt->afisare();
+	
+
+
+
+	return 0;
+}
+//********************************************************************
+
+
+
+
+#pragma once
+
+//Poz_punct.h
+// clasa de baza
+
+#include <math.h>
+#include <iostream>
+using namespace std;
+
+
+class Pozitie {
+protected:
+	int x, y;
+public:
+	Pozitie(int = 0, int = 0);
+	Pozitie(const Pozitie&);//exista unul implicit standard, aici unul diferit
+	~Pozitie();
+	//void afisare();
+	//void deplasare(int, int);
+	virtual void afisare();
+	virtual void deplasare(int, int);
+};//CB
+// constructor
+Pozitie::Pozitie(int abs, int ord) {
+	x = abs; y = ord;
+	cout << "Constructor CB \"Pozitie\", ";
+	afisare();
+}
+//constructor de copiere
+Pozitie::Pozitie(const Pozitie& p) {
+	x = p.x;
+	y = p.y;
+	cout << "Constructor de copiere CB \"Pozitie\", ";
+	afisare();
+}
+// destructor
+Pozitie::~Pozitie() {
+	cout << "Destructor CB \"Pozitie \", ";
+	afisare();
+}
+void Pozitie::afisare() {
+	cout << " CB afisare: coordonate: x = " << x << ", y = " << y << "\n";
+}
+void Pozitie::deplasare(int dx, int dy) {
+	cout << "CB: deplasare" << endl;
+	x += dx; y += dy;
+}
+
+
+
+
+/////////////////////////////////////// clasa derivata
+class Punct : public Pozitie {
+	int vizibil;//ca un flag
+	char culoare;
+public:
+	Punct(int = 0, int = 0, char = 'A');
+	Punct(const Punct&);
+	~Punct();
+	void arata() {
+		vizibil = 1;
+	}
+	void ascunde() {
+		vizibil = 0;
+	}
+	void coloreaza(char c) {
+		culoare = c;
+	}
+	void deplasare(int, int)override;
+	void afisare()override;
+};//CD
+// constructor
+Punct::Punct(int abs, int ord, char c) :Pozitie(abs, ord) {
+	vizibil = 0;
+	culoare = c;
+	cout << "Constructor CD \"Punct\", ";
+	afisare();//CD
+}
+// constructor de copiere
+Punct::Punct(const Punct& p) :Pozitie(p.x, p.y) {
+	vizibil = p.vizibil;
+	culoare = p.culoare;
+	cout << "Constructor de copiere CD \"Punct\", ";
+	afisare();//CD
+}
+// destructor
+Punct::~Punct() {
+	cout << "Destructor CD \"Punct\", ";
+	afisare();//CD
+}
+// redefinire functie de deplasare in clasa derivata
+void Punct::deplasare(int dx, int dy)  {
+	if (vizibil) {
+		cout << " CD: Deplasare afisare CD\n";
+		x += dx;
+		y += dy;
+		afisare();//CD
+	}
+	else {
+		x += dx;
+		y += dy;
+		cout << "Deplasare prin CD afisare din CB\n";
+		Pozitie::afisare();
+	}
+}
+// redefinire metoda de afisare in clasa derivata
+void Punct::afisare()  {
+	cout << "Pozitie: x = " << x << ", y = " << y;
+	cout << ", culoare: " << culoare;
+	if (vizibil) cout << ", vizibil \n";
+	else cout << ", invizibil \n";
+}
+
+
+class Cerc :public Pozitie {
+
+public:
+	Cerc(int a,int b):Pozitie(a,b){}
+	
+	
+	void deplasare(int a, int b)override {
+		x += a;
+		y += b;
+	}
+
+	void afisare()override {
+		cout << "\nCoordonatele centrului cercului: (" << x << ";" << y << ")";
+		cout << "\nRaza cercului cu centrul de mai sus si un punct implicit: " << sqrt((x - 4 * x) * (x - 4 * x) + (y - 4 * y) * (y - 4 * y))<<endl;
+	}
+
+
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A  P2
+//La exemplul al treilea extindeti clasa de baza cu alte metode virtuale, 
+//redefinite in clasele derivate, cum ar fi metode get() si set() pentru greutatea vehiculului(variabila greutate).
+
+
+#include<iostream>
+using namespace std;
+
+class Vehicul {
+protected:int roti;
+	float greutate;
+public:
+	virtual void mesaj() {
+		cout << "Mesaj din clasa Vehicul\n";
+	}
+
+	virtual void setGreutate(float x) { greutate = x; }
+	virtual float getGreutate() { return greutate; }
+
+};
+class Automobil : public Vehicul {
+	int incarcatura_pasageri;
+public:
+
+	void setPasageri(int x) {
+		incarcatura_pasageri = x;
+	}
+
+	void mesaj() override {
+		cout << "Mesaj din clasa Automobil\n";
+	}
+
+	void setGreutate(float x)override {
+		greutate = x + incarcatura_pasageri;
+	}
+
+	float getGreutate()override {
+		return greutate ;
+	}
+
+
+
+};
+class Camion : public Vehicul {
+	int incarcatura_pasageri;
+	float incarcatura_utila;
+public:
+	int pasageri() {
+		return incarcatura_pasageri;
+	}
+
+	void setGreutate(float x)override {
+		greutate = x + incarcatura_pasageri +incarcatura_utila;
+	}
+
+	float getGreutate()override {
+		return greutate ;
+	}
+
+};
+class Barca : public Vehicul {
+	int incarcatura_pasageri;
+public:
+	int pasegeri() {
+		return incarcatura_pasageri;
+	}
+	void mesaj() override {
+		cout << "Mesaj din clasa Barca\n";
+	}
+
+	void setGreutate(float x)override {
+		greutate = x + incarcatura_pasageri;
+	}
+
+	float getGreutate()override {
+		return greutate;
+	}
+
+};
+
+
+
+//main
+
+
+int main() {
+	// apel direct, prin intermediul unor obiecte specifice
+	Vehicul monocicleta;
+	Automobil ford;
+	Camion semi;
+	Barca barca_de_pescuit;
+	monocicleta.mesaj();
+	ford.mesaj();
+	semi.mesaj();//din Vehicul ca si CB
+	barca_de_pescuit.mesaj();
+	// apel prin intermediul unui pointer specific
+	Vehicul* pmonocicleta;
+	Automobil* pford;
+	Camion* psemi;
+	Barca* pbarca_de_pescuit;
+	cout << "\n";
+	pmonocicleta = &monocicleta;
+	pmonocicleta->mesaj();
+	pford = &ford;
+	pford->mesaj();
+	psemi = &semi;
+	psemi->mesaj();//din CB
+	pbarca_de_pescuit = &barca_de_pescuit;
+	pbarca_de_pescuit->mesaj();
+	// apel prin intermediul unui pointer catre un obiect al clasei de baza
+	cout << "\n";
+	pmonocicleta = &monocicleta;
+	pmonocicleta->mesaj();//Vehicul
+	pmonocicleta = &ford;//upcasting
+	pmonocicleta->mesaj();//Automobil
+	pmonocicleta = &semi;//upcasting
+	pmonocicleta->mesaj();//Camion- Vehicul
+	pmonocicleta = &barca_de_pescuit;//upcasting
+	pmonocicleta->mesaj();//Barca
+	
+
+	cout << endl;
+	Vehicul* pt;
+	Automobil ob;
+	ob.setPasageri(3);
+	ob.setGreutate(1000);
+	pt = &ob;
+	cout << "Greutatea automobilului cu incarcatura pasagerilor: " << pt->getGreutate() << endl;
+	pt->mesaj();
+
+	pt->setGreutate(2000);
+	cout << "\nGreutatea automobilului cu incarcatura pasagerilor dupa setarea a noii greutati: " << pt->getGreutate();
+
+
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P3
+//Sa se scrie un program C++ in care se defineste o clasa Militar cu o metoda publica virtuala sunt_militar() 
+//care indica apartenenta la armata.Derivati clasa Militar pentru a crea clasa Soldat si clasa Ofiter.Derivati 
+//mai departe clasa Ofiter pentru a obtine clasele Locotenent, Colonel, Capitan, General.Redefiniti metoda sunt_militar() 
+//pentru a indica gradul militar pentru fiecare clasa specifica.Instantiati fiecare clasa Soldat, Locotenent, ..., General, 
+//si apelati metoda sunt_militar().
+#define _CRT_SECURE_NO_WARNINGS
+
+
+#include <iostream>
+using namespace std;
+
+class Militar {
+protected: char grad[30];
+public:
+	Militar(const char* string) { strcpy(grad, string); }
+
+	virtual const char* sunt_militar() {
+		if (_stricmp(grad,"Soldat")==0||strcmp(grad,"Ofiter")==0|| _stricmp(grad, "Locotenent") == 0|| _stricmp(grad, "Capitan") == 0|| _stricmp(grad, "General") == 0) return "Apartine!";
+		else return "Nu apartine!";
+	}
+
+};
+
+
+
+class Soldat :public Militar {
+public:
+	Soldat(const char* s) :Militar(s){}
+	const const char* sunt_militar() override {
+		if (_stricmp(grad, "Soldat") == 0) return grad;
+		else return Militar::sunt_militar();
+	}
+};
+
+class Ofiter :public Militar {
+public:
+	Ofiter(const char*s):Militar(s){}
+
+		 const char* sunt_militar() override {
+		if (_stricmp(grad, "Ofiter") == 0)return grad;
+		else return  Militar::sunt_militar();
+	}
+};
+
+
+
+
+class Locotenent :public Ofiter {
+public:
+	Locotenent(const char* s) :Ofiter(s){}
+	const char* sunt_militar()override {
+		if (_stricmp(grad, "Locotenent")==0)return grad;
+		else return  Militar::sunt_militar();
+	}
+};
+
+class Colonel :public Ofiter {
+public:
+	Colonel(const char* s) :Ofiter(s) {}
+	const char* sunt_militar()override {
+		if (_stricmp(grad, "Colonel") == 0)return grad;
+		else return  Militar::sunt_militar();
+	}
+};
+
+class Capitan :public Ofiter {
+public:
+	Capitan(const char* s) :Ofiter(s) {}
+	const char* sunt_militar()override {
+		if (_stricmp(grad, "Capitan") == 0)return grad;
+		else return  Militar::sunt_militar();
+	}
+
+};
+
+class General :public Ofiter {
+public:
+	General(const char* s) :Ofiter(s){}
+
+	const char* sunt_militar()override {
+		if (_stricmp(grad, "General") == 0)return grad;
+		else return  Militar::sunt_militar();
+	}
+
+};
+
+
+int main() {
+	Soldat sd("Soldat");
+	Locotenent lc("l");         
+	Colonel cl("Colonel");
+	Capitan cp("capitan");
+	General gn("general");
+
+
+	Ofiter of("Ofiter");
+	Militar* pt;
+	pt = &of;
+	Militar mt("capitan");
+	
+	Ofiter* pr;
+	pr = (Ofiter*)&mt;
+
+	cout << "Grad soldat: " << sd.sunt_militar();
+	cout << "\nGrad Ofiteri: \n";
+	cout << "->" << lc.sunt_militar() << endl;    
+	cout << "->" << cl.sunt_militar() << endl;
+	cout << "->" << cp.sunt_militar() << endl;
+	cout << "->" << gn.sunt_militar() << endl;
+
+	cout << "\n\n" << of.sunt_militar();
+	cout << "\n\n" << pt->sunt_militar();
+	cout << "\n\n" << mt.sunt_militar();
+
+	cout << "\n\n" << pr->sunt_militar();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P4
+//Declarati o clasa Animal, care va contine o metoda pur virtuala, respira() si doua metode virtuale manaca() si doarme().
+//Derivati in mod public o clasa Caine si alta Peste, care vor defini metoda pur virtuala, iar clasa Caine va redefini metoda 
+//mananca(), iar Peste metoda doarme().Instantiati obiecte din cele doua clase si apelati metodele specifice.Definiti apoi un 
+//tablou de tip Animal, care va contine obiecte din clasele derivate, daca e posibil.Daca nu, gasiti o solutie adecvata.
+
+#include <iostream>
+using namespace std;
+
+class Animal {
+public:
+	virtual void respira() = 0;
+	virtual void mananca(){}
+	virtual void doarme(){}
+};
+
+class Caine :public Animal {
+public:
+	void respira()override {
+		cout << "Respira!\n";
+	}
+
+	void mananca()override {
+		cout << "Mananca!\n";
+	}
+};
+
+class Peste :public Animal {
+public:
+	void respira()override {
+		cout << "Respira!\n";
+	}
+
+
+	void doarme()override{
+		cout << "Doarme!\n";
+	}
+};
+
+
+
+int main() {
+	Caine obiect;
+	Peste obiect2;
+
+	cout << "Cainele:\n";
+	obiect.doarme();
+	obiect.mananca();
+	obiect.respira();
+	
+	cout << "\nPestele:\n";
+	obiect2.doarme();
+	obiect2.mananca();
+	obiect2.respira();
+
+
+	//Nu putem instantia obiecte de clasa Animal ea fiind o clasa abstracta in schimb se poate declara pointeri
+	//Animal array[30];
+
+	Animal* array1;
+	Animal* array2;
+	array1 = new Caine[10];
+	array2 = new Peste[10];
+
+	Animal* pt;
+	//*(array1+1) = *&obiect;
+	array1 = &obiect;  //se va initializa primu obiect
+	cout << "\nInformatii: ";
+	(array1)->mananca();
+	//(array1 + 1)->mananca(); nu va afisa nimic pentru ca nu a fost initializat 
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P5
+//Definiti o clasa abstracta care contine 3 declaratii de metode pur virtuale pentru concatenarea, 
+//intreteserea a doua siruri de caractere si inversarea unui sir de caractere primit ca parametru.
+//O subclasa implementeaza corpurile metodelor declarate in clasa de baza.Instantiati clasa derivata
+//si afisati rezultatele aplicarii operatiilor implementate in clasa asupra unor siruri de caractere citite de la tastatura.
+//Examinati eroarea data de incercarea de a instantia clasa de baza.
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <cstring>
+#include <iostream>
+using namespace std;
+
+class Baza {
+public:
+	virtual char* concatenarea(const char*,const char*) = 0;
+	virtual char* intersectare(const char*,const char*) = 0;
+	virtual char* inversare(const char*) = 0;
+
+};
+
+class SubClass :public Baza {
+public:
+	//////
+	char* concatenarea(const char* s1, const char* s2)override {
+		char* string = new char[strlen(s1) + strlen(s2)];
+		strcpy(string, s1);
+		strcat(string, s2);
+		return string;
+	}
+
+	//////
+	char* intersectare(const char* s1, const char* s2)override {
+		char*string= new char[strlen(s1) +strlen(s2)];
+
+		if (_stricmp(s1, s2) == 0) {
+			strcpy(string, s1);
+			return string;
+		}
+		else {
+			int k = 0;
+			int l1 = strlen(s1);
+			int l2 = strlen(s2);
+			for (int i = 0; i < l1; i++) {
+				for (int j = 0; j < l2; j++) {
+					if (s1[i] == s2[j]) {
+						string[k] = s1[i];
+						k++;
+					}
+				}
+			}
+			string[k] = '\0';
+			return string;
+		}
+
+	}
+	//////
+	char* inversare(const char* s)override {
+		char* string = new char[strlen(s)];
+		int k = 0;
+		for (int i = strlen(s)-1; i >= 0; i--) {
+			string[k++] = s[i];
+			
+		}
+
+		string[k] = '\0';
+		return string;
+	}
+
+
+
+
+};
+
+
+
+int main() {
+	SubClass ob;
+
+	//de test
+	/*cout<<ob.concatenarea("ab", "cde")<<endl;
+	cout << ob.intersectare("abc", "bcdef")<<endl;
+	cout << ob.inversare("abc");*/
+	char s1[30], s2[30], s3[30];
+	cout << "Introduceti primul sir: ";
+	cin >> s1;
+	cout << "Introduceti al doilea sir: ";
+	cin >> s2;
+	cout << "Introduceti al treilea sir: ";
+	cin >> s3;
+	cout << "\n\nPrimele doua siruri concatenate: " << ob.concatenarea(s1, s2);
+	cout << "\nIntersectarea primelor doua siruri: " << ob.intersectare(s1, s2);
+	cout << "\nInversarea celui de al treilea sir: " << ob.inversare(s3);
+
+
+}
+//
+//Introduceti primul sir : abc
+//Introduceti al doilea sir : bcde
+//Introduceti al treilea sir : Spulber
+//
+//
+//Primele doua siruri concatenate : abcbcde
+//Intersectarea primelor doua siruri : bc
+//Inversarea celui de al treilea sir : reblupS
+//C : \Users\Body_\Desktop\UTCN - ETII - Sem II\PCL\Programe\Lab11\(5) Abastract siruri\Debug\(5) Abastract siruri.exe(process 11492) exited with code 0.
+//Press any key to close this window . . .
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3  Seria A P6
+//Definiti o clasa numita Record care stocheaza informatiile aferente unei melodii(artist, titlu, durata).
+//O clasa abstracta(Playlist) contine ca atribut privat un pointer spre un sir de obiecte de tip inregistrare.
+//In constructor se aloca memorie pentru un numar de inregistrari definit de utilizator.Clasa contine metode accesor 
+//si mutator pentru datele componente ale unei inregistrari si o metoda pur virtuala cu un parametru(abstracta), 
+//care poate ordona sirul de
+//inregistrari dupa un anumit criteriu codat in valoarea intreaga primita ca parametru(1 = ordonare dupa titlu, 
+//	2 = ordonare dupa artist, 3 = ordonare dupa durata).Intr - o alta clasa(PlaylistImplementation) derivata din Playlist 
+//	se implementeaza corpul metodei abstracte de sortare.
+//In functia main(), sa se instantieze un obiect din clasa PlaylistImplementation si apoi sa se foloseasca datele si 
+//metodele aferente
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <conio.h>
+#include <iostream>
+using namespace std;
+
+int nr;
+
+class Playlist;
+
+class Record {
+protected:
+	char artist[30];
+	char titlu[30];
+	float durata;
+public:
+
+	friend class Playlist;
+
+};
+
+class Playlist {
+Record* ob;
+public:
+	Playlist(int n) {
+		ob = new Record[n];
+	}
+
+	//setteri
+	void setArtist(const char* s,int i) {
+		strcpy((ob + i)->artist, s);
+	}
+	
+	void setTitlu(const char* s,  int i) {
+		strcpy((ob + i)->titlu, s);
+	}
+	
+	void setDurata(float l, int i) {
+		(ob + i)->durata = l;
+	}
+
+	//getteri
+	char* getArtist(int i) { return (ob + i)->artist; }
+	char* getTitlu(int i) { return (ob + i)->titlu; }
+	float getDurata(int i) { return (ob + i)->durata; }
+	
+	//int getNR() { return sizeof(ob)/sizeof(*ob); }
+
+	virtual void ord_criteriu(int n) = 0;
+	
+
+};
+
+class PlaylistImplementation :public Playlist {
+public:
+
+	PlaylistImplementation(int n): Playlist(n){}
+
+	void ord_criteriu(int n) {
+
+		
+
+		switch (n) {
+		case 2: {
+			
+
+			bool tp = true;
+			while (tp) {
+				tp = false;
+				for (int i = 0; i < nr-1; i++) {
+					if (strcmp(getArtist(i), getArtist(i + 1)) > 0) {
+
+						char aux1[30], aux2[30];
+						float lung1,lung2;
+						strcpy(aux1, getArtist(i));
+						strcpy(aux2, getArtist(i + 1));
+
+						setArtist(aux1, i+1);
+						setArtist(aux2, i);
+
+						strcpy(aux1, getTitlu(i));
+						strcpy(aux2, getTitlu(i + 1));
+						
+
+						setTitlu(aux1, i + 1);
+						setTitlu(aux2, i);
+
+						lung1 = getDurata(i);
+						lung2 = getDurata(i + 1);
+
+						setDurata(lung1, i + 1);
+						setDurata(lung2, i);
+
+						tp = true;
+					}
+				}
+			}
+
+			break;
+		}
+		case 1: {
+
+
+			bool tp = true;
+			while (tp) {
+				tp = false;
+				for (int i = 0; i < nr - 1; i++) {
+					if (strcmp(getTitlu(i), getTitlu(i + 1)) > 0) {
+
+						char aux1[30], aux2[30];
+						float lung1, lung2;
+						strcpy(aux1, getArtist(i));
+						strcpy(aux2, getArtist(i + 1));
+
+						setArtist(aux1, i + 1);
+						setArtist(aux2, i);
+
+						strcpy(aux1, getTitlu(i));
+						strcpy(aux2, getTitlu(i + 1));
+
+
+						setTitlu(aux1, i + 1);
+						setTitlu(aux2, i);
+
+						lung1 = getDurata(i);
+						lung2 = getDurata(i + 1);
+
+						setDurata(lung1, i + 1);
+						setDurata(lung2, i);
+
+						tp = true;
+					}
+				}
+			}
+
+			break;
+		}
+		case 3: {
+			bool tp = true;
+			while (tp) {
+				tp = false;
+				for (int i = 0; i < nr - 1; i++) {
+					if (getDurata(i) > getDurata(i+1)) {
+
+						char aux1[30], aux2[30];
+						float lung1, lung2;
+						strcpy(aux1, getArtist(i));
+						strcpy(aux2, getArtist(i + 1));
+
+						setArtist(aux1, i + 1);
+						setArtist(aux2, i);
+
+						strcpy(aux1, getTitlu(i));
+						strcpy(aux2, getTitlu(i + 1));
+
+
+						setTitlu(aux1, i + 1);
+						setTitlu(aux2, i);
+
+						lung1 = getDurata(i);
+						lung2 = getDurata(i + 1);
+
+						setDurata(lung1, i + 1);
+						setDurata(lung2, i);
+
+						tp = true;
+					}
+				}
+			}
+
+		}
+
+		}
+
+	}
+
+	
+
+
+};
+
+void menu(PlaylistImplementation tab);
+
+int main() {
+	int n;
+	float durata;
+
+	cout << "Introduceti numarul de melodii: ";
+	cin >> n;
+	nr = n;
+	char s[40];
+	
+
+	PlaylistImplementation tab(n);
+
+	for (int i = 0; i < n; i++) {
+		cout << "\nMelodia " << i + 1 << ": ";
+		cout << "\nIntroduceti numele artistului: ";
+		cin >> s;
+		tab.setArtist(s, i);
+		cout << "Introduceti numele melodiei: ";
+		cin >> s;
+		tab.setTitlu(s, i);
+		cout << "Introduceti durata: ";
+		cin >> durata;
+		tab.setDurata(durata, i);
+	}
+
+	system("CLS");
+
+	menu(tab);
+
+
+
+
+
+
+
+}
+
+void menu(PlaylistImplementation tab) {
+	int n;
+	cout << "1) Sortare dupa Titlu;\n";
+	cout << "2) Sortare dupa Nume;\n";
+	cout << "3) Sortare dupa Durata;\n";
+	cout << "\nIntroduceti  Cifra: ";
+	char c = _getch();
+	if (c == '1') {
+		tab.ord_criteriu(1);
+	}
+	else if(c == '2') {
+		tab.ord_criteriu(2);
+	}
+	else if (c == '3') {
+		tab.ord_criteriu(3);
+	}
+	else {
+		system("CLS");
+		menu(tab);
+		return;
+	}
+
+
+	for (int i = 0; i < nr; i++) {
+		cout << "\n" << tab.getArtist(i);
+		cout << "\n" << tab.getTitlu(i);
+		cout << "\n" << tab.getDurata(i);
+		cout << endl;
+	}
+
+	cout << "\nApasati o tasta pentru a reveni la menu: ";
+	_getch();
+
+	system("CLS");
+	menu(tab);
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P7
+//Scrieti o aplicatie C / C++ in care sa implementati clasa de baza abstracta PatrulaterAbstract 
+//avand ca atribute protected patru instante ale clasei de baza Punct(o pereche de coordonate x si y, accesori si mutatori)
+//reprezentand coordonatele colturilor patrulaterului.Declarati doua metode membre pur virtuale pentru calculul ariei si
+//perimetrului figurii definite.Derivati clasa PatrulaterConcret care implementeaza metodele abstracte mostenite si care 
+//contine o metoda proprie care determina daca patrulaterul este patrat, dreptunghi, patrulater oarecare(convex / concav).
+//In programul principal instantiati clasa derivata si apelati metodele implementate.Ariile se vor calcula functie de tipul 
+//patrulaterului.La patrulaterul convex oarecare aria va fi data de urmatoarea formula care exprima aria functie de 
+//laturile a, b, c, d, semiperimetrul s, si de diagonalele p, q:
+//A = sqrt{ (s - a)(s - b)(s - c)(s - d) - 1 / 4(ac + bd + pq)(ac + bd - pq) }. La patrulaterul concav 
+//se va determina doar perimetrul
+
+#include <math.h>
+#include <iostream>
+using namespace std;
+
+#define ETA 0.05
+#define PI 3.14//159//265//359
+
+class Punct {
+protected:
+	int x, y;
+public:
+	void setX(int n) { x = n; }
+	void setY(int n) { y = n; }
+
+	int getX() { return x; }
+	int getY() { return y; }
+
+};
+
+class PatrulaterAbstract {
+protected:
+	Punct A, B, C, D;
+public:
+	virtual	float perimetru() = 0;
+	virtual float arie() = 0;
+
+
+};
+
+class PatrulaterConcret :public PatrulaterAbstract {
+public:
+	void setPuncte(int a, int b, int c, int d, int e, int f,int g,int h) {
+		A.setX(a);
+		A.setY(b);
+		B.setX(c);
+		B.setY(d);
+		C.setX(e);
+		C.setY(f);
+		D.setX(g);
+		D.setY(h);
+	}
+
+	float perimetru() override {
+		float AB = sqrt((A.getX() - B.getX()) * (A.getX() - B.getX()) + (A.getY() - B.getY()) * (A.getY() - B.getY()));
+		float AC = sqrt((A.getX() - C.getX()) * (A.getX() - C.getX()) + (A.getY() - C.getY()) * (A.getY() - C.getY()));
+		float AD = sqrt((A.getX() - D.getX()) * (A.getX() - D.getX()) + (A.getY() - D.getY()) * (A.getY() - D.getY()));//diagonala
+		float CD = sqrt((D.getX() - C.getX()) * (D.getX() - C.getX()) + (D.getY() - C.getY()) * (D.getY() - C.getY()));
+		float BC = sqrt((C.getX() - B.getX()) * (C.getX() - B.getX()) + (C.getY() - B.getY()) * (C.getY() - B.getY()));//diagonala
+		float BD = sqrt((D.getX() - B.getX()) * (D.getX() - B.getX()) + (D.getY() - B.getY()) * (D.getY() - B.getY()));
+
+		switch (figura())
+		{
+		case 1: {
+			return 4 * AB;
+			
+		}
+		case 2: {
+			return 2 * AB + 2 * AC;
+			
+		}
+		case 3 : {
+			
+		}
+		case 4: {
+			return  AB + BD + CD + AC;
+			
+		}
+
+
+
+		default: return -1;
+			break;
+		}
+	}
+
+	float arie()override {
+		float AB = sqrt((A.getX() - B.getX()) * (A.getX() - B.getX()) + (A.getY() - B.getY()) * (A.getY() - B.getY()));
+		float AC = sqrt((A.getX() - C.getX()) * (A.getX() - C.getX()) + (A.getY() - C.getY()) * (A.getY() - C.getY()));
+		float AD = sqrt((A.getX() - D.getX()) * (A.getX() - D.getX()) + (A.getY() - D.getY()) * (A.getY() - D.getY()));//diagonala
+		float CD = sqrt((D.getX() - C.getX()) * (D.getX() - C.getX()) + (D.getY() - C.getY()) * (D.getY() - C.getY()));
+		float BC = sqrt((C.getX() - B.getX()) * (C.getX() - B.getX()) + (C.getY() - B.getY()) * (C.getY() - B.getY()));//diagonala
+		float BD = sqrt((D.getX() - B.getX()) * (D.getX() - B.getX()) + (D.getY() - B.getY()) * (D.getY() - B.getY()));
+		float s = (AB + BD + CD + AC) / (float)2;
+
+		switch (figura())
+		{
+		case 1: {
+			
+			return AB * AB;
+
+		}
+		case 2: {
+			return AB * AC;
+
+		}
+		case 3: {
+			
+			return sqrt((s - AB) * (s - BD) * (s - CD) * (s - AC) - 1 / 4 * (AB * CD + BD * AC + AD * BC) * (AB * CD + BD * AC - AD * BC));
+		}
+
+		default: return -1;
+			break;
+		}
+	}
+
+
+	int figura() {
+		float AB = sqrt((A.getX() - B.getX()) * (A.getX() - B.getX()) + (A.getY() - B.getY()) * (A.getY() - B.getY()));
+		float AC = sqrt((A.getX() - C.getX()) * (A.getX() - C.getX()) + (A.getY() - C.getY()) * (A.getY() - C.getY()));
+		float AD = sqrt((A.getX() - D.getX()) * (A.getX() - D.getX()) + (A.getY() - D.getY()) * (A.getY() - D.getY()));//diagonala
+		float CD = sqrt((D.getX() - C.getX()) * (D.getX() - C.getX()) + (D.getY() - C.getY()) * (D.getY() - C.getY()));
+		float BC = sqrt((C.getX() - B.getX()) * (C.getX() - B.getX()) + (C.getY() - B.getY()) * (C.getY() - B.getY()));//diagonala
+		float BD = sqrt((D.getX() - B.getX()) * (D.getX() - B.getX()) + (D.getY() - B.getY()) * (D.getY() - B.getY()));
+
+
+		double u_A = acos((AC * AC + AB * AB - BC * BC) / (2.0 * AC * AB)); //unghi A
+		double u_D = acos((CD * CD + BD * BD - BC * BC) / (2.0 * BD * CD)); //unghi D
+		double u_B = acos((BD * BD + AB * AB - AD * AD) / (2.0 * AB * BD)); //unghi B
+		double u_C = acos((CD * CD + AC * AC - AD * AD) / (2.0 * AC * CD)); //unghi C
+		
+		
+
+		if (AB == AC && CD == BD && AB == CD && abs(AC * AC + AB * AB - BC * BC)<=ETA && abs(AB * AB + BD * BD - AD * AD)<=ETA) return 1;  //patrat
+		else if (AB == CD && AC == BD && abs(AC * AC + AB * AB - BC * BC) <= ETA && abs(AB * AB + BD * BD - AD * AD) <= ETA) return 2; //dreptunghi
+		else if (abs(u_A + u_B + u_C + u_D - 2*PI)<=ETA && (u_A )<=PI && (u_B ) <= PI && (u_C <= PI) && (u_D <= PI)) return 3; //patrulater convex
+		else if ((u_A > PI || u_B > PI || u_C > PI || u_D > PI)) return 4; //patrulater concav
+		else return -1;
+	}
+
+	
+
+
+};
+
+
+int main() {
+	PatrulaterConcret op;
+	op.setPuncte(1, 2, 3, 4, 5, 6, 7, 8);
+	
+
+	cout <<"Perimetru: "<< op.perimetru() << endl;
+	cout <<"Arie: "<< op.arie();
+	cout << "\n\n";
+
+	op.setPuncte(-2, 2, 2, 2, -2, -2, 2, -2);
+	cout << "Perimetru: " << op.perimetru() << endl;
+	cout << "Arie: " << op.arie();
+	cout << "\n\n";
+
+	op.setPuncte(-2, 2, 4, 2, -2, -2, 4, -2);
+	cout << "Perimetru: " << op.perimetru() << endl;
+	cout << "Arie: " << op.arie();
+	cout << "\n\n";
+
+	op.setPuncte(-2,2,4,2,-2,-4,4,-2);
+	cout << "Perimetru: " << op.perimetru() << endl;
+	cout << "Arie: " << op.arie();
+	cout << "\n\n";
+
+
+}
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P8
+/*Considerati clasa Fractie care are doua atribute intregi protected a si b pentru numarator si numitor, doua metode de tip set() 
+respectiv get() 
+pentru atributele clasei.Declarati o metoda virtuala simplifica() care simplifica un obiect Fractie folosind cmmdc - ul determinat
+prin operatorul % .Definiti un constructor explicit fara parametri care initializeaza a cu 0 si b cu 1, si un constructor explicit
+cu doi parametri care va putea fi apelat daca se verifica posibilitatea definirii unei fractii(b != 0).Supraincarcati operatorii de
+adunare, scadere, inmultire si impartire(+, -, *, / ) a fractiilor folosind functii friend care si simplifica daca e cazul
+rezultatele obtinute, apeland metoda simplifica() din clasa.Definiti o clasa Fractie_ext derivata public din Fractie, care va 
+avea un constructor cu parametrii(ce apeleaza constructorul din clasa de baza) si redefineste metoda simplifica() folosind pentru
+cmmmdc algoritmul prin diferenta.Afisati un mesaj adecvat in metoda.Definiti de asemenea supraincarcarea operatorilor compusi de
+asignare si adunare, scadere, inmultire si impartire(+=, -=, *=, /=) cu metode membre.Supraincarcati operatorii de incrementare 
+decrementare postfixati care aduna / scade valoarea 1 la un obiect de tip Fractie_ext cu metode membre.
+Instantiati doua obiecte de tip Fractie fara parametrii.Setati atributele obiectelor cu date citite de la tastatura.
+Afisati atributele initiale ale obiectelor si noile atribute definite.Efectuati operatiile implementate prin functiile friend 
+din clasa de baza, initializand alte 4 obiecte cu rezultatele obtinute.Simplificati si afisati rezultatele.Instantiati doua obiecte
+de tip Fractie_ext cu date citite de la tastatura.Efectuati operatiile implementate prin metodele clasei, asignand rezultatele
+obtinute la alte 4 obiecte Fracti_ext.Folositi pentru operatii copii ale obiectelor initiale.Simplificati si afisati rezultatele.
+Verificati posibilitatea utilizarii celor doua metode de tip simplifica() (din clasa de baza si derivata) folosind instante din 
+clasa de baza si derivata folosind un pointer catre clasa de baza Fractie*/
+
+#include <iostream>
+using namespace std;
+
+class Fractie {
+protected:
+	int a, b;
+	static int icount;
+	float cmmdc();
+	float cmmdc_scadere() {
+		int x, y;
+		x = a;
+		y = b;
+		while (x != y) {
+			if (x > y)x - y;
+			else y - x;
+		}
+		return x;
+		
+
+	};
+
+public:
+	//constructori
+	Fractie() :a(0), b(1) { icount++; }
+	Fractie(int a, int b) {
+		this->a = a;
+		if (b != 0) {
+			this->b = b;
+		}
+		icount++;
+	}
+
+	//setteri
+	void set_a(int x);
+	void set_b(int x);
+	//getteri
+	int get_a();
+	int get_b();
+	static int getICOUNT() { return icount; }
+	//metode
+	virtual void simplifica() {
+		int n = cmmdc();
+
+		a = a / n;
+
+		b = b / n;
+
+		
+	};
+
+	void operator+=(Fractie pt) {
+		int num = cmmc_numitor(pt);
+		int aplif1 = num / b, aplif2 = num / pt.b;
+
+		Fractie plus(a * aplif1 + aplif2 * pt.a, num);
+		plus.simplifica();
+		a = plus.a;
+		b = plus.b;
+	}
+
+	void operator-=(Fractie pt) {
+		int num = cmmc_numitor(pt);
+		int aplif1 = num / b, aplif2 = num / pt.b;
+
+		Fractie minus(a * aplif1 - aplif2 * pt.a, num);
+		minus.simplifica();
+		a = minus.a;
+		b = minus.b;
+	}
+
+	void operator *=(Fractie pt) {
+
+		Fractie steluta(a * pt.a, b * pt.b);
+		steluta.simplifica();
+		a = steluta.a;
+		b = steluta.b;
+
+	}
+
+	void operator /=(Fractie pt) {
+
+		Fractie slash(a * pt.b, b * pt.a);
+		slash.simplifica();
+		a = slash.a;
+		b = slash.b;
+	}
+
+
+
+
+	friend Fractie operator +(Fractie, Fractie);
+	friend Fractie operator -(Fractie, Fractie);
+	friend Fractie operator *(Fractie, Fractie);
+	friend Fractie operator /(Fractie, Fractie);
+
+	int cmdc_numitor(Fractie);
+	int cmmc_numitor(Fractie);
+
+	~Fractie() {
+		//cout <<"\n"<<Fractie::icount;
+		icount--;
+	}
+};
+
+int Fractie::icount; //=0
+
+//setteri
+void Fractie::set_a(int x) {
+	a = x;
+}
+void Fractie::set_b(int x) {
+	b = x;
+}
+//getteri
+int Fractie::get_a() {
+	return a;
+}
+int Fractie::get_b() {
+	return b;
+}
+
+
+//metode
+//Fractie simplifica(Fractie ob1) {
+//	int n = ob1.cmmdc();
+//
+//	ob1.a = ob1.a / n;
+//
+//	ob1.b = ob1.b / n;
+//
+//	return ob1;
+//}
+
+
+
+float Fractie::cmmdc() {
+	int r;
+	int x, y;
+	x = a;
+	y = b;
+	while (y != 0) {
+		r = x % y;
+		x = y;
+		y = r;
+
+	}
+	if (x < 0)x = -x;
+	return x;
+
+}
+
+Fractie operator +(Fractie ob, Fractie ob1) {
+	int num = ob.cmmc_numitor(ob1);
+	int aplif1 = num / ob.b, aplif2 = num / ob1.b;
+
+	Fractie plus(ob.a * aplif1 + aplif2 * ob1.a, num);
+	plus.simplifica();
+	return plus;
+}
+
+Fractie operator -(Fractie ob, Fractie ob1) {
+	int num = ob.cmmc_numitor(ob1);
+	int aplif1 = num / ob.b, aplif2 = num / ob1.b;
+
+	Fractie minus(ob.a * aplif1 - aplif2 * ob1.a, num);
+	minus.simplifica();
+	return minus;
+}
+
+Fractie operator *(Fractie ob, Fractie ob1) {
+
+	Fractie steluta(ob.a * ob1.a, ob.b * ob1.b);
+	steluta.simplifica();
+	return steluta;
+}
+
+Fractie operator /(Fractie ob, Fractie ob1) {
+
+	Fractie slash(ob.a * ob1.b, ob.b * ob1.a);
+	slash.simplifica();
+	return slash;
+}
+
+int Fractie::cmdc_numitor(Fractie ob) {
+	int x = b, y = ob.b;
+	int r;
+	while (y != 0) {
+		r = x % y;
+		x = y;
+		y = r;
+
+	}
+	if (x < 0)x = -x;
+	return x;
+}
+int Fractie::cmmc_numitor(Fractie ob) {
+	int cmmc;
+	cmmc = (b * ob.b) / cmdc_numitor(ob);
+	return cmmc;
+}
+
+class Fractie_ext :public Fractie {
+public:
+	Fractie_ext(int x, int y) :Fractie(x, y) {}
+
+	void simplifica()override{
+		int n = cmmdc_scadere();
+
+		a = a / n;
+
+		b = b / n;
+	}
+
+	// supraincarcare operator de incrementare prefixata
+	Fractie_ext& operator++() {
+		a = b + a;
+		return *this;
+	}
+
+	// supraincarcare operator de incrementare postfixata
+	Fractie_ext operator++(int) {
+		a = a + b;
+		return *this;
+	}
+
+	// supraincarcare operator de decrementare prefixata
+	Fractie_ext& operator--() {
+		a = a - b;
+		return *this;
+	}
+
+	// supraincarcare operator de incrementare postfixata
+	Fractie_ext operator--(int) {
+		a = a - b;
+		return *this;
+	}
+
+
+};
+
+
+
+int main() {
+	Fractie f1, f2;
+	int n;
+
+	cout << "I:\n";
+	cout << "Introduceti numaratorul: ";
+	cin >> n;
+	f1.set_a(n);
+	cout << "Introduceti numitorul: ";
+	cin >> n;
+	f1.set_b(n);
+
+	cout << "\n\II:\n";
+	cout << "Introduceti numaratorul: ";
+	cin >> n;
+	f2.set_a(n);
+	cout << "Introduceti numitorul: ";
+	cin >> n;
+	f2.set_b(n);
+
+
+	cout << "\nDateIntroduse: ";
+	cout << "\nFractia I: " << f1.get_a() << "/" << f1.get_b();
+	cout << "\nFractia II: " << f2.get_a() << "/" << f2.get_b();
+
+	cout << "\nIcount: " << Fractie::getICOUNT();
+
+
+
+	f1.simplifica();
+	f2.simplifica();
+
+	cout << "\n\nSimplficari: ";
+	cout << "\nFractia I: " << f1.get_a() << "/" << f1.get_b();
+	cout << "\nFractia II: " << f2.get_a() << "/" << f2.get_b();
+
+	cout << "\nIcount: " << Fractie::getICOUNT();
+
+
+
+	Fractie suma, diferenta, inmultire, impartire;
+	suma = f1 + f2;
+	diferenta = f1 - f2;
+	inmultire = f1 * f2;
+	impartire = f1 / f2;
+
+	cout << "\n\nOperatii: ";
+	cout << endl << f1.get_a() << "/" << f1.get_b() << "+" << f2.get_a() << "/" << f2.get_b() << "= " << suma.get_a() << "/" << suma.get_b();
+	cout << endl << f1.get_a() << "/" << f1.get_b() << "-" << f2.get_a() << "/" << f2.get_b() << "= " << diferenta.get_a() << "/" << diferenta.get_b();
+	cout << endl << f1.get_a() << "/" << f1.get_b() << "*" << f2.get_a() << "/" << f2.get_b() << "= " << inmultire.get_a() << "/" << inmultire.get_b();
+	cout << endl << f1.get_a() << "/" << f1.get_b() << " : " << f2.get_a() << "/" << f2.get_b() << "= " << impartire.get_a() << "/" << impartire.get_b();
+	cout << "\nIcount: " << Fractie::getICOUNT();
+
+	int x, y;
+	cout << "\n\nIntroduceti doua numere: ";
+	cin >> x;
+	cin >> y;
+	Fractie_ext fr1(x, y);
+	Fractie_ext fr2(y, x);
+
+
+
+	cout << "\nIncrementare  " << fr1.get_a() << "/" << fr1.get_b() << ": ";
+	fr1 = fr1++;
+	cout << fr1.get_a() << "/" << fr1.get_b();
+
+	cout << "\n\nDecrementare  " << fr2.get_a() << "/" << fr2.get_b() << ": ";
+	fr2 = fr2--;
+	cout << fr2.get_a() << "/" << fr2.get_b();
+
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////

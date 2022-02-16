@@ -1,0 +1,566 @@
+LABORATOR 13
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P1
+//Sa se scrie un program care foloseste metoda seekg() pentru pozitionare la mijlocul fisierului 
+//si apoi afiseaza continutul fisierului incepand cu aceasta pozitie.Numele fisierului se citeste din linia de comanda.
+
+#include <fstream>
+#include <iostream>
+using namespace std;
+
+
+int main(int argc,char* argv[]) {
+	char s;
+	double lungime;
+
+	ifstream in("Problematica.txt");        //deschidere fisier de intrare
+	if (!in) {
+		cout << "Eroare Fisier!";
+		return 0;
+	}
+
+	/*char s[100];              citire date din fisier
+	while (!in.eof()) {
+		in >> s;
+		cout << s<<" ";
+	}*/
+
+	in.seekg(0, ios::end); //setam indicatorul la sfarsitul fisierului
+
+	lungime = in.tellg();  //aflam pozitia de la sfarsitul fisierului
+	lungime =lungime/2;    //mijlocul fisierlui
+
+	in.seekg(lungime, ios::beg);  //setam indicatourl la mijlocul fisierului
+
+	cout << "Afisarea de la mijlocul fisierului: \n";
+	while (!in.eof()) {
+		in.get(s);    //citim caracter cu caracter
+		cout << s;
+	}
+		
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P2
+//Scrieti un program care utilizeaza metoda write() pentru a scrie intr - un fisier siruri de caractere.
+//Afisati apoi continutul fisierului folosind metoda get().Numele fisierului se va citi de la tastatura.
+
+#include <conio.h>
+#include <fstream>
+#include <iostream>
+using namespace std;
+
+
+
+int main() {
+	char c,nume_fisier[30],string[30];
+	bool tp = true;
+
+
+	cout << "Introduceti numele fisierului: ";
+	cin >> nume_fisier;
+
+	ofstream out(nume_fisier,ios::binary);  //creaza un fisier de iesire
+	
+	if (!out) {
+		cout << "Eroare creare fisiere!";
+		return 0;
+	}
+
+
+	//menu
+	while (tp) {
+		system("CLS");
+		tp = false;
+		cout << "Introduceti un sir de caractere: ";
+		cin >> string;
+		out.write(string, strlen(string)); //scrierea in fisier
+		out << "\n";                       //scriere in fisier
+		cout << "\n\nMai doriti sa introduceti alt sir?(1-DA,2-NU)\n";
+		char c = _getch();
+		switch (c)
+		{
+		case '1':
+			tp = true;
+			break;
+		case '2':
+			tp = false;
+			out.close();
+			break;
+		default:
+			break;
+		}
+
+	}
+	//end menu
+
+	system("CLS");
+	
+	cout << "Citirea din fisier: \n";
+
+	ifstream in(nume_fisier,ios::binary); //creaza un fisier de intrare
+	if (!in) {
+		cout << "Eroare deschidere fisier!";
+		return 0;
+	}
+
+	while (!in.eof()) {
+		in.get(c);
+		cout << c;
+	}
+	in.close();
+
+
+
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3  Seria A P3
+//Scrieti o aplicatie C++ care citeste un fisier utilizand metoda read().
+//Verificati starea sistemului dupa fiecare operatie de citire.Numele fisierului se va citi din linia de comanda.
+//Afisati pe ecran continutul fisierului.
+
+#include <fstream>
+#include <iostream>
+using namespace std;
+
+int main(int argc,char *argv[]) {
+	int a = 12;
+	char s[] = "Buna Ziua!";
+
+	ofstream fout("Buna.in");
+	if (!fout) {
+		cout << "Eroare de creare!";
+		return 0;
+	}
+
+	fout.write((char*) & a, sizeof(int));
+	fout << "\n";
+	fout.write(s, strlen(s));
+	fout.close();
+
+
+
+	ifstream fin("Buna.in");
+	if (!fin) {
+		cout << "Eroare Deschidere!";
+		return 0;
+	}
+
+	int aux;
+	char string[12];
+
+
+	while (!fin.eof()) {
+	
+		//citire numar
+
+		fin.read((char*)&aux, sizeof(int));
+		
+		if (fin.good()) {			//verificare stare
+			cout << aux;
+	
+		}
+
+		//citire sir
+		fin.read(string, 11);
+		if (fin.good()) {              //verificarea starii
+
+			string[11] = '\0';
+			cout << string;
+
+		}
+
+	}
+
+
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P4
+//Scrieti o aplicatie C++ in care deschideti un fisier in mod binar pentru citire.
+//Afisati un mesaj corespunzator daca fisierul nu a fost creat in prealabil.
+//Presupunand ca in fisierul deschis exista inregistrari de tip agenda(nume, localitate, numar de telefon), 
+//utilizati supraincarcarea operatorilor de insertie si extractie pentru afisarea pe ecran a continutului fisierului.
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <string.h>
+#include <fstream>
+#include <iostream>
+using namespace std;
+
+class Agenda {
+
+	char nume[30],localitate[60];
+	int nr_tel[10];
+public:
+	Agenda(){}
+
+	Agenda(const char* n,const char *l,int *tab){
+		strcpy(nume, n);
+		strcpy(localitate, l);
+		for (int i = 0; i < 10; i++) {
+			nr_tel[i] = tab[i];
+		}
+	}
+
+	friend ostream& operator << (ostream& stream, Agenda ob);
+	friend istream& operator>>(istream& stream, Agenda& ob);
+};
+
+ostream& operator << (ostream& stream, Agenda ob) {
+	stream <<ob.nume<<endl;
+	stream <<ob.localitate << endl;
+	for (int i = 0; i < 10; i++) {
+		stream << ob.nr_tel[i];
+	}
+	stream << endl;
+	return stream;
+
+}
+
+
+istream& operator>>(istream& stream, Agenda& ob) {
+	stream >> ob.nume;
+	stream >> ob.localitate;
+	char tmp[20];
+	stream >> tmp;
+	for (int i = 0; i < 10; i++) {
+		ob.nr_tel[i]=tmp[i]-'0';             //convertim in cifra
+	}
+
+	return stream;
+}
+
+
+
+int main() {
+	Agenda person;
+	char nume[] = "Spulber",localitate[]="Busteni";
+	int nr[] = { 0,7,3,2,4,2,7,5,4,1 },x;
+
+	Agenda date(nume, localitate, nr);
+
+
+	ofstream fout("Test.in",ios::binary);
+	if (!fout) {
+		cout << "Eroare Fisier!";
+		return 0;
+	}
+
+	fout << date;
+
+
+	fout.close();
+
+	ifstream fin("Test.in",ios::binary);
+	fin >> person;
+
+	cout << person;
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P5
+//Considerati clasa Fractie care are doua atribute intregi private a si b pentru numarator si
+//numitor, doua metode de tip set() respectiv get() pentru atributele clasei.Declarati o metoda
+//simplifica() care simplifica un obiect Fractie.Definiti un constructor explicit fara parametri
+//care initializeaza a cu 0 si b cu 1, si un constructor explicit cu doi parametri care va verifica
+//posibilitatea definirii unei fractii(b != 0).Definiti un destructor explicit care afiseaza un mesaj.
+//Supraincarcati operatorii de adunare, scadere, inmultire si impartire(+, -, *, / ) a fractiilor
+//folosind metode membre care si simplifica daca e cazul rezultatele obtinute.
+//Supraincarcati operatorii de intrare(>> , extractie) si iesire(<< , insertie) cu functii friend care
+//permit citirea si scrierea obiectelor.Instantiati doua obiecte de tip Fractie cu date citite de la
+//tastatura.Afisati atributele initiale ale obiectelor folosind supraincarcarea operatorului de
+//iesire.Cititi alte 4 obiecte de tip Fractie folosind supraincarcarea operatorului de intrare.
+//Efectuati operatiile implementate prin metodele membre(adunarea si scaderea primelor doua,
+//	respectiv inmultirea si impartirea ultimelor doua), stocand rezultatele in alte 4 obiecte.Afisati
+//	rezultatele.Scrieti intr - un fisier cu numele introdus de la tastatura cele 4 obiecte initiale
+//	precum si rezultatele obtinute, pe randuri diferite.
+
+#include <fstream>
+#include <iostream>
+using namespace std;
+
+class Fractie {
+protected:
+	int a, b;
+	static int icount;
+	float cmmdc();
+
+public:
+	//constructori
+	Fractie() :a(0), b(1) { icount++; }
+	Fractie(int a, int b) {
+		this->a = a;
+		if (b != 0) {
+			this->b = b;
+		}
+		icount++;
+	}
+
+	//setteri
+	void set_a(int x);
+	void set_b(int x);
+	//getteri
+	int get_a();
+	int get_b();
+	static int getICOUNT() { return icount; }
+	//metode
+	friend Fractie simplifica(Fractie);
+
+	void operator+=(Fractie pt) {
+		int num = cmmc_numitor(pt);
+		int aplif1 = num / b, aplif2 = num / pt.b;
+
+		Fractie plus(a * aplif1 + aplif2 * pt.a, num);
+		plus = simplifica(plus);
+		a = plus.a;
+		b = plus.b;
+	}
+
+	void operator-=(Fractie pt) {
+		int num = cmmc_numitor(pt);
+		int aplif1 = num / b, aplif2 = num / pt.b;
+
+		Fractie minus(a * aplif1 - aplif2 * pt.a, num);
+		minus = simplifica(minus);
+		a = minus.a;
+		b = minus.b;
+	}
+
+	void operator *=(Fractie pt) {
+
+		Fractie steluta(a * pt.a, b * pt.b);
+		steluta = simplifica(steluta);
+		a = steluta.a;
+		b = steluta.b;
+
+	}
+
+	void operator /=(Fractie pt) {
+
+		Fractie slash(a * pt.b, b * pt.a);
+		slash = simplifica(slash);
+		a = slash.a;
+		b = slash.b;
+	}
+
+
+
+
+	friend Fractie operator +(Fractie, Fractie);
+	friend Fractie operator -(Fractie, Fractie);
+	friend Fractie operator *(Fractie, Fractie);
+	friend Fractie operator /(Fractie, Fractie);
+
+
+	friend ostream& operator << (ostream& stream, Fractie ob);
+	friend istream& operator>>(istream& stream, Fractie& ob);
+
+	int cmdc_numitor(Fractie);
+	int cmmc_numitor(Fractie);
+
+	~Fractie() {
+		//cout <<"\n"<<Fractie::icount;
+		icount--;
+	}
+};
+
+int Fractie::icount; //=0
+
+ostream& operator << (ostream& stream, Fractie ob) {
+	stream << ob.a << "/" << ob.b ;
+	return stream;
+ }
+istream& operator>>(istream& stream, Fractie& ob) {
+	stream >> ob.a;
+	char c;
+	stream >> c;
+	stream >> ob.b;
+	return stream;
+
+ }
+
+
+//setteri
+void Fractie::set_a(int x) {
+	a = x;
+}
+void Fractie::set_b(int x) {
+	b = x;
+}
+//getteri
+int Fractie::get_a() {
+	return a;
+}
+int Fractie::get_b() {
+	return b;
+}
+
+
+//metode
+Fractie simplifica(Fractie ob1) {
+	int n = ob1.cmmdc();
+
+	ob1.a = ob1.a / n;
+
+	ob1.b = ob1.b / n;
+
+	return ob1;
+}
+
+
+
+float Fractie::cmmdc() {
+	int r;
+	int x, y;
+	x = a;
+	y = b;
+	while (y != 0) {
+		r = x % y;
+		x = y;
+		y = r;
+
+	}
+	if (x < 0)x = -x;
+	return x;
+
+}
+
+Fractie operator +(Fractie ob, Fractie ob1) {
+	int num = ob.cmmc_numitor(ob1);
+	int aplif1 = num / ob.b, aplif2 = num / ob1.b;
+
+	Fractie plus(ob.a * aplif1 + aplif2 * ob1.a, num);
+	plus = simplifica(plus);
+	return plus;
+}
+
+Fractie operator -(Fractie ob, Fractie ob1) {
+	int num = ob.cmmc_numitor(ob1);
+	int aplif1 = num / ob.b, aplif2 = num / ob1.b;
+
+	Fractie minus(ob.a * aplif1 - aplif2 * ob1.a, num);
+	minus = simplifica(minus);
+	return minus;
+}
+
+Fractie operator *(Fractie ob, Fractie ob1) {
+
+	Fractie steluta(ob.a * ob1.a, ob.b * ob1.b);
+	steluta = simplifica(steluta);
+	return steluta;
+}
+
+Fractie operator /(Fractie ob, Fractie ob1) {
+
+	Fractie slash(ob.a * ob1.b, ob.b * ob1.a);
+	slash = simplifica(slash);
+	return slash;
+}
+
+int Fractie::cmdc_numitor(Fractie ob) {
+	int x = b, y = ob.b;
+	int r;
+	while (y != 0) {
+		r = x % y;
+		x = y;
+		y = r;
+
+	}
+	if (x < 0)x = -x;
+	return x;
+}
+int Fractie::cmmc_numitor(Fractie ob) {
+	int cmmc;
+	cmmc = (b * ob.b) / cmdc_numitor(ob);
+	return cmmc;
+}
+
+
+
+int main() {
+	Fractie f1, f2;
+	int n;
+
+	cout << "I:\n";
+	cout << "Introduceti numaratorul: ";
+	cin >> n;
+	f1.set_a(n);
+	cout << "Introduceti numitorul: ";
+	cin >> n;
+	f1.set_b(n);
+
+	cout << "\n\II:\n";
+	cout << "Introduceti numaratorul: ";
+	cin >> n;
+	f2.set_a(n);
+	cout << "Introduceti numitorul: ";
+	cin >> n;
+	f2.set_b(n);
+
+
+	cout << "\nDateIntroduse: ";
+	cout << "\nFractia I: " << f1;
+	cout << "\nFractia II: " << f2;
+
+	cout << "\nIcount: " << Fractie::getICOUNT();
+
+
+
+	f1 = simplifica(f1);
+	f2 = simplifica(f2);
+
+	cout << "\n\nSimplficari: ";
+	cout << "\nFractia I: " << f1;
+	cout << "\nFractia II: " << f2;
+
+	cout << "\nIcount: " << Fractie::getICOUNT();
+
+
+
+	Fractie suma, diferenta, inmultire, impartire;
+	suma = f1 + f2;
+	diferenta = f1 - f2;
+	inmultire = f1 * f2;
+	impartire = f1 / f2;
+
+	cout << "\n\nOperatii: ";
+
+	cout << endl << f1 << "+" << f2 << "= " << suma;
+	cout << endl << f1 << "-" << f2 << "= " << diferenta;
+	cout << endl << f1 << "*" << f2 << "= " << inmultire;
+	cout << endl << f1 << ":" << f2 << "= " << impartire;
+
+	cout << "\nIcount: " << Fractie::getICOUNT();
+
+	ofstream fout("Fis.in");
+	if (!fout) {
+		cout << "Eroare Fisier!";
+		return 0;
+	}
+
+	fout << suma<<"\n"<<diferenta<<"\n"<<inmultire<<"\n"<<impartire;
+	fout.close();
+
+	cout << "\nCitire din fisier: ";
+	ifstream fin("Fis.in");
+	while (!fin.eof()) {
+		fin >> f1;
+		cout << f1<<" ";
+	}
+
+	fin.close();
+
+}

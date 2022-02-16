@@ -1,0 +1,944 @@
+LABORATOR 6
+
+//Spulber Bogdan-Andrei Grupa 3  Seria A  P1
+//Program ce implementeaza clasa PilotF1.Contine variabile de tip private (nume,echipa,varsta,record,nr_pole_position)
+//Contine metode set/get pentru fiecare atribut
+//In main se creaza 3 instante si se intilizeaza cu set.Folosind metodele getter,sa se afiseze toate datele
+//pilotului cu cel mai bun record
+
+#include "pilotClass.h"
+#include <cstring>
+#include <iostream>
+using namespace std;
+
+//prototipuri
+void menu(PilotF1*);
+void afis(PilotF1*);
+
+int main() {
+	PilotF1 pt[3];
+	
+
+	for (int i = 0; i < 3; i++) {
+		cout << "Datele pentru Pilot(" << i+1 << "): \n";
+		menu(&pt[i]);
+		cout << endl;
+	}
+
+	afis(pt);
+
+
+
+
+}
+
+//definriea functiei meniu
+void menu(PilotF1 *pt) {
+	char* s;
+	int n;
+	s = new char[30];
+		cout << "Introduceti Numele: ";
+		cin >> s;
+		pt->setNume(s);
+		//s = NULL;
+		cout << "Introduceti Numele Echipei: ";
+		cin >> s;
+		pt->setEchipa(s);
+		cout << "Introduceti Varsta Pilotului: ";
+		cin >> n;
+		pt->setVarsta(n);
+		cout << "Introduceti Record-ul: ";
+		cin >> n;
+		pt->setRecord(n);
+		cout << "Introduceti Pozitia: ";
+		cin >> n;
+		pt->setNr(n);
+	
+
+}
+
+//definirea f.de afisare a pilotului cu cel mai bun record
+void afis(PilotF1 *pt) {
+	int max;
+	max = pt->getRecord();
+
+	for (int i = 1; i < 3; i++) {
+		if (max < (pt + i)->getRecord())max = (pt + i)->getRecord();
+	}
+
+	cout << "Pilotul cu cel mai bun record: ";
+	for (int i = 0; i < 3; i++) {
+		if (max == (pt + i)->getRecord()) {
+			cout << "\nNumele: " << (pt + i)->getNume();
+			cout<<"\nEchipa: "<< (pt + i)->getEchipa();
+			cout<<"\nVarsta: "<< (pt + i)->getVarsta();
+			cout<<"\nRecord: "<< (pt + i)->getRecord();
+			cout<<"\nPozitia: "<< (pt + i)->getNr();
+		}
+	}
+
+
+}
+
+
+
+#pragma once
+# include <iostream>
+#include <cstring>
+using namespace std;
+
+class PilotF1 {
+	char nume[30];
+	char echipa[30];
+	int varsta, record, nr_pole_position;
+public:
+	//setter
+	void setNume(char*);
+	void setEchipa(char*);
+	void setVarsta(int);
+	void setRecord(int);
+	void setNr(int);
+
+	//getter
+	char* getNume();
+	char* getEchipa();
+	int getVarsta();
+	int getRecord();
+	int getNr();
+
+
+};
+
+//definirea setter
+void PilotF1::setNume(char* s) {
+	int l = strlen(s);
+	if (s != NULL) strncpy_s(nume, s, l);
+	else strcpy_s(nume, "Unknown");
+
+}
+
+void PilotF1::setEchipa(char* s) {
+	int l = strlen(s);
+	if (s != NULL) strncpy_s(echipa, s, l);
+	else strcpy_s(echipa, "Unknown");
+
+}
+
+void PilotF1::setVarsta(int n) {
+	varsta = n;
+}
+void PilotF1::setRecord(int n) {
+	record = n;
+}
+void PilotF1::setNr(int n) {
+	nr_pole_position = n;
+}
+
+
+//getteri
+char* PilotF1::getNume() {
+	return nume;
+}
+
+char* PilotF1::getEchipa() {
+	return echipa;
+}
+
+int PilotF1::getVarsta() {
+	return varsta;
+}
+
+int PilotF1::getRecord() {
+	return record;
+}
+
+int PilotF1::getNr() {
+	return nr_pole_position;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P2
+//Exemplu 2 din fisa de laborator modificat astfel incat codul sa poate fi lansat in executie considerand
+//atributul clasei privat
+/*ilustrarea modului implicit de alocare a specificatorilor de vizibilitate*/
+#include <iostream>
+using namespace std;
+class Test2 {
+	int x;
+	public:
+	Test2() {
+		cout << "\nApel constructor explicit vid.";
+	}
+
+	void setX(int n) {
+		x = n;
+	}
+	int getX() {
+		return x;
+	}
+
+};
+int main() {
+	Test2 ob1;
+	int a;
+	cout << "\nIntroduceti valoarea variabilei de tip \"int\" din clasa: ";
+	cin >> a;
+	ob1.setX(a);
+	cout << "Valoarea din clasa: " << ob1.getX();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A  P3
+//Programul porneste de la exemplul din fisa de laborator dar transformata in varianta transformata in alocare dinamica
+//si se completeaza cu urmatoarele metode:
+//-Afisarea elementelor de pe diagonala secundara(daca e patratica) in caz contrar se afiseaza un mesaj adecvat
+//-Afisarea elementelor de sub diagonala principala
+//-Afisarea unei matrici de dimensiunea celei initiale  ale carei elemente sunt 0 (daca el>o valoare) si 1(in caz contrar)
+
+#include <iostream>
+using namespace std;
+const int Max1 = 10;
+const int Max2 = 10;
+class Matrix {
+	//atribute
+	int *matrix, dim1, dim2;
+	//declararea metodei de afisare a unui element
+	int returnElement(int row, int column);
+public:
+	//constructor explicit cu parametri – recomandat a folosi o metoda diferita a citi valorile
+	Matrix(int dim1, int dim2) {
+		//variabile locale
+		int i, j;
+		this->dim1 = dim1;
+		this->dim2 = dim2;
+		
+		matrix = new int[dim1 * dim2];
+
+		cout << "\nIntroduceti elementele matricii: ";
+		for (i = 0; i < dim1; i++) {
+			for (j = 0; j < dim2; j++) {
+				cout << "\nmatrix[" << i << "][" << j << "] = ";
+				cin >> *(matrix+i*dim2+j);
+			}
+		}
+	}
+	//metoda de afisare a matricii din clasa; implementare in cadrul clasei
+	void displayMatrix() {
+		//variabile locale
+		int i, j;
+		cout << "\nElementele matricii: ";
+		for (i = 0; i < dim1; i++) {
+			cout << "\n";
+			for (j = 0; j < dim2; j++) {
+				//apelul metodei private care returneaza valoarea unui element din matrice
+				cout << returnElement(i, j) << " ";
+			}
+		}
+		cout << endl;
+	}
+
+	void displaySecundara();
+	void displaySubP();
+	void display_0_1(int);
+};
+//definirea metodei de afisare a elementelor de pe diagonala secundara
+void Matrix::displaySecundara() {
+		cout << "Elementele de pe diagonala secundara: ";
+		for (int i = 0; i < dim1; i++) {
+			cout << returnElement(i, dim1 - i - 1) << " ";
+
+		}
+}
+
+//definirea metodei de afisare a alementelor de sub diagonala principala
+void Matrix::displaySubP() {
+	cout << "\nElementele de pe sub diagonala principala: ";
+	for (int i = 1; i < dim1; i++) 
+		for (int j = 0; j < i; j++)
+			cout << returnElement(i,j) << " ";
+	
+}
+
+//definirea metodei de afisare a matricii 0 1
+void Matrix::display_0_1(int n) {
+	for (int i = 0; i < dim1; i++) {
+		for (int j = 0; j < dim2; j++) {
+			if (*(matrix + i * dim2 + j) > n)*(matrix + i * dim2 + j) = 0;
+			else *(matrix + i * dim2 + j) = 1;
+			cout << *(matrix + i * dim2 + j)<<" ";
+		}
+		cout << endl;
+	}
+	
+
+
+}
+
+
+
+int Matrix::returnElement(int row, int column) {
+	return *(matrix + row*dim2 + column);
+}
+int main() {
+	int dim1, dim2,n;
+	cout << "\nIntroduceti dimensiunile 1 si 2 ale matricii: (<=10):\n";
+	cin >> dim1;
+	cin >> dim2;
+	Matrix m1(dim1, dim2); //instantiere cu citire valori
+	m1.displayMatrix();
+	if (dim1 != dim2)cout << "\nMatricea nu este patratica!";
+	else {
+		m1.displaySecundara();
+		m1.displaySubP();
+
+	}
+	cout << "\nIntroduceti o valoare de comparare: ";
+	cin >> n;
+
+	m1.display_0_1(n);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P4
+//Program ce contine o clasa care are ca variabila privata un camp de tip data,definit intr-o structura externa.
+//Clasa contine set & get si mai contine doua metode publice 
+//-care testeaza validatea datei stocate
+//-scrie intr-un fisier toate datele din anul curent care preced(cronologic) data stocata in clasa
+#define _CRT_SECURE_NO_WARNINGS
+
+
+#include <stdio.h>
+#include <iostream>
+using namespace std;
+
+struct DATE {
+	int zi,luna,an;
+};
+
+class Stoc_date {
+	DATE dat;
+
+public:
+	void set_date(DATE );
+	struct DATE  get_date();
+	bool test();
+	void write_in_f();
+
+};
+
+void Stoc_date:: write_in_f() {
+	FILE* fp;                 //i=luna 
+	int max = 0;				//j=ziua
+	fp = fopen("Fisier.in", "w + " );
+	for (int i = 1; i < dat.luna; i++) {
+		if ((i <= 7 && i % 2 == 0) || (i >= 8 && i % 2 == 1)) {
+			if (i == 2) {
+				if (dat.an % 400 == 0 || dat.an % 4 == 0 && dat.an % 100 != 0) max = 29;  //an bisect
+				else max = 28;
+			}
+			else max = 30;
+		}
+		else max = 31;
+		
+		for (int j = 1; j <= max; j++) {
+			fprintf(fp, "%d.%d.%d  ", j, i, dat.an);
+		}
+		fprintf(fp, "\n");
+	}
+
+	for (int i = 1; i < dat.zi; i++) {
+		fprintf(fp, "%d.%d.%d  ", i, dat.luna, dat.an);
+	}
+
+	fclose(fp);
+}
+
+void Stoc_date :: set_date(DATE pt) {
+	dat.zi = pt.zi;
+	dat.luna = pt.luna;
+	dat.an = pt.an;
+}
+struct DATE Stoc_date:: get_date() {
+	return dat;
+}
+
+bool Stoc_date::test() {
+	if (dat.an % 400 == 0 || dat.an % 4 == 0 && dat.an % 100 != 0) {
+		if (dat.luna == 2 && dat.zi > 29)return false;
+	}
+	else if (dat.luna == 2 && dat.zi > 28)return false;
+	if (dat.luna > 12 || dat.zi > 31)return false;
+
+}
+
+//prototipuri
+
+
+int main() {
+	Stoc_date ob;
+	DATE pt,pt_ob;
+	bool tp=true;
+	cout << "Introduceti ziua: ";
+	cin >> pt.zi;
+	cout << "Introduceti luna: ";
+	cin >> pt.luna;
+	cout << "Introduceti anul: ";
+	cin >> pt.an;
+
+	ob.set_date(pt);
+	pt_ob = ob.get_date();
+	cout << "Datele: ";
+	cout << pt_ob.zi << "." << pt_ob.luna << "." << pt_ob.an;
+	tp = ob.test();
+	if (tp) {
+		cout << "\nData este corecta!";
+		ob.write_in_f();
+	}
+	else {
+		cout << "\nData incorecta!";
+		return 0;
+	}
+
+}
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P5
+//Exemplu 2 din fisa de laborator modificat astfel incat codul sa poate fi lansat in executie considerand
+//atributul clasei privat
+/*ilustrarea modului implicit de alocare a specificatorilor de vizibilitate*/
+
+//cu acces prin pointeri/referinte
+
+#include <iostream>
+using namespace std;
+class Test2 {
+	int x;
+public:
+	Test2() {
+		cout << "\nApel constructor explicit vid.";
+	}
+
+	void setX(int n) {
+		x = n;
+	}
+	int getX() {
+		return x;
+	}
+
+};
+int main() {
+	Test2 ob1;
+	Test2* pt;
+	Test2 &ad = ob1;
+	pt = &ob1;
+	int a;
+	cout << "\nIntroduceti valoarea variabilei de tip \"int\" din clasa: ";
+	cin >> a;
+	ob1.setX(a);
+	cout << "Valoarea din clasa: " << ob1.getX();
+	cout << "\nValoarea din clasa prin acces de pointer: " << pt->getX();
+	cout << "\nValoarea din clasa prin acces de referinta: " << ad.getX();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A  P6
+//Program ce implementeaza o clasa denumita triunghi.Clasa cuprinde atribute a,b,c,constructor cu parametrii
+//->metode set si get
+//->Se calculeaza aria si perimetrul prin metode specifice
+//->O metoda care indica daca Triunghiul este dreptunghic sau nu
+//->O metoda private cu parametrii care permite verificarea conditiei ca laturile sa formeze un triunghi
+//e folosita si de metodele set
+
+#include "D.h"
+#include <math.h>
+#include <iostream>
+using namespace std;
+
+int main() {
+	Triunghi tr(1, 2, 3);
+	int l1, l2, l3;
+	cout << "Introduceti valoarea pentru L1: ";
+	cin >> l1;
+	cout << "Introduceti valoarea pentru L2: ";
+	cin >> l2;
+	cout << "Introduceti valoarea pentru L3: ";
+	cin >> l3;
+	if (tr.setL1(l1) && tr.setL2(l2) && tr.setL3(l3)) {
+		cout << "\nPerimetrul este: " << tr.perimetru();
+		cout << "\nAria este: " << tr.arie();
+		if (tr.verif()) {
+			cout << "\nTriungiul este dreptunghic!";
+
+		}
+		else cout << "Nu este dreptunghic!";
+		cout<<"\nLaturile introduse: "<< tr.getL1() << " " << tr.getL2() << " " << tr.getL3();
+	}
+	else {
+		cout << "\nConditia nu este indeplinita!";
+		cout << "\nLaturile prestabilite: " << tr.getL1() << " " << tr.getL2() << " " << tr.getL3();
+		return 0;
+	}
+	
+
+
+}
+
+#pragma once
+#include <math.h>
+#include <iostream>
+using namespace std;
+
+class Triunghi {
+	int a, b, c;
+	bool conditie(int a, int b, int c);
+public:
+	//constructor
+	Triunghi(int x, int y, int z) : a(x), b(y), c(z) {}
+	//setter
+	bool setL1(int);
+	bool setL2(int);
+	bool setL3(int);
+	//getteri
+	int getL1();
+	int getL2();
+	int getL3();
+
+	//metoda perimetru 
+	int perimetru();
+	//metoda arie
+	float arie();
+	//metoda verificare dreptunghic
+	bool verif();
+};
+//definirea metodei de verificare de dreptunghic
+bool Triunghi::verif() {
+	if (a * a + b * b == c * c || a * a + c * c == b * b || b * b + c * c == a * a)return true;
+	else return false;
+}
+
+//definirea metodei de calcul a ariei
+float Triunghi::arie() {
+	return sqrt(perimetru() / 2.0 * ((perimetru() / 2.0 - a) * (perimetru() / 2.0 - b) * (perimetru() / 2.0 - c)));
+}
+
+//definirea metodei de calcul perimetru
+int Triunghi::perimetru() {
+	return a + b + c;
+}
+
+//definirea metodei private
+bool Triunghi::conditie(int a, int b, int c) {
+	if (a < 0 || b < 0 || c < 0)return false;
+	else if (a + b < c || a + c < b || b + c < a) return false;
+	else return true;
+}
+
+//definirea setteri
+bool Triunghi::setL1(int x) {
+	if (conditie(x, b, c)) {
+		a = x;
+		return true;
+	}
+	else return false;
+
+}
+bool Triunghi::setL2(int x) {
+	if (conditie(a, x, c)) {
+		b = x;
+		return true;
+	}
+	else return false;
+}
+bool Triunghi::setL3(int x) {
+	if (conditie(a, b, x)) {
+		c = x;
+		return true;
+	}
+	else return false;
+}
+
+//definirea getteri
+int Triunghi::getL1() {
+	return a;
+}
+int Triunghi::getL2() {
+	return b;
+}
+int Triunghi::getL3() {
+	return c;
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P7
+//Program ce implementeaza o clasa seif cu atributele private cifru si suma. Metode:
+//->private: getSuma() setSuma()
+//->publice: puneInSeif() scoateDinSeif()
+//vor putea accesa suma doar daca parametrul de tip cifra corespunde obiectului instatiat,
+//in caz de diferenta de cifru se afiseaza un mesaj corespunzator
+
+#include <stdlib.h>
+#include <Windows.h>
+#include <conio.h>
+#include <iostream>
+using namespace std;
+
+int trials = 0;
+int trials2 = 0;
+
+class Seif {
+	int cifru;
+	float suma;
+	float getSuma();
+	void setSuma(float);
+public:
+	Seif(int n):cifru(n),suma(0) {}
+	int puneInSeif();
+	int scoateDinSeif();
+
+};
+
+float Seif::getSuma() {
+	return suma;
+}
+void Seif:: setSuma(float s) {
+	suma = s;
+}
+
+int Seif:: scoateDinSeif() {
+	int n;
+	cout << "Introduceti PIN-ul: ";
+	cin >> n;
+	
+	system("CLS");
+	if (n != cifru) {
+		cout << "PIN INCORECT!";
+		Sleep(1000);
+		trials++;
+		if (trials > 2) {
+			cout << "Ati depasit numarul de incercari!";
+			return -1;
+		}
+
+		system("CLS");
+		scoateDinSeif();
+		
+	}
+	else if (n == cifru) {
+		float s,suma_initiala;
+		cout << "Balance: " << getSuma();
+		cout << "\nIntroduceti suma dorita pentru tranzactie: ";
+		cin >> s;
+
+		if (s > getSuma() ) {
+			
+			cout << "Suma introdusa depaseste fond-ul dumneavoastra!";
+			Sleep(1000);
+			system("CLS");
+			return 0;
+		
+		}
+
+		suma_initiala = getSuma();
+		setSuma(suma_initiala - s);
+		system("CLS");
+		return 1;
+		
+	}
+}
+int Seif::puneInSeif() {
+	int n;
+	cout << "Introduceti PIN-ul: ";
+	cin >> n;
+
+	system("CLS");
+	if (n != cifru) {
+		cout << "PIN INCORECT!";
+		Sleep(1000);
+		trials2++;
+		if (trials2 > 2) {
+			cout << "\nAti depasit numarul de incercari!";
+			return -1;
+			Sleep(1000);
+		}
+
+		system("CLS");
+		puneInSeif();
+
+	}
+	else if (n == cifru) {
+		float s, suma_initiala, sf;
+		cout << "Balance: " << getSuma();
+		cout << "\nIntroduceti suma: ";
+		cin >> s;
+		suma_initiala = getSuma();
+		setSuma(suma_initiala + s);
+		system("CLS");
+		return 1;
+	}
+}
+
+void menu(Seif);
+
+int main() {
+	int n;
+	cout << "Set PIN: ";
+	cin >> n;
+	cout << "\nAsteptati o secunda!";
+	Seif ob(n);
+	
+	Sleep(1000);
+	system("CLS");
+
+
+	menu(ob);
+
+
+
+}
+
+void menu(Seif ob) {
+	int i;
+	cout << "Introduceti litera corespunzatoare actiunii dorite: ";
+	cout << "\na) Introduceti in seif.";
+	cout << "\nb) Scoateti din seif. \n";
+	char c = _getch();
+
+	system("CLS");
+
+	if (c == 'a') {
+		trials2 = 0;
+		i = ob.puneInSeif();
+		if (i == -1) return;
+		menu(ob);
+	}
+	else if (c == 'b') {
+		trials = 0;
+		i = ob.scoateDinSeif();
+		if (i == 0)menu(ob);
+		else if (i == -1) return;
+		menu(ob);
+	}
+	else  menu(ob);
+	
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Spulber Bogdan-Andrei Grupa 3 Seria A P8
+//Program ce modifica exemplu 6
+//->utilizarea valorilor returnate de metoda setValidCnp() pentru a valida suplimentar(luna si ziua) CNP-ul
+//->permiterea introducerii de coduri CNP care incep cu alte cifre decat 1 si 2, cu analizarea semnificatiei
+//noilor valori(5-masculin,6-feminin)
+
+
+//varianta functii de biblioteca VC++
+//Gestiune CNP cu validare CNP
+#include <iostream>
+using namespace std;
+#include <time.h>
+const int dim_sir = 24;
+class Person {
+	// membri private
+	char nume[dim_sir];
+	char prenume[dim_sir];
+	char cnp[14];
+	// structura CNP: S AN LU ZI 6cifre; total 13 cifre
+public:
+	// membri publici
+	void setNume(char* n);
+	void setPrenume(char* p);
+	int setValidCnp(char* c);
+	char* getNume(void) {
+		return nume;
+	}
+	char* getPrenume(void) {
+		return prenume;
+	}
+	char* getCnp(void) {
+		return cnp;
+	}
+	char get_gender(void);
+	int get_an_nast(void);
+	int get_luna_nast(void);
+	int get_zi_nast(void);
+	int get_varsta(void);
+};
+void Person::setNume(char* n) {
+	if (n != 0)
+		strncpy_s(nume, n, dim_sir - 1);
+	else
+		strcpy_s(nume, "Necunoscut");
+}
+void Person::setPrenume(char* p) {
+	if (p != 0)
+		strncpy_s(prenume, p, dim_sir - 1);
+	else
+		strcpy_s(prenume, "Necunoscut");
+}
+int Person::setValidCnp(char* c) {
+	char buf[3];
+	int n;
+	if (c != 0) {
+		// validare CNP: numai pentru cifra gen, cifrele pentru AN, LU, ZI
+		if (strlen(c) != 13)//lungime cnp
+			return 1;
+		if (c[0] != '1' && c[0] != '2' && c[0] != '5' && c[0] != '6')//cod cnp
+			return 2;
+		strncpy_s(buf, c + 1, 2);//an
+		buf[2] = '\0';
+		n = atoi(buf);
+		if (n > 99)
+			return 3;//inconsistent
+		strncpy_s(buf, c + 3, 2);//luna
+		buf[2] = '\0';
+		n = atoi(buf);
+		if (n == 0 || n > 12)
+			return 4;
+		strncpy_s(buf, c + 5, 2);//zi
+		buf[2] = '\0';
+		n = atoi(buf);
+		if (n == 0 || n > 31)
+			return 5;
+		strcpy_s(cnp, c);//copiere sir c valid in cnp
+		return 0;
+	}
+	else return -1;
+}
+char Person::get_gender(void) {
+	if (cnp[0] == '1' || cnp[0] == '5') return 'M';
+	if (cnp[0] == '2' || cnp[0] == '6') return 'F';
+	return 'X';
+}
+int Person::get_an_nast(void) {
+	char buf[3];
+	strncpy_s(buf, cnp + 1, 2);
+	buf[2] = '\0';
+	if ((cnp[0] - '0') <= 2) return(1900 + atoi(buf));
+	else return(2000 + atoi(buf));
+}
+int Person::get_luna_nast(void) {
+	char buf[3];
+	strncpy_s(buf, cnp + 3, 2);
+	buf[2] = '\0';
+	return(atoi(buf));
+}
+int Person::get_zi_nast(void) {
+	return((cnp[5] - '0') * 10 + (cnp[6] - '0'));
+}
+int Person::get_varsta(void) {
+	struct tm newTime;
+	int an_c;
+	time_t szClock;
+	time(&szClock);
+	localtime_s(&newTime, &szClock);
+	cout << cnp[0];
+		if((cnp[0]-'0')<=2)  an_c = 1900 + newTime.tm_year;
+		else  an_c = 2000 + newTime.tm_year -100  ;
+	int an_n = get_an_nast();
+	int n = an_c - an_n;
+	int lu_c = newTime.tm_mon + 1;
+	int lu_n = get_luna_nast();
+	if (lu_c < lu_n)
+		n--;
+	else {
+		if (lu_c == lu_n) {
+			int zi_c = newTime.tm_mday;
+			int zi_n = get_zi_nast();
+			if (zi_c < zi_n) n--;
+		}
+	}
+	return n;
+}
+int main() {
+	Person p1;
+	char aux_string[dim_sir];
+	cout << "\nEnter Name: ";
+	cin >> aux_string;//Popescu
+	p1.setNume(aux_string);
+	cout << "\nEnter SurName: ";
+	//cin >> aux_string;//Bitanescu
+	cin.ignore();
+	gets_s(aux_string, dim_sir);//Preia Prenume si cu spatiu
+	p1.setPrenume(aux_string);
+	cout << "\nEnter CNP: ";
+	cin >> aux_string;//1890403120671
+	int t_cnp = p1.setValidCnp(aux_string);
+	switch (t_cnp) {
+	case 0: cout << "\nCNP valid\n";
+		cout << "\nDate despre obiect: " << endl;
+		cout << "\tNume: " << p1.getNume() << ", Prenume: " << p1.getPrenume() << ", CNP: " << p1.getCnp() << endl;
+		cout << "\tGen: " << p1.get_gender() << endl;
+		cout << "\tData nasterii: " << p1.get_an_nast() << "/" << p1.get_luna_nast() << "/" << p1.get_zi_nast() << endl;
+		cout << "\tVarsta: " << p1.get_varsta() << endl; break;
+	case 1: cout << "\nLungime sir CNP invalid"; break;
+	case 2: cout << "\nGen invalid"; break;
+	case 3: cout << "\nAn invalid"; break;
+	case 4: cout << "\nLuna invalida"; break;
+	case 5: cout << "\nZi invalida"; break;
+	default: cout << "\nProbleme CNP"; break;
+	}
+	return 0;
+}
+
+/*
+Enter Name: Gheorghita
+
+Enter SurName: Adelin
+
+Enter CNP:  5000821292297
+
+CNP valid
+
+Date despre obiect:
+        Nume: Gheorghita, Prenume: Adelin, CNP: 5000821292297
+        Gen: M
+        Data nasterii: 2000/8/21
+5       Varsta: 20
+
+C:\Users\Body_\Desktop\UTCN-ETII-Sem II\PCL\Programe\Lab06\(8) CNP\Debug\(8) CNP.exe (process 13364) exited with code 0.
+Press any key to close this window . . .
+*/
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
